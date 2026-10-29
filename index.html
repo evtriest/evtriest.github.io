@@ -52,6 +52,14 @@
   .lang-btn:hover{border-color:rgba(255,200,97,.7);background:rgba(230,162,60,.16)}
   .lang-btn[aria-pressed="true"]{border-color:rgba(255,200,97,.85);background:rgba(230,162,60,.28);color:#ffd88a}
   .lang-btn:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .gids-haiku{position:relative;z-index:1;padding:0 16px}
+  .gids-haiku-inner{
+    max-width:560px;margin:14px auto 0;padding:.72rem 1.1rem .82rem;text-align:center;
+    background:rgba(10,18,26,.55);border:1px solid rgba(232,220,192,.16);
+    border-radius:12px;backdrop-filter:blur(4px);
+  }
+  .gids-haiku-label{margin:0 0 .4rem;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
+  .gids-haiku-lines{margin:0;font-family:var(--serif);font-size:.95rem;line-height:1.55;color:#efece2}
   .hero{text-align:center;max-width:880px;width:100%;min-width:0}
   .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
   .kicker{
@@ -237,6 +245,13 @@
   </div>
 </nav>
 
+<section class="gids-haiku" aria-labelledby="gids-haiku-title">
+  <div class="gids-haiku-inner">
+    <p class="gids-haiku-label" id="gids-haiku-title">Haiku van de Natuur Gids</p>
+    <p class="gids-haiku-lines" id="gids-haiku-lines">…</p>
+  </div>
+</section>
+
 <main>
   <section class="hero">
     <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
@@ -383,6 +398,7 @@
         pageTitle: `Eeps Piracy Site`,
         kicker: `Den Helder · Marsdiep · voor anker sinds 1667`,
         launchLabel: `Tewaterlating`,
+        haikuThinking: `De gids denkt na…`, haikuError: `De gids is even stil.`,
         lede: `Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk: de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te vinden is, waar, en of het water mee- of tegenzit.`,
         cta: `Enter de Wildpluk-site`,
         fineprint: `Geen inloggen, geen schatkaart nodig — het getij staat al achter je.`,
@@ -424,6 +440,7 @@
         pageTitle: `Eeps Piracy Site`,
         kicker: `Den Helder · Marsdiep · at anchor since 1667`,
         launchLabel: `Launch`,
+        haikuThinking: `The guide is thinking…`, haikuError: `The guide is quiet for a moment.`,
         lede: `A flag, a ship and a tide chart. From this roadstead you enter the real work: the <strong>wildpluk site</strong> along the Wadden coast — where you see what can be found right now, where, and whether the water is with you or against you.`,
         cta: `Enter the Wildpluk site`,
         fineprint: `No login, no treasure map needed — the tide is already at your back.`,
@@ -465,6 +482,7 @@
         pageTitle: `Eeps Piraten-Site`,
         kicker: `Den Helder · Marsdiep · vor Anker seit 1667`,
         launchLabel: `Stapellauf`,
+        haikuThinking: `Der Guide denkt nach…`, haikuError: `Der Guide schweigt einen Moment.`,
         lede: `Eine Flagge, ein Schiff und eine Gezeitenkarte. Von dieser Reede aus enterst du die eigentliche Arbeit: die <strong>Wildpluk-Seite</strong> an der Wattenküste — wo du siehst, was jetzt zu finden ist, wo, und ob das Wasser mitspielt oder dagegen.`,
         cta: `Enter die Wildpluk-Seite`,
         fineprint: `Kein Login, keine Schatzkarte nötig — die Gezeit steht schon hinter dir.`,
@@ -506,6 +524,7 @@
         pageTitle: `Eeps Piracki Port`,
         kicker: `Den Helder · Marsdiep · na kotwicy od 1667`,
         launchLabel: `Wodowanie`,
+        haikuThinking: `Przewodnik się zastanawia…`, haikuError: `Przewodnik na chwilę milczy.`,
         lede: `Flaga, statek i mapa pływów. Z tej redy wchodzisz do prawdziwej roboty: <strong>strona wildpluk</strong> wzdłuż wybrzeża Wadden — gdzie zobaczysz, co można teraz znaleźć, gdzie i czy woda jest z tobą, czy przeciw tobie.`,
         cta: `Wejdź na stronę Wildpluk`,
         fineprint: `Bez logowania i bez mapy skarbów — pływ już masz za sobą.`,
@@ -547,6 +566,7 @@
         pageTitle: `Eeps пиратски сайт`,
         kicker: `Ден Хелдер · Марсдип · на котва от 1667`,
         launchLabel: `Спускане на вода`,
+        haikuThinking: `Гидът се замисля…`, haikuError: `Гидът за момент млъкна.`,
         lede: `Флаг, кораб и карта на прилива. От този рейд влизаш в истинската работа: <strong>сайтът wildpluk</strong> по брега на Ваден — където виждаш какво има сега, къде и дали водата е с теб, или срещу теб.`,
         cta: `Влез в Wildpluk`,
         fineprint: `Без вход и без карта на съкровища — приливът вече е зад теб.`,
@@ -588,6 +608,7 @@
         pageTitle: `Eeps 海盗站`,
         kicker: `登海尔德 · 马斯迪普 · 自 1667 年起抛锚`,
         launchLabel: `下水`,
+        haikuThinking: `向导正在思考…`, haikuError: `向导暂时沉默了。`,
         lede: `一面旗、一艘船、一张潮汐图。从这个锚地进入真正的工作：<strong>wildpluk 网站</strong> 沿瓦登海岸——看看此刻有什么、在哪里，以及潮水是帮你还是挡你。`,
         cta: `进入 Wildpluk 网站`,
         fineprint: `无需登录，也不需要藏宝图——潮水已经在你身后。`,
@@ -641,6 +662,9 @@
     var logbook = document.getElementById('gitlog');
     var logItems = [];
     var logState = 'loading';
+    var haikuEl = document.getElementById('gids-haiku-lines');
+    var haikuText = null;
+    var haikuPending = false;
     var DEVICES = { desktop: 'deviceDesktop', mobiel: 'deviceMobile', bot: 'deviceBot' };
 
     function t(key, vars) {
@@ -714,6 +738,35 @@
       }).join('');
     }
 
+    function renderHaiku(text) {
+      if (!haikuEl) return;
+      haikuEl.innerHTML = String(text == null ? '' : text).split('\n')
+        .map(function (line) { return esc(line); }).join('<br>');
+    }
+
+    function loadHaiku() {
+      if (!haikuEl) return;
+      if (haikuText) { renderHaiku(haikuText); return; }
+      if (haikuPending) return;
+      haikuPending = true;
+      renderHaiku(t('haikuThinking'));
+      fetch(API + '/api/haiku', { mode: 'cors' })
+        .then(function (resp) {
+          if (!resp.ok) throw new Error('haiku');
+          return resp.json();
+        })
+        .then(function (data) {
+          haikuPending = false;
+          if (!data || !data.haiku) throw new Error('leeg');
+          haikuText = data.haiku;
+          renderHaiku(haikuText);
+        })
+        .catch(function () {
+          haikuPending = false;
+          if (!haikuText) renderHaiku(t('haikuError'));
+        });
+    }
+
     function deviceLabel(value) {
       var key = DEVICES[value];
       return key ? t(key) : value;
@@ -766,6 +819,7 @@
       renderVisits();
       renderLaunch();
       renderLogbook();
+      loadHaiku();
     }
 
     // taalkeuze
