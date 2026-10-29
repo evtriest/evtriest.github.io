@@ -40,7 +40,7 @@
     pointer-events:none;
   }
   main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(9vh,64px) 20px 32px}
-  .hero{text-align:center;max-width:760px;width:100%;min-width:0}
+  .hero{text-align:center;max-width:880px;width:100%;min-width:0}
   .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
   .kicker{
     margin:0 0 14px;font-family:var(--sans);font-size:.72rem;letter-spacing:.34em;
@@ -68,6 +68,12 @@
   .cta:active{transform:translateY(0)}
   .cta:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px}
   .fineprint{margin:.85rem 0 0;font-size:.78rem;color:#c9c3b4;opacity:.72}
+  .intro-row{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.6rem;
+    align-items:start;margin:1.15rem auto 0;text-align:left;
+  }
+  .intro-row .lede{margin:0}
+  .intro-row .musings{margin:0;max-width:none}
   .musings{
     margin:2.4rem auto 0;max-width:34rem;padding:1.15rem 1.4rem 1.25rem;text-align:left;
     background:rgba(10,18,26,.58);border:1px solid rgba(232,220,192,.16);border-radius:14px;
@@ -99,6 +105,11 @@
   footer p + p{margin-top:.7rem;font-size:.74rem;color:#a9a291;letter-spacing:.02em}
   footer .trade{color:var(--brass);font-weight:700}
   footer a{color:var(--sand)}
+  @media(max-width:640px){
+    .intro-row{grid-template-columns:1fr;gap:1.2rem;text-align:center}
+    .intro-row .lede{margin:0 auto}
+    .intro-row .musings{margin:0 auto;max-width:34rem;text-align:left}
+  }
   @media(max-width:520px){
     body{background-attachment:scroll}
     .flag{width:48px;height:48px}
@@ -114,32 +125,34 @@
     <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Piratenvlag">
     <p class="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
-    <p class="lede">
-      Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
-      de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
-      vinden is, waar, en of het water mee- of tegenzit.
-    </p>
-    <section class="musings">
-      <h2>Stukje roeien captains</h2>
-      <div class="haiku">
-        <p>
-          Kokkels in het nat<br>
-          de verrekijker zakt traag<br>
-          het tij zegt: nog niet
-        </p>
-        <p>
-          Laatste keer getij<br>
-          de gids knikt, geen chocola<br>
-          gin stroomt nog wat na
-        </p>
-        <p>
-          Mijn vlag hangt nog hoog<br>
-          straks strijk ik hem voor het laatst<br>
-          betaald varen, ja
-        </p>
-        <p>Een avatar leert me Bulgaars; mijn radar ben ik kwijt.</p>
-      </div>
-    </section>
+    <div class="intro-row">
+      <p class="lede">
+        Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
+        de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
+        vinden is, waar, en of het water mee- of tegenzit.
+      </p>
+      <section class="musings">
+        <h2>Even een stukje roeien</h2>
+        <div class="haiku">
+          <p>
+            Kokkels in het nat<br>
+            de verrekijker zakt traag<br>
+            het tij zegt: nog niet
+          </p>
+          <p>
+            Laatste keer getij<br>
+            de gids knikt, geen chocola<br>
+            gin stroomt nog wat na
+          </p>
+          <p>
+            Mijn vlag hangt nog hoog<br>
+            straks strijk ik hem voor het laatst<br>
+            betaald varen, ja
+          </p>
+          <p>Een avatar leert me Bulgaars; mijn radar ben ik kwijt.</p>
+        </div>
+      </section>
+    </div>
 
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/">🔭 Enter de Wildpluk-site</a>
     <p class="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
