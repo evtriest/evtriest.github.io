@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="zh">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Eeps Piracy Site</title>
 <meta name="description" content="Eeps Piracy Site — het voorportaal naar de wildpluk-site langs de Waddenkust, met het getij van Den Helder op de achtergrond.">
 <meta name="theme-color" content="#0b0b0b">
-<link rel="icon" type="image/svg+xml" href="pirate-flag.svg">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
 <style>
   :root{
     --ink:#f4f1e8;
@@ -39,13 +39,30 @@
     z-index:0;
     pointer-events:none;
   }
-  main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(9vh,64px) 20px 32px}
+  main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
+  .langbar{position:relative;z-index:2;padding:14px 16px 0;display:flex;justify-content:center}
+  .langbar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:880px}
+  .lang-btn{
+    font:inherit;font-size:.88rem;padding:.55em .95em;border-radius:999px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:.5em;color:#f0ece0;
+    border:1px solid rgba(232,220,192,.28);background:rgba(10,18,26,.55);
+    transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease;
+  }
+  .lang-btn .lf{font-size:1.2rem;line-height:1}
+  .lang-btn:hover{border-color:rgba(255,200,97,.7);background:rgba(230,162,60,.16)}
+  .lang-btn[aria-pressed="true"]{border-color:rgba(255,200,97,.85);background:rgba(230,162,60,.28);color:#ffd88a}
+  .lang-btn:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   .hero{text-align:center;max-width:880px;width:100%;min-width:0}
   .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
   .kicker{
     margin:0 0 14px;font-family:var(--sans);font-size:.72rem;letter-spacing:.34em;
     text-transform:uppercase;color:var(--sand);opacity:.82;
   }
+  .launch{
+    margin:-4px 0 16px;font-family:var(--sans);font-size:.7rem;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--brass);opacity:.9;
+  }
+  .launch time{font-variant-numeric:tabular-nums}
   h1{
     margin:0;font-family:var(--serif);font-weight:700;
     font-size:clamp(2.35rem,7.4vw,4.6rem);line-height:1.02;letter-spacing:.01em;
@@ -127,6 +144,40 @@
   .visit small{display:block;margin-top:.15rem;font-size:.72rem;color:#a9a291}
   .visit-note{grid-template-columns:1fr;color:#a9a291;font-size:.78rem}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
+  .aboard{
+    position:relative;z-index:1;padding:2.2rem 20px 2.6rem;
+    border-top:1px solid rgba(232,220,192,.14);
+    background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.9));
+  }
+  .aboard-inner{max-width:880px;margin:0 auto}
+  .aboard .kicker{margin:0 0 .4rem}
+  .aboard h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+  .aboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px;margin-top:1.1rem}
+  .aboard-card{
+    padding:.9rem 1.05rem;border-radius:12px;background:rgba(10,18,26,.6);
+    border:1px solid rgba(232,220,192,.16);
+  }
+  .aboard-card b{display:block;font-size:.95rem;color:#f4f1e8}
+  .aboard-card small{display:block;margin:.1rem 0 .6rem;font-size:.72rem;color:#a9a291}
+  .state{display:inline-flex;align-items:center;gap:.5em;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:#e7e2d4}
+  .state::before{content:"";width:.58em;height:.58em;border-radius:50%;background:#e05a4f;box-shadow:0 0 0 3px rgba(224,90,79,.18)}
+  .state.on{color:#d9f2e2}
+  .state.on::before{background:#38b06b;box-shadow:0 0 0 3px rgba(56,176,107,.2)}
+  .aboard-note{margin:.95rem 0 0;font-size:.68rem;color:#8f8a7c;letter-spacing:.03em}
+  .talk{
+    position:relative;z-index:1;padding:2.2rem 20px 2.6rem;
+    border-top:1px solid rgba(232,220,192,.14);
+    background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.9));
+  }
+  .talk-inner{max-width:880px;margin:0 auto}
+  .talk .kicker{margin:0 0 .4rem}
+  .talk h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+  .talk-body{
+    margin:.95rem 0 0;max-width:46rem;padding-left:1.05rem;
+    border-left:2px solid rgba(230,162,60,.5);
+    font-size:.92rem;line-height:1.72;color:#e7e2d4;
+  }
+  .talk-body strong{color:var(--brass-bright)}
   footer{
     position:relative;z-index:1;padding:22px 20px 26px;text-align:center;
     border-top:1px solid rgba(232,220,192,.14);
@@ -143,6 +194,22 @@
   .thanks .sym{font-size:1rem;line-height:1;margin-right:.28rem;vertical-align:-1px}
   .thanks small{font-size:.66rem;color:#a9a291;margin-left:.2rem;letter-spacing:.02em}
   .sponsors{margin:.75rem 0 0;font-size:.66rem;color:#8f8a7c;letter-spacing:.05em}
+  .logbook{
+    margin:1.4rem auto 0;max-width:44rem;padding-top:1rem;text-align:left;
+    border-top:1px solid rgba(232,220,192,.12);
+  }
+  .logbook-title{margin:0 0 .55rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+  .logbook-title code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.68rem;letter-spacing:0;text-transform:none;color:#a9a291}
+  .gitlog{
+    list-style:none;margin:0;padding:0;display:grid;gap:.28rem;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.72rem;line-height:1.5;color:#cfc9ba;
+  }
+  .gitlog li{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:.65rem;align-items:baseline}
+  .gitlog code{color:var(--brass);font-family:inherit;letter-spacing:.03em}
+  .gitlog span{overflow-wrap:anywhere}
+  .gitlog small{display:block;color:#8f8a7c;font-size:.66rem}
+  .gitlog-note{display:block;color:#8f8a7c;grid-template-columns:none}
   @media(max-width:640px){
     .intro-row{grid-template-columns:1fr;gap:1.2rem;text-align:center}
     .intro-row .lede{margin:0 auto}
@@ -159,57 +226,69 @@
 </head>
 <body>
 
+<nav class="langbar" aria-label="Taal">
+  <div class="langbar-inner">
+    <button class="lang-btn" type="button" data-lang="zh" aria-pressed="true"><span class="lf" aria-hidden="true">🇨🇳</span>中文</button>
+    <button class="lang-btn" type="button" data-lang="bg" aria-pressed="false"><span class="lf" aria-hidden="true">🇧🇬</span>Български</button>
+    <button class="lang-btn" type="button" data-lang="pl" aria-pressed="false"><span class="lf" aria-hidden="true">🇵🇱</span>Polski</button>
+    <button class="lang-btn" type="button" data-lang="en" aria-pressed="false"><span class="lf" aria-hidden="true">🇬🇧</span>English</button>
+    <button class="lang-btn" type="button" data-lang="nl" aria-pressed="false"><span class="lf" aria-hidden="true">🇳🇱</span>Nederlands</button>
+    <button class="lang-btn" type="button" data-lang="de" aria-pressed="false"><span class="lf" aria-hidden="true">🇩🇪</span>Deutsch</button>
+  </div>
+</nav>
+
 <main>
   <section class="hero">
     <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
-    <p class="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
+    <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
+    <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
     <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
     <div class="intro-row">
-      <p class="lede">
+      <p class="lede" data-i18n-html="lede">
         Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
         de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
         vinden is, waar, en of het water mee- of tegenzit.
       </p>
       <section class="musings">
-        <h2>Even een stukje roeien</h2>
+        <h2 data-i18n="musingsTitle">Even een stukje roeien</h2>
         <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
-          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels">Kokkels</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids">De gids</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag">De vlag</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars">Bulgaars</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen">Zorgen</button>
+          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels" data-i18n="tabKokkels">Kokkels</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids" data-i18n="tabGids">De gids</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag" data-i18n="tabVlag">De vlag</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars" data-i18n="tabBulgaars">Bulgaars</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen" data-i18n="tabZorgen">Zorgen</button>
         </div>
         <div class="haiku">
           <div class="haiku-piece" id="haiku-kokkels">
-            <p>
+            <p data-i18n-html="hKokkels">
               Kokkels in het nat<br>
               de kijker zoekt langs de dijk<br>
               het tij zegt: nog niet
             </p>
           </div>
           <div class="haiku-piece" id="haiku-gids" hidden>
-            <p>
+            <p data-i18n-html="hGids">
               Bot praat in het rond<br>
               venv, github, geen chocola<br>
               de gids knikt maar wat
             </p>
           </div>
           <div class="haiku-piece" id="haiku-vlag" hidden>
-            <p>
+            <p data-i18n-html="hVlag">
               Mijn vlag hangt nog hoog<br>
               straks strijk ik hem voor het laatst<br>
               betaald varen, ja
             </p>
           </div>
           <div class="haiku-piece" id="haiku-bulgaars" hidden>
-            <p>
+            <p data-i18n-html="hBulgaars">
               Джин блести в чаша<br>
               аватар ме учи днес<br>
               Хелдер учи с мен
             </p>
           </div>
           <div class="haiku-piece" id="haiku-zorgen" hidden>
-            <p>
+            <p data-i18n-html="hZorgen">
               Radar kwijt, gin op<br>
               FreeBuff blijft toch gratis, hoop<br>
               China houdt nog vol
@@ -219,75 +298,362 @@
       </section>
     </div>
 
-    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/">🔭 Enter de Wildpluk-site</a>
-    <p class="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
+    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
+    <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
 
     <div class="cards">
-      <div class="card"><b>Buit</b><span>schelpen, zeewier en één krab met een mening</span></div>
-      <div class="card"><b>Vloot</b><span>1 schip (geleend) · 0 kanonnen (belasting)</span></div>
-      <div class="card"><b>Getij</b><span>elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
+      <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
+      <div class="card"><b data-i18n="card2">Vloot</b><span data-i18n="card2s">1 schip (geleend) · 0 kanonnen (belasting)</span></div>
+      <div class="card"><b data-i18n="card3">Getij</b><span data-i18n="card3s">elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
     </div>
   </section>
 </main>
 
 <section class="radar" aria-labelledby="radar-bezoek">
   <div class="radar-inner">
-    <p class="kicker">Radar</p>
-    <h2 id="radar-bezoek">Bezoek</h2>
-    <p class="radar-note">
+    <p class="kicker" data-i18n="radarKicker">Radar</p>
+    <h2 id="radar-bezoek" data-i18n="radarTitle">Bezoek</h2>
+    <p class="radar-note" data-i18n-html="radarNote">
       Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site:
       één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
       herkomst en taal — alles wat er van dat adres te weten is.
     </p>
     <ul class="visits" id="visits">
-      <li class="visit visit-note">Radar warmt op…</li>
+      <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
     </ul>
     <p class="radar-meta" id="visits-meta"></p>
   </div>
 </section>
 
+<section class="aboard" aria-labelledby="aboard-title">
+  <div class="aboard-inner">
+    <p class="kicker" data-i18n="aboardKicker">Bemanning</p>
+    <h2 id="aboard-title" data-i18n="aboardTitle">Who is on board</h2>
+    <div class="aboard-grid">
+      <div class="aboard-card">
+        <b data-i18n="guideName">Natuurgids</b>
+        <small data-i18n="guideRole">van de wildpluk-site</small>
+        <span class="state" data-i18n="offBoard">van boord</span>
+      </div>
+      <div class="aboard-card">
+        <b data-i18n="captainName">De kapitein</b>
+        <small data-i18n="captainRole">deze rede</small>
+        <span class="state" data-i18n="offBoard">van boord</span>
+      </div>
+    </div>
+    <p class="aboard-note" data-i18n="aboardNote">Aan een rooster en agenda wordt gewerkt.</p>
+  </div>
+</section>
+
+<section class="talk" aria-labelledby="talk-title">
+  <div class="talk-inner">
+    <p class="kicker" data-i18n="talkKicker">Aan de praat</p>
+    <h2 id="talk-title" data-i18n="talkTitle">Praatjes</h2>
+    <p class="talk-body" data-i18n-html="talkBody">Een e-mailadres en een oude laptop — meer heb je niet nodig om deze landingspagina meteen te laten maken, helemaal gratis. Je praat wat je wilt en het wordt voor je gemaakt. Er zitten wel wat haken en ogen aan. Consultje? De eerste is gratis ;) Daarna gaan we automatiseren.</p>
+  </div>
+</section>
+
 <footer>
-  <p>
+  <p data-i18n-html="foot1">
     Gebouwd in de <strong>Cave</strong>: een vochtige grot achter de dijk waar de server op
     walvisolie draait en de boekhouding in <span class="trade">traderotes</span> gaat.
     Alle prijzen zijn inclusief piratenkorting en exclusief papegaaienbelasting.
     Twijfel je of iets eetbaar is? vraag het de krab — die liegt, maar weet het wél.
   </p>
-  <p>
+  <p data-i18n-html="foot2">
     © 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) ·
     achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>
   </p>
   <p class="thanks">
-    Dank aan<span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
+    <span data-i18n="thanks">Dank aan</span><span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
   </p>
-  <p class="sponsors">Zoek nog sponsors voor de boot.</p>
+  <p class="sponsors" data-i18n="sponsors">Zoek nog sponsors voor de boot.</p>
+  <div class="logbook">
+    <p class="logbook-title"><span data-i18n="logbookTitle">Logboek</span> <code>$ git log --oneline -5</code></p>
+    <ol class="gitlog" id="gitlog">
+      <li class="gitlog-note" data-i18n="logbookLoading">git log ophalen…</li>
+    </ol>
+  </div>
 </footer>
 
 <script>
   (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.haiku-tab'));
-    var pieces = Array.prototype.slice.call(document.querySelectorAll('.haiku-piece'));
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        var target = tab.getAttribute('aria-controls');
-        tabs.forEach(function (t) { t.setAttribute('aria-pressed', String(t === tab)); });
-        pieces.forEach(function (piece) { piece.hidden = piece.id !== target; });
-      });
-    });
-  })();
-</script>
-<script>
-  (function () {
+    var I18N = {
+      nl: {
+        pageTitle: `Eeps Piracy Site`,
+        kicker: `Den Helder · Marsdiep · voor anker sinds 1667`,
+        launchLabel: `Tewaterlating`,
+        lede: `Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk: de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te vinden is, waar, en of het water mee- of tegenzit.`,
+        cta: `Enter de Wildpluk-site`,
+        fineprint: `Geen inloggen, geen schatkaart nodig — het getij staat al achter je.`,
+        card1: `Buit`, card1s: `schelpen, zeewier en één krab met een mening`,
+        card2: `Vloot`, card2s: `1 schip (geleend) · 0 kanonnen (belasting)`,
+        card3: `Getij`, card3s: `elke 10 minuten vers, recht uit Rijkswaterstaat`,
+        musingsTitle: `Even een stukje roeien`,
+        tabKokkels: `Kokkels`, tabGids: `De gids`, tabVlag: `De vlag`,
+        tabBulgaars: `Bulgaars`, tabZorgen: `Zorgen`,
+        hKokkels: `Kokkels in het nat<br>de kijker zoekt langs de dijk<br>het tij zegt: nog niet`,
+        hGids: `Bot praat in het rond<br>venv, github, geen chocola<br>de gids knikt maar wat`,
+        hVlag: `Mijn vlag hangt nog hoog<br>straks strijk ik hem voor het laatst<br>betaald varen, ja`,
+        hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
+        hZorgen: `Radar kwijt, gin op<br>FreeBuff blijft toch gratis, hoop<br>China houdt nog vol`,
+        radarKicker: `Radar`, radarTitle: `Bezoek`,
+        radarNote: `Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site: één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina, herkomst en taal — alles wat er van dat adres te weten is.`,
+        radarLoading: `Radar warmt op…`,
+        radarEmpty: `Nog geen bezoeken op de radar.`,
+        radarError: `De radar is buiten bereik.`,
+        radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
+        seen: `{n}× vanaf dit IP, eerst {time}`, first: `eerste bezoek`,
+        via: `via`, direct: `direct`, onDevice: `op`,
+        deviceDesktop: `desktop`, deviceMobile: `mobiel`, deviceBot: `bot`,
+        aboardKicker: `Bemanning`, aboardTitle: `Who is on board`,
+        guideName: `Natuurgids`, guideRole: `van de wildpluk-site`,
+        captainName: `De kapitein`, captainRole: `deze rede`,
+        offBoard: `van boord`,
+        aboardNote: `Aan een rooster en agenda wordt gewerkt.`,
+        talkKicker: `Aan de praat`, talkTitle: `Praatjes`,
+        talkBody: `Een e-mailadres en een oude laptop — meer heb je niet nodig om deze landingspagina meteen te laten maken, helemaal gratis. Je praat wat je wilt en het wordt voor je gemaakt. Er zitten wel wat haken en ogen aan. Consultje? De eerste is gratis ;) Daarna gaan we automatiseren.`,
+        foot1: `Gebouwd in de <strong>Cave</strong>: een vochtige grot achter de dijk waar de server op walvisolie draait en de boekhouding in <span class='trade'>traderotes</span> gaat. Alle prijzen zijn inclusief piratenkorting en exclusief papegaaienbelasting. Twijfel je of iets eetbaar is? vraag het de krab — die liegt, maar weet het wél.`,
+        foot2: `© 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>`,
+        thanks: `Dank aan`,
+        sponsors: `Zoek nog sponsors voor de boot.`,
+        logbookTitle: `Logboek`, logbookLoading: `git log ophalen…`,
+        logbookError: `logboek even niet bereikbaar`
+      },
+      en: {
+        pageTitle: `Eeps Piracy Site`,
+        kicker: `Den Helder · Marsdiep · at anchor since 1667`,
+        launchLabel: `Launch`,
+        lede: `A flag, a ship and a tide chart. From this roadstead you enter the real work: the <strong>wildpluk site</strong> along the Wadden coast — where you see what can be found right now, where, and whether the water is with you or against you.`,
+        cta: `Enter the Wildpluk site`,
+        fineprint: `No login, no treasure map needed — the tide is already at your back.`,
+        card1: `Loot`, card1s: `shells, seaweed and one opinionated crab`,
+        card2: `Fleet`, card2s: `1 ship (borrowed) · 0 cannons (tax)`,
+        card3: `Tide`, card3s: `fresh every 10 minutes, straight from Rijkswaterstaat`,
+        musingsTitle: `Just a bit of rowing`,
+        tabKokkels: `Shells`, tabGids: `The guide`, tabVlag: `The flag`,
+        tabBulgaars: `Bulgarian`, tabZorgen: `Worries`,
+        hKokkels: `Cockles in the wet<br>the glass scans along the dike<br>the tide says: not yet`,
+        hGids: `Bot talks in circles<br>venv, github, no clue<br>the guide just nods`,
+        hVlag: `My flag still flies high<br>soon I strike it one last time<br>paid sailing, yes`,
+        hBulgaars: `Gin gleams in the glass<br>an avatar teaches me<br>Den Helder joins in`,
+        hZorgen: `Radar lost, gin gone<br>FreeBuff stays free, I hope<br>China holds on still`,
+        radarKicker: `Radar`, radarTitle: `Visits`,
+        radarNote: `What the radar picked up lately on this roadstead and on the wildpluk site: one row per IP, with time, browser, operating system, device, page, referrer and language — everything known about that address.`,
+        radarLoading: `Warming up the radar…`,
+        radarEmpty: `No visits on the radar yet.`,
+        radarError: `The radar is out of range.`,
+        radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
+        seen: `{n}× from this IP, first {time}`, first: `first visit`,
+        via: `via`, direct: `direct`, onDevice: `on`,
+        deviceDesktop: `desktop`, deviceMobile: `mobile`, deviceBot: `bot`,
+        aboardKicker: `Crew`, aboardTitle: `Who is on board`,
+        guideName: `Nature guide`, guideRole: `of the wildpluk site`,
+        captainName: `The captain`, captainRole: `this roadstead`,
+        offBoard: `off board`,
+        aboardNote: `A roster and calendar are being worked on.`,
+        talkKicker: `Let's talk`, talkTitle: `Talk`,
+        talkBody: `An email address and an old laptop — that is all you need to have this landing page made for you right away, completely free. You talk, and it gets built for you. There are a few catches, mind you. A consult? The first one is free ;) Then we start automating.`,
+        foot1: `Built in the <strong>Cave</strong>: a damp cave behind the dike where the server runs on whale oil and the bookkeeping is done in <span class='trade'>traderotes</span>. All prices include the pirate discount and exclude parrot tax. Not sure something is edible? Ask the crab — it lies, but it knows.`,
+        foot2: `© 2026 Eep · tide: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · background: Omarchy theme “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logbook</a>`,
+        thanks: `Thanks to`,
+        sponsors: `Still looking for sponsors for the boat.`,
+        logbookTitle: `Logbook`, logbookLoading: `fetching git log…`,
+        logbookError: `logbook unavailable right now`
+      },
+      de: {
+        pageTitle: `Eeps Piraten-Site`,
+        kicker: `Den Helder · Marsdiep · vor Anker seit 1667`,
+        launchLabel: `Stapellauf`,
+        lede: `Eine Flagge, ein Schiff und eine Gezeitenkarte. Von dieser Reede aus enterst du die eigentliche Arbeit: die <strong>Wildpluk-Seite</strong> an der Wattenküste — wo du siehst, was jetzt zu finden ist, wo, und ob das Wasser mitspielt oder dagegen.`,
+        cta: `Enter die Wildpluk-Seite`,
+        fineprint: `Kein Login, keine Schatzkarte nötig — die Gezeit steht schon hinter dir.`,
+        card1: `Beute`, card1s: `Muscheln, Seetang und eine Krabbe mit Meinung`,
+        card2: `Flotte`, card2s: `1 Schiff (geliehen) · 0 Kanonen (Steuer)`,
+        card3: `Gezeit`, card3s: `alle 10 Minuten frisch, direkt von Rijkswaterstaat`,
+        musingsTitle: `Mal ein Stück rudern`,
+        tabKokkels: `Muscheln`, tabGids: `Der Guide`, tabVlag: `Die Flagge`,
+        tabBulgaars: `Bulgarisch`, tabZorgen: `Sorgen`,
+        hKokkels: `Muscheln im Nassen<br>das Glas sucht längs des Deichs<br>die Flut sagt: noch nicht`,
+        hGids: `Bot redet im Kreis<br>venv, github, keine Ahnung<br>der Guide nickt nur`,
+        hVlag: `Meine Flagge weht hoch<br>bald streiche ich sie zum letzten Mal<br>bezahlt segeln, ja`,
+        hBulgaars: `Gin glänzt im Glas<br>ein Avatar lehrt mich Bulgarisch<br>Den Helder lernt mit`,
+        hZorgen: `Radar weg, Gin leer<br>FreeBuff bleibt gratis, hoffentlich<br>China hält noch durch`,
+        radarKicker: `Radar`, radarTitle: `Besuche`,
+        radarNote: `Was das Radar zuletzt auf dieser Reede und auf der Wildpluk-Seite aufgefangen hat: eine Zeile pro IP, mit Zeit, Browser, Betriebssystem, Gerät, Seite, Herkunft und Sprache — alles, was über diese Adresse bekannt ist.`,
+        radarLoading: `Radar wärmt auf…`,
+        radarEmpty: `Noch keine Besuche auf dem Radar.`,
+        radarError: `Das Radar ist außer Reichweite.`,
+        radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
+        seen: `{n}× von dieser IP, zuerst {time}`, first: `erster Besuch`,
+        via: `über`, direct: `direkt`, onDevice: `auf`,
+        deviceDesktop: `Desktop`, deviceMobile: `mobil`, deviceBot: `Bot`,
+        aboardKicker: `Besatzung`, aboardTitle: `Wer ist an Bord`,
+        guideName: `Naturführer`, guideRole: `von der Wildpluk-Seite`,
+        captainName: `Der Kapitän`, captainRole: `diese Reede`,
+        offBoard: `von Bord`,
+        aboardNote: `An einem Dienstplan und Kalender wird gearbeitet.`,
+        talkKicker: `Im Gespräch`, talkTitle: `Geplauder`,
+        talkBody: `Eine E-Mail-Adresse und ein alter Laptop — mehr brauchst du nicht, um diese Landingpage sofort machen zu lassen, völlig gratis. Du redest, und es wird für dich gebaut. Ein paar Haken und Ösen hat das allerdings. Ein Beratungsgespräch? Das erste ist gratis ;) Danach automatisieren wir.`,
+        foot1: `Gebaut in der <strong>Cave</strong>: eine feuchte Grotte hinter dem Deich, wo der Server mit Walöl läuft und die Buchhaltung in <span class='trade'>traderotes</span> geht. Alle Preise inklusive Piratenrabatt und exklusive Papageiensteuer. Unsicher, ob etwas essbar ist? Frag die Krabbe — sie lügt, aber sie weiß es.`,
+        foot2: `© 2026 Eep · Gezeit: Rijkswaterstaat Waterinfo (Station Den Helder, Marsdiep) · Hintergrund: Omarchy-Theme „ship at sea“ · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">Logbuch</a>`,
+        thanks: `Dank an`,
+        sponsors: `Noch Sponsoren für das Boot gesucht.`,
+        logbookTitle: `Logbuch`, logbookLoading: `git log wird geladen…`,
+        logbookError: `Logbuch gerade nicht erreichbar`
+      },
+      pl: {
+        pageTitle: `Eeps Piracki Port`,
+        kicker: `Den Helder · Marsdiep · na kotwicy od 1667`,
+        launchLabel: `Wodowanie`,
+        lede: `Flaga, statek i mapa pływów. Z tej redy wchodzisz do prawdziwej roboty: <strong>strona wildpluk</strong> wzdłuż wybrzeża Wadden — gdzie zobaczysz, co można teraz znaleźć, gdzie i czy woda jest z tobą, czy przeciw tobie.`,
+        cta: `Wejdź na stronę Wildpluk`,
+        fineprint: `Bez logowania i bez mapy skarbów — pływ już masz za sobą.`,
+        card1: `Łup`, card1s: `muszle, wodorosty i jeden krab z opinią`,
+        card2: `Flota`, card2s: `1 statek (pożyczony) · 0 dział (podatek)`,
+        card3: `Pływ`, card3s: `świeży co 10 minut, prosto z Rijkswaterstaat`,
+        musingsTitle: `Trochę wiosłowania`,
+        tabKokkels: `Muszle`, tabGids: `Przewodnik`, tabVlag: `Flaga`,
+        tabBulgaars: `Bułgarski`, tabZorgen: `Troski`,
+        hKokkels: `Muszle w mokrym<br>lornetka bada wał<br>pływ mówi: jeszcze nie`,
+        hGids: `Bot mówi w kółko<br>venv, github, ani słowa<br>przewodnik kiwa`,
+        hVlag: `Flaga jeszcze w górze<br>wkrótce opuszczę ją na zawsze<br>pływanie za opłatą, tak`,
+        hBulgaars: `Gin błyszczy w szkle<br>awatar uczy mnie bułgarskiego<br>Den Helder wtóruje`,
+        hZorgen: `Radar zginął, gin znikł<br>FreeBuff wciąż darmowy, mam nadzieję<br>Chiny trwają`,
+        radarKicker: `Radar`, radarTitle: `Odwiedziny`,
+        radarNote: `Co radar ostatnio złapał na tej redzie i na stronie wildpluk: jeden wiersz na IP, z czasem, przeglądarką, systemem, urządzeniem, stroną, źródłem i językiem — wszystko, co wiadomo o tym adresie.`,
+        radarLoading: `Radar się rozgrzewa…`,
+        radarEmpty: `Na radarze nie ma jeszcze odwiedzin.`,
+        radarError: `Radar jest poza zasięgiem.`,
+        radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
+        seen: `{n}× z tego IP, pierwszy raz {time}`, first: `pierwsza wizyta`,
+        via: `z`, direct: `bezpośrednio`, onDevice: `na`,
+        deviceDesktop: `komputer`, deviceMobile: `telefon`, deviceBot: `bot`,
+        aboardKicker: `Załoga`, aboardTitle: `Kto jest na pokładzie`,
+        guideName: `Przewodnik przyrody`, guideRole: `ze strony wildpluk`,
+        captainName: `Kapitan`, captainRole: `ta reda`,
+        offBoard: `poza pokładem`,
+        aboardNote: `Trwają prace nad grafikiem i kalendarzem.`,
+        talkKicker: `Rozmowa`, talkTitle: `Pogaduchy`,
+        talkBody: `Adres e-mail i stary laptop — nic więcej nie trzeba, żeby ta strona powstała od razu, całkiem za darmo. Mówisz, co chcesz, i to powstaje. Są jednak pewne haczyki. Konsultacja? Pierwsza jest gratis ;) Potem zaczynamy automatyzację.`,
+        foot1: `Zbudowane w <strong>Cave</strong>: wilgotna grota za wałem, gdzie serwer chodzi na oleju wielorybim, a księgowość prowadzi się w <span class='trade'>traderotes</span>. Wszystkie ceny z pirackim rabatem i bez podatku od papug. Nie wiesz, czy coś jest jadalne? Zapytaj kraba — kłamie, ale wie.`,
+        foot2: `© 2026 Eep · pływ: Rijkswaterstaat Waterinfo (stacja Den Helder, Marsdiep) · tło: motyw Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">dziennik</a>`,
+        thanks: `Dziękujemy`,
+        sponsors: `Nadal szukamy sponsorów dla łodzi.`,
+        logbookTitle: `Dziennik`, logbookLoading: `pobieram git log…`,
+        logbookError: `dziennik chwilowo niedostępny`
+      },
+      bg: {
+        pageTitle: `Eeps пиратски сайт`,
+        kicker: `Ден Хелдер · Марсдип · на котва от 1667`,
+        launchLabel: `Спускане на вода`,
+        lede: `Флаг, кораб и карта на прилива. От този рейд влизаш в истинската работа: <strong>сайтът wildpluk</strong> по брега на Ваден — където виждаш какво има сега, къде и дали водата е с теб, или срещу теб.`,
+        cta: `Влез в Wildpluk`,
+        fineprint: `Без вход и без карта на съкровища — приливът вече е зад теб.`,
+        card1: `Плячка`, card1s: `миди, водорасли и един рак с мнение`,
+        card2: `Флота`, card2s: `1 кораб (зает назаем) · 0 оръдия (данък)`,
+        card3: `Прилив`, card3s: `пресен на всеки 10 минути, направо от Rijkswaterstaat`,
+        musingsTitle: `Малко гребане`,
+        tabKokkels: `Миди`, tabGids: `Гидът`, tabVlag: `Флагът`,
+        tabBulgaars: `Български`, tabZorgen: `Тревоги`,
+        hKokkels: `Миди в мокрото<br>далекогледът търси<br>приливът: не още`,
+        hGids: `Бот говори в кръг<br>venv, github, никаква идея<br>гидът само кима`,
+        hVlag: `Флагът ми още вее<br>скоро ще го сваля за последно<br>платено плаване, да`,
+        hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
+        hZorgen: `Радарът го няма, джинът свърши<br>FreeBuff още е безплатен, надявам се<br>Китай издържа`,
+        radarKicker: `Радар`, radarTitle: `Посещения`,
+        radarNote: `Какво улови радарът напоследък на този рейд и на сайта wildpluk: по един ред за IP, с време, браузър, система, устройство, страница, източник и език — всичко, което се знае за този адрес.`,
+        radarLoading: `Радарът загрява…`,
+        radarEmpty: `Още няма посещения на радара.`,
+        radarError: `Радарът е извън обхват.`,
+        radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
+        seen: `{n}× от това IP, първо {time}`, first: `първо посещение`,
+        via: `чрез`, direct: `директно`, onDevice: `на`,
+        deviceDesktop: `компютър`, deviceMobile: `мобилен`, deviceBot: `бот`,
+        aboardKicker: `Екипаж`, aboardTitle: `Кой е на борда`,
+        guideName: `Природен гид`, guideRole: `от сайта wildpluk`,
+        captainName: `Капитанът`, captainRole: `този рейд`,
+        offBoard: `извън борда`,
+        aboardNote: `Работи се по график и календар.`,
+        talkKicker: `На приказка`, talkTitle: `Приказки`,
+        talkBody: `Имейл адрес и стар лаптоп — нищо друго не ти трябва, за да ти направят тази страница веднага, напълно безплатно. Говориш каквото искаш и то се прави. Има си обаче някои уловки. Консултация? Първата е безплатна ;) После автоматизираме.`,
+        foot1: `Построено в <strong>Cave</strong>: влажна пещера зад дигата, където сървърът работи на китова мас и счетоводството се води в <span class='trade'>traderotes</span>. Всички цени са с пиратска отстъпка и без данък за папагали. Не си сигурен дали нещо е за ядене? Питай рака — лъже, но знае.`,
+        foot2: `© 2026 Eep · прилив: Rijkswaterstaat Waterinfo (станция Ден Хелдер, Марсдип) · фон: тема Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">дневник</a>`,
+        thanks: `Благодарности на`,
+        sponsors: `Още търсим спонсори за лодката.`,
+        logbookTitle: `Дневник`, logbookLoading: `зареждане на git log…`,
+        logbookError: `дневникът е недостъпен в момента`
+      },
+      zh: {
+        pageTitle: `Eeps 海盗站`,
+        kicker: `登海尔德 · 马斯迪普 · 自 1667 年起抛锚`,
+        launchLabel: `下水`,
+        lede: `一面旗、一艘船、一张潮汐图。从这个锚地进入真正的工作：<strong>wildpluk 网站</strong> 沿瓦登海岸——看看此刻有什么、在哪里，以及潮水是帮你还是挡你。`,
+        cta: `进入 Wildpluk 网站`,
+        fineprint: `无需登录，也不需要藏宝图——潮水已经在你身后。`,
+        card1: `收获`, card1s: `贝壳、海藻，还有一只有主见的螃蟹`,
+        card2: `船队`, card2s: `1 艘船（借的）· 0 门炮（交税）`,
+        card3: `潮汐`, card3s: `每 10 分钟更新，直接来自 Rijkswaterstaat`,
+        musingsTitle: `划一会儿桨`,
+        tabKokkels: `贝壳`, tabGids: `向导`, tabVlag: `旗帜`,
+        tabBulgaars: `保加利亚语`, tabZorgen: `担忧`,
+        hKokkels: `湿沙里的蛤蜊<br>望远镜扫过堤岸<br>潮水说：还不到`,
+        hGids: `机器人绕圈讲<br>venv、github，一头雾水<br>向导只是点头`,
+        hVlag: `我的旗还高挂<br>不久要最后一次降下<br>付费航行，是的`,
+        hBulgaars: `琴酒在杯中闪<br>头像教我保加利亚语<br>登海尔德也跟着学`,
+        hZorgen: `雷达丢了，酒也空了<br>FreeBuff 还免费，但愿如此<br>中国仍在坚持`,
+        radarKicker: `雷达`, radarTitle: `访客`,
+        radarNote: `雷达最近在这片锚地和 wildpluk 网站上捕捉到的：每个 IP 一行，含时间、浏览器、操作系统、设备、页面、来源和语言——关于该地址所知道的一切。`,
+        radarLoading: `雷达正在预热…`,
+        radarEmpty: `雷达上还没有访客。`,
+        radarError: `雷达超出范围。`,
+        radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
+        seen: `该 IP 第 {n} 次，首次 {time}`, first: `首次访问`,
+        via: `来自`, direct: `直接访问`, onDevice: `运行于`,
+        deviceDesktop: `桌面`, deviceMobile: `手机`, deviceBot: `机器人`,
+        aboardKicker: `船员`, aboardTitle: `谁在船上`,
+        guideName: `自然向导`, guideRole: `来自 wildpluk 网站`,
+        captainName: `船长`, captainRole: `这片锚地`,
+        offBoard: `已离船`,
+        aboardNote: `正在制定值班表和日程。`,
+        talkKicker: `聊一聊`, talkTitle: `闲聊`,
+        talkBody: `一个邮箱地址和一台旧笔记本——就这些，就能立刻把这张落地页做出来，完全免费。你说想要什么，它就被做出来。当然，还是有些坑。咨询？第一次免费 ;) 之后就自动化了。`,
+        foot1: `建于 <strong>Cave</strong>：堤后一个潮湿的洞穴，服务器靠鲸油运转，账目用 <span class='trade'>traderotes</span> 结算。所有价格含海盗折扣，不含鹦鹉税。不确定能不能吃？问那只螃蟹——它撒谎，但它知道。`,
+        foot2: `© 2026 Eep · 潮汐：Rijkswaterstaat Waterinfo（登海尔德站，马斯迪普）· 背景：Omarchy 主题“ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">航海日志</a>`,
+        thanks: `感谢`,
+        sponsors: `仍在为这艘船寻找赞助商。`,
+        logbookTitle: `日志`, logbookLoading: `正在获取 git log…`,
+        logbookError: `日志暂时无法读取`
+      }
+    };
+
+    var current = 'zh';
     var API = location.hostname === 'evtriest.github.io'
       ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
       : '';
-    var list = document.getElementById('visits');
-    var meta = document.getElementById('visits-meta');
-    var MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-                  'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
     var PAGE = location.hostname === 'evtriest.github.io'
       ? 'landing (github)'
       : location.pathname;
+    var list = document.getElementById('visits');
+    var meta = document.getElementById('visits-meta');
+    var visitData = null;
+    var firstVisit = null;
+    var logbook = document.getElementById('gitlog');
+    var logItems = [];
+    var logState = 'loading';
+    var DEVICES = { desktop: 'deviceDesktop', mobiel: 'deviceMobile', bot: 'deviceBot' };
+
+    function t(key, vars) {
+      var pack = I18N[current] || I18N.nl;
+      var text = pack[key] != null ? pack[key] : I18N.nl[key];
+      if (text == null) return key;
+      if (vars) {
+        text = String(text).replace(/\{(\w+)\}/g, function (match, name) {
+          return vars[name] != null ? vars[name] : match;
+        });
+      }
+      return text;
+    }
 
     function esc(value) {
       return String(value == null ? '' : value).replace(/[&<>"]/g, function (c) {
@@ -298,9 +664,125 @@
     function when(iso) {
       var d = new Date(iso);
       if (isNaN(d)) return iso || '?';
-      return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' +
-        ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      try {
+        return new Intl.DateTimeFormat(current, {
+          day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+        }).format(d);
+      } catch (err) {
+        return d.toISOString().slice(0, 16).replace('T', ' ');
+      }
     }
+
+    function stamp(iso) {
+      var d = new Date(iso);
+      if (isNaN(d)) return '…';
+      try {
+        return new Intl.DateTimeFormat(current, {
+          day: 'numeric', month: 'long', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        }).format(d);
+      } catch (err) {
+        return d.toISOString().slice(0, 16).replace('T', ' ');
+      }
+    }
+
+    function renderLaunch() {
+      var el = document.getElementById('launch-date');
+      if (!el) return;
+      if (!firstVisit) { el.textContent = '…'; el.removeAttribute('datetime'); return; }
+      el.textContent = stamp(firstVisit);
+      el.setAttribute('datetime', firstVisit);
+    }
+
+    function renderLogbook() {
+      if (!logbook) return;
+      if (logState === 'loading') {
+        logbook.innerHTML = '<li class="gitlog-note">' + esc(t('logbookLoading')) + '</li>';
+        return;
+      }
+      if (logState === 'error') {
+        logbook.innerHTML = '<li class="gitlog-note">' + esc(t('logbookError')) + '</li>';
+        return;
+      }
+      logbook.innerHTML = logItems.map(function (entry) {
+        var sha = String(entry.sha || '').slice(0, 7);
+        var commit = entry.commit || {};
+        var message = String(commit.message || '').split('\n')[0];
+        var date = commit.author && commit.author.date ? commit.author.date : '';
+        return '<li><code>' + esc(sha) + '</code><span>' + esc(message) +
+          (date ? '<small>' + esc(when(date)) + '</small>' : '') + '</span></li>';
+      }).join('');
+    }
+
+    function deviceLabel(value) {
+      var key = DEVICES[value];
+      return key ? t(key) : value;
+    }
+
+    function renderVisits() {
+      if (!list) return;
+      if (!visitData) {
+        list.innerHTML = '<li class="visit visit-note">' + esc(t('radarLoading')) + '</li>';
+        return;
+      }
+      var items = visitData.items || [];
+      if (!items.length) {
+        list.innerHTML = '<li class="visit visit-note">' + esc(t('radarEmpty')) + '</li>';
+        if (meta) meta.textContent = '';
+        return;
+      }
+      list.innerHTML = items.map(function (v) {
+        var seen = v.visits_from_ip > 1
+          ? t('seen', { n: v.visits_from_ip, time: when(v.first_seen_ip) })
+          : t('first');
+        return '<li class="visit">' +
+          '<span class="visit-time">' + esc(when(v.time)) + '</span>' +
+          '<span><b>' + esc(v.ip) + '</b> · ' + esc(v.browser) + ' ' +
+          esc(t('onDevice')) + ' ' + esc(v.os) + ' (' + esc(deviceLabel(v.device)) + ')' +
+          '<small>' + esc(v.page) + ' · ' +
+          (v.referrer ? esc(t('via')) + ' ' + esc(v.referrer) : esc(t('direct'))) + ' · ' +
+          esc(v.lang || '?') + ' · ' + esc(seen) + '</small></span></li>';
+      }).join('');
+      if (meta) {
+        meta.textContent = t('radarMeta', {
+          count: visitData.count, unique: visitData.unique, time: visitData.fetched
+        });
+      }
+    }
+
+    function applyLang(lang) {
+      current = I18N[lang] ? lang : 'nl';
+      document.documentElement.lang = current;
+      document.title = t('pageTitle');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-html]'), function (el) {
+        el.innerHTML = t(el.getAttribute('data-i18n-html'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.lang-btn'), function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === current));
+      });
+      renderVisits();
+      renderLaunch();
+      renderLogbook();
+    }
+
+    // taalkeuze
+    Array.prototype.forEach.call(document.querySelectorAll('.lang-btn'), function (btn) {
+      btn.addEventListener('click', function () { applyLang(btn.getAttribute('data-lang')); });
+    });
+
+    // haiku-kiezer
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.haiku-tab'));
+    var pieces = Array.prototype.slice.call(document.querySelectorAll('.haiku-piece'));
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var target = tab.getAttribute('aria-controls');
+        tabs.forEach(function (item) { item.setAttribute('aria-pressed', String(item === tab)); });
+        pieces.forEach(function (piece) { piece.hidden = piece.id !== target; });
+      });
+    });
 
     // eigen bezoek melden (de site zelf logt zijn eigen pagina's al)
     if (list) {
@@ -317,36 +799,40 @@
           })
         });
       } catch (err) { /* radar is bijzaak */ }
+
+      fetch(API + '/api/bezoek?limit=8', { mode: 'cors' })
+        .then(function (resp) { return resp.json(); })
+        .then(function (data) {
+          visitData = data;
+          firstVisit = data && data.tewaterlating ? data.tewaterlating : null;
+          renderVisits();
+          renderLaunch();
+        })
+        .catch(function () {
+          visitData = null;
+          list.innerHTML = '<li class="visit visit-note">' + esc(t('radarError')) + '</li>';
+        });
     }
 
-    if (!list) return;
-    fetch(API + '/api/bezoek?limit=8', { mode: 'cors' })
-      .then(function (resp) { return resp.json(); })
-      .then(function (data) {
-        if (!data || !Array.isArray(data.items) || !data.items.length) {
-          list.innerHTML = '<li class="visit visit-note">Nog geen bezoeken op de radar.</li>';
-          return;
-        }
-        list.innerHTML = data.items.map(function (v) {
-          var seen = v.visits_from_ip > 1
-            ? v.visits_from_ip + '× vanaf dit IP, eerst ' + when(v.first_seen_ip)
-            : 'eerste bezoek';
-          return '<li class="visit">' +
-            '<span class="visit-time">' + esc(when(v.time)) + '</span>' +
-            '<span><b>' + esc(v.ip) + '</b> · ' + esc(v.browser) + ' op ' +
-            esc(v.os) + ' (' + esc(v.device) + ')' +
-            '<small>' + esc(v.page) + ' · ' +
-            (v.referrer ? 'via ' + esc(v.referrer) : 'direct') + ' · ' +
-            esc(v.lang || '?') + ' · ' + esc(seen) + '</small></span></li>';
-        }).join('');
-        if (meta) {
-          meta.textContent = data.count + ' bezoeken van ' + data.unique +
-            ' unieke IP\u2019s · bijgewerkt ' + data.fetched;
-        }
-      })
-      .catch(function () {
-        list.innerHTML = '<li class="visit visit-note">De radar is buiten bereik.</li>';
-      });
+    // git-log in de footer (publieke GitHub-API)
+    if (logbook) {
+      fetch('https://api.github.com/repos/evtriest/evtriest.github.io/commits?per_page=5')
+        .then(function (resp) {
+          if (!resp.ok) throw new Error('github');
+          return resp.json();
+        })
+        .then(function (data) {
+          logItems = Array.isArray(data) ? data : [];
+          logState = logItems.length ? 'ok' : 'error';
+          renderLogbook();
+        })
+        .catch(function () {
+          logState = 'error';
+          renderLogbook();
+        });
+    }
+
+    applyLang('zh');
   })();
 </script>
 </body>
