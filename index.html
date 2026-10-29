@@ -107,6 +107,26 @@
   }
   .card b{display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:.25rem}
   .card span{font-size:.86rem;color:#e7e2d4;line-height:1.4}
+  .radar{
+    position:relative;z-index:1;padding:2.2rem 20px 2.8rem;
+    border-top:1px solid rgba(232,220,192,.14);
+    background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.92));
+  }
+  .radar-inner{max-width:880px;margin:0 auto}
+  .radar .kicker{margin:0 0 .4rem}
+  .radar h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+  .radar-note{margin:.55rem 0 1.25rem;max-width:46rem;font-size:.8rem;line-height:1.65;color:#c9c3b4}
+  .visits{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .visit{
+    display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:.2rem .9rem;
+    padding:.72rem .95rem;border-radius:10px;background:rgba(10,18,26,.6);
+    border:1px solid rgba(232,220,192,.14);font-size:.82rem;line-height:1.45;color:#e7e2d4;
+  }
+  .visit-time{color:var(--brass);font-size:.72rem;letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .visit b{font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .visit small{display:block;margin-top:.15rem;font-size:.72rem;color:#a9a291}
+  .visit-note{grid-template-columns:1fr;color:#a9a291;font-size:.78rem}
+  .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
   footer{
     position:relative;z-index:1;padding:22px 20px 26px;text-align:center;
     border-top:1px solid rgba(232,220,192,.14);
@@ -116,6 +136,13 @@
   footer p + p{margin-top:.7rem;font-size:.74rem;color:#a9a291;letter-spacing:.02em}
   footer .trade{color:var(--brass);font-weight:700}
   footer a{color:var(--sand)}
+  .thanks{
+    display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
+    gap:.4rem 1.05rem;margin:1.15rem auto 0;max-width:48rem;font-size:.78rem;color:#e2dccd;
+  }
+  .thanks .sym{font-size:1rem;line-height:1;margin-right:.28rem;vertical-align:-1px}
+  .thanks small{font-size:.66rem;color:#a9a291;margin-left:.2rem;letter-spacing:.02em}
+  .sponsors{margin:.75rem 0 0;font-size:.66rem;color:#8f8a7c;letter-spacing:.05em}
   @media(max-width:640px){
     .intro-row{grid-template-columns:1fr;gap:1.2rem;text-align:center}
     .intro-row .lede{margin:0 auto}
@@ -125,6 +152,7 @@
     body{background-attachment:scroll}
     .flag{width:48px;height:48px}
     .cards{margin-top:1.8rem}
+    .visit{grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){.cta{transition:none}}
 </style>
@@ -133,7 +161,7 @@
 
 <main>
   <section class="hero">
-    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Piratenvlag">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
     <p class="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
     <div class="intro-row">
@@ -175,9 +203,9 @@
           </div>
           <div class="haiku-piece" id="haiku-bulgaars" hidden>
             <p>
-              Gin glimt in het glas<br>
-              avatar leert mij Bulgaars<br>
-              Den Helder leert mee
+              Джин блести в чаша<br>
+              аватар ме учи днес<br>
+              Хелдер учи с мен
             </p>
           </div>
           <div class="haiku-piece" id="haiku-zorgen" hidden>
@@ -202,6 +230,22 @@
   </section>
 </main>
 
+<section class="radar" aria-labelledby="radar-bezoek">
+  <div class="radar-inner">
+    <p class="kicker">Radar</p>
+    <h2 id="radar-bezoek">Bezoek</h2>
+    <p class="radar-note">
+      Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site:
+      tijd, IP, browser, besturingssysteem, apparaat, pagina, herkomst en taal —
+      alles wat er van een bezoek te weten is.
+    </p>
+    <ul class="visits" id="visits">
+      <li class="visit visit-note">Radar warmt op…</li>
+    </ul>
+    <p class="radar-meta" id="visits-meta"></p>
+  </div>
+</section>
+
 <footer>
   <p>
     Gebouwd in de <strong>Cave</strong>: een vochtige grot achter de dijk waar de server op
@@ -213,6 +257,10 @@
     © 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) ·
     achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>
   </p>
+  <p class="thanks">
+    Dank aan<span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
+  </p>
+  <p class="sponsors">Zoek nog sponsors voor de boot.</p>
 </footer>
 
 <script>
@@ -226,6 +274,79 @@
         pieces.forEach(function (piece) { piece.hidden = piece.id !== target; });
       });
     });
+  })();
+</script>
+<script>
+  (function () {
+    var API = location.hostname === 'evtriest.github.io'
+      ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
+      : '';
+    var list = document.getElementById('visits');
+    var meta = document.getElementById('visits-meta');
+    var MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+                  'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+    var PAGE = location.hostname === 'evtriest.github.io'
+      ? 'landing (github)'
+      : location.pathname;
+
+    function esc(value) {
+      return String(value == null ? '' : value).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function when(iso) {
+      var d = new Date(iso);
+      if (isNaN(d)) return iso || '?';
+      return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' +
+        ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+
+    // eigen bezoek melden (de site zelf logt zijn eigen pagina's al)
+    if (list) {
+      try {
+        fetch(API + '/api/bezoek', {
+          method: 'POST',
+          mode: 'cors',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page: PAGE,
+            referrer: document.referrer,
+            lang: navigator.language || ''
+          })
+        });
+      } catch (err) { /* radar is bijzaak */ }
+    }
+
+    if (!list) return;
+    fetch(API + '/api/bezoek?limit=8', { mode: 'cors' })
+      .then(function (resp) { return resp.json(); })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.items) || !data.items.length) {
+          list.innerHTML = '<li class="visit visit-note">Nog geen bezoeken op de radar.</li>';
+          return;
+        }
+        list.innerHTML = data.items.map(function (v) {
+          var seen = v.visits_from_ip > 1
+            ? v.visits_from_ip + '× vanaf dit IP, eerst ' + when(v.first_seen_ip)
+            : 'eerste bezoek';
+          return '<li class="visit">' +
+            '<span class="visit-time">' + esc(when(v.time)) + '</span>' +
+            '<span><b>' + esc(v.ip) + '</b> · ' + esc(v.browser) + ' op ' +
+            esc(v.os) + ' (' + esc(v.device) + ')' +
+            '<small>' + esc(v.page) + ' · ' +
+            (v.referrer ? 'via ' + esc(v.referrer) : 'direct') + ' · ' +
+            esc(v.lang || '?') + ' · ' + esc(seen) + '</small></span></li>';
+        }).join('');
+        if (meta) {
+          meta.textContent = data.count + ' bezoeken van ' + data.unique +
+            ' IP\u2019s · bijgewerkt ' + data.fetched;
+        }
+      })
+      .catch(function () {
+        list.innerHTML = '<li class="visit visit-note">De radar is buiten bereik.</li>';
+      });
   })();
 </script>
 </body>
