@@ -83,8 +83,19 @@
     margin:0 0 .95rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.2em;
     text-transform:uppercase;color:var(--brass);
   }
+  .haiku-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .95rem}
+  .haiku-tab{
+    font:inherit;font-size:.72rem;letter-spacing:.06em;padding:.4em .78em;border-radius:999px;cursor:pointer;
+    border:1px solid rgba(232,220,192,.24);background:rgba(232,220,192,.06);color:#e7e2d4;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .haiku-tab:hover{border-color:rgba(255,200,97,.65);background:rgba(230,162,60,.14)}
+  .haiku-tab[aria-pressed="true"]{border-color:rgba(255,200,97,.75);background:rgba(230,162,60,.22);color:var(--brass-bright)}
+  .haiku-tab:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .haiku{min-height:5.4rem}
   .haiku p{margin:0 0 .85rem;font-family:var(--serif);font-size:clamp(.92rem,2.3vw,1.02rem);line-height:1.55;color:#efece2}
-  .haiku p:last-child{margin-bottom:0;font-style:italic;color:#ddd6c6}
+  .haiku p:last-child{margin-bottom:0}
+  .haiku-piece[hidden]{display:none}
   .cards{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:10px;
     margin:2.4rem auto 0;max-width:640px;
@@ -133,23 +144,49 @@
       </p>
       <section class="musings">
         <h2>Even een stukje roeien</h2>
+        <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
+          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels">Kokkels</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids">De gids</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag">De vlag</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars">Bulgaars</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen">Zorgen</button>
+        </div>
         <div class="haiku">
-          <p>
-            Kokkels in het nat<br>
-            de verrekijker zakt traag<br>
-            het tij zegt: nog niet
-          </p>
-          <p>
-            Laatste keer getij<br>
-            de gids knikt, geen chocola<br>
-            gin stroomt nog wat na
-          </p>
-          <p>
-            Mijn vlag hangt nog hoog<br>
-            straks strijk ik hem voor het laatst<br>
-            betaald varen, ja
-          </p>
-          <p>Een avatar leert me Bulgaars; mijn radar ben ik kwijt.</p>
+          <div class="haiku-piece" id="haiku-kokkels">
+            <p>
+              Kokkels in het nat<br>
+              de kijker zoekt langs de dijk<br>
+              het tij zegt: nog niet
+            </p>
+          </div>
+          <div class="haiku-piece" id="haiku-gids" hidden>
+            <p>
+              Bot praat in het rond<br>
+              venv, github, geen chocola<br>
+              de gids knikt maar wat
+            </p>
+          </div>
+          <div class="haiku-piece" id="haiku-vlag" hidden>
+            <p>
+              Mijn vlag hangt nog hoog<br>
+              straks strijk ik hem voor het laatst<br>
+              betaald varen, ja
+            </p>
+          </div>
+          <div class="haiku-piece" id="haiku-bulgaars" hidden>
+            <p>
+              Gin glimt in het glas<br>
+              avatar leert mij Bulgaars<br>
+              Den Helder leert mee
+            </p>
+          </div>
+          <div class="haiku-piece" id="haiku-zorgen" hidden>
+            <p>
+              Radar kwijt, gin op<br>
+              FreeBuff blijft toch gratis, hoop<br>
+              China houdt nog vol
+            </p>
+          </div>
         </div>
       </section>
     </div>
@@ -178,5 +215,18 @@
   </p>
 </footer>
 
+<script>
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.haiku-tab'));
+    var pieces = Array.prototype.slice.call(document.querySelectorAll('.haiku-piece'));
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var target = tab.getAttribute('aria-controls');
+        tabs.forEach(function (t) { t.setAttribute('aria-pressed', String(t === tab)); });
+        pieces.forEach(function (piece) { piece.hidden = piece.id !== target; });
+      });
+    });
+  })();
+</script>
 </body>
 </html>
