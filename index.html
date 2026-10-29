@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eeps Piracy Site</title>
+<meta name="description" content="Eeps Piracy Site — het voorportaal naar de wildpluk-site langs de Waddenkust, met het getij van Den Helder op de achtergrond.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="icon" type="image/svg+xml" href="pirate-flag.svg">
+<style>
+  :root{
+    --ink:#f4f1e8;
+    --sand:#e8dcc0;
+    --brass:#e6a23c;
+    --brass-bright:#ffc861;
+    --sea:#081018;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:var(--sans);
+    background:#081018 url("tide-bg.jpg") center/cover no-repeat fixed;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  /* sluier zodat de tekst leesbaar blijft boven de getijdenkaart */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.12) 0%,rgba(4,10,16,.42) 55%,rgba(4,10,16,.80) 100%),
+      linear-gradient(to bottom,rgba(4,10,16,.42),rgba(4,10,16,.06) 40%,rgba(4,10,16,.76));
+    z-index:0;
+    pointer-events:none;
+  }
+  main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(9vh,64px) 20px 32px}
+  .hero{text-align:center;max-width:760px;width:100%;min-width:0}
+  .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
+  .kicker{
+    margin:0 0 14px;font-family:var(--sans);font-size:.72rem;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--sand);opacity:.82;
+  }
+  h1{
+    margin:0;font-family:var(--serif);font-weight:700;
+    font-size:clamp(2.35rem,7.4vw,4.6rem);line-height:1.02;letter-spacing:.01em;
+    text-shadow:0 2px 4px rgba(0,0,0,.7),0 10px 40px rgba(0,0,0,.85);
+  }
+  h1 .the{display:block;font-size:.32em;letter-spacing:.30em;text-transform:uppercase;opacity:.78;margin-bottom:.55em;font-family:var(--sans);font-weight:600;text-indent:.30em}
+  .lede{
+    margin:1.15rem auto 0;max-width:34rem;font-size:clamp(.95rem,2.4vw,1.1rem);
+    line-height:1.66;color:#efece2;text-shadow:0 1px 3px rgba(0,0,0,.9),0 6px 26px rgba(0,0,0,.75);
+  }
+  .cta{
+    display:inline-flex;align-items:center;gap:.6em;margin-top:2rem;
+    padding:.92em 1.7em;border-radius:999px;border:1px solid rgba(255,200,97,.55);
+    background:linear-gradient(180deg,rgba(230,162,60,.96),rgba(186,116,22,.96));
+    color:#1a1206;text-decoration:none;font-weight:800;font-size:1rem;letter-spacing:.02em;
+    box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45);
+    transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+  }
+  .cta:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 16px 38px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5)}
+  .cta:active{transform:translateY(0)}
+  .cta:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px}
+  .fineprint{margin:.85rem 0 0;font-size:.78rem;color:#c9c3b4;opacity:.72}
+  .cards{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:10px;
+    margin:2.4rem auto 0;max-width:640px;
+  }
+  .card{
+    padding:.85rem 1rem;border-radius:12px;text-align:left;
+    background:rgba(10,18,26,.62);border:1px solid rgba(232,220,192,.16);
+    backdrop-filter:blur(4px);
+  }
+  .card b{display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:.25rem}
+  .card span{font-size:.86rem;color:#e7e2d4;line-height:1.4}
+  footer{
+    position:relative;z-index:1;padding:22px 20px 26px;text-align:center;
+    border-top:1px solid rgba(232,220,192,.14);
+    background:linear-gradient(to bottom,rgba(4,10,16,.55),rgba(4,10,16,.92));
+  }
+  footer p{margin:0 auto;max-width:44rem;font-size:.86rem;line-height:1.7;color:#ddd6c6}
+  footer p + p{margin-top:.7rem;font-size:.74rem;color:#a9a291;letter-spacing:.02em}
+  footer .trade{color:var(--brass);font-weight:700}
+  footer a{color:var(--sand)}
+  @media(max-width:520px){
+    body{background-attachment:scroll}
+    .flag{width:48px;height:48px}
+    .cards{margin-top:1.8rem}
+  }
+  @media(prefers-reduced-motion:reduce){.cta{transition:none}}
+</style>
+</head>
+<body>
+
+<main>
+  <section class="hero">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Piratenvlag">
+    <p class="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
+    <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
+    <p class="lede">
+      Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
+      de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
+      vinden is, waar, en of het water mee- of tegenzit.
+    </p>
+    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/">⚓ Enter de Wildpluk-site</a>
+    <p class="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
+
+    <div class="cards">
+      <div class="card"><b>Buit</b><span>schelpen, zeewier en één krab met een mening</span></div>
+      <div class="card"><b>Vloot</b><span>1 schip (geleend) · 0 kanonnen (belasting)</span></div>
+      <div class="card"><b>Getij</b><span>elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    Gebouwd in de <strong>Cave</strong>: een vochtige grot achter de dijk waar de server op
+    walvisolie draait en de boekhouding in <span class="trade">traderotes</span> gaat.
+    Alle prijzen zijn inclusief piratenkorting en exclusief papegaaienbelasting.
+    Twijfel je of iets eetbaar is? vraag het de krab — die liegt, maar weet het wél.
+  </p>
+  <p>
+    © 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) ·
+    achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>
+  </p>
+</footer>
+
+</body>
+</html>

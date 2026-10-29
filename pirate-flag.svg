@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Piratenvlag">
+  <rect width="64" height="64" rx="12" fill="#0b0b0b"/>
+  <g stroke="#f4f1e8" stroke-width="5" stroke-linecap="round">
+    <line x1="15" y1="49" x2="49" y2="15"/>
+    <line x1="15" y1="15" x2="49" y2="49"/>
+  </g>
+  <g fill="#f4f1e8">
+    <circle cx="13" cy="51" r="4.2"/><circle cx="51" cy="13" r="4.2"/>
+    <circle cx="13" cy="13" r="4.2"/><circle cx="51" cy="51" r="4.2"/>
+  </g>
+  <path fill="#f4f1e8" d="M32 12c-8.3 0-14.5 5.7-14.5 13.3 0 4.7 2.3 8.6 5.9 11v5.9c0 1.8 1.4 3.2 3.2 3.2h10.8c1.8 0 3.2-1.4 3.2-3.2v-5.9c3.6-2.4 5.9-6.3 5.9-11C46.5 17.7 40.3 12 32 12Z"/>
+  <g fill="#0b0b0b">
+    <circle cx="26" cy="26" r="3.6"/>
+    <circle cx="38" cy="26" r="3.6"/>
+    <path d="M32 30.5 34 35h-4z"/>
+  </g>
+  <g stroke="#0b0b0b" stroke-width="1.6" stroke-linecap="round">
+    <line x1="29.5" y1="41" x2="29.5" y2="44.5"/>
+    <line x1="34.5" y1="41" x2="34.5" y2="44.5"/>
+  </g>
+</svg>
