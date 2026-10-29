@@ -93,6 +93,9 @@
   .cta:active{transform:translateY(0)}
   .cta:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px}
   .fineprint{margin:.85rem 0 0;font-size:.78rem;color:#c9c3b4;opacity:.72}
+  .crew-link{margin:.95rem 0 0;font-size:.82rem;letter-spacing:.04em}
+  .crew-link a{color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px}
+  .crew-link a:hover{color:var(--brass-bright);border-bottom-color:rgba(255,200,97,.7)}
   .intro-row{
     display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.6rem;
     align-items:start;margin:1.15rem auto 0;text-align:left;
@@ -206,10 +209,19 @@
     margin:1.4rem auto 0;max-width:44rem;padding-top:1rem;text-align:left;
     border-top:1px solid rgba(232,220,192,.12);
   }
-  .logbook-title{margin:0 0 .55rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+  .logbook-title{
+    margin:0;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+    cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;
+    position:relative;padding-right:1.2rem;
+  }
+  .logbook-title::-webkit-details-marker{display:none}
+  .logbook-title::after{content:"▾";margin-left:auto;font-size:.85rem;letter-spacing:0;line-height:1;transition:transform .18s ease}
+  .logbook[open] .logbook-title::after{transform:rotate(180deg)}
+  .logbook-title:hover code{color:#cfc9ba}
+  .logbook-title:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px;border-radius:4px}
   .logbook-title code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.68rem;letter-spacing:0;text-transform:none;color:#a9a291}
   .gitlog{
-    list-style:none;margin:0;padding:0;display:grid;gap:.28rem;
+    list-style:none;margin:.55rem 0 0;padding:0;display:grid;gap:.28rem;
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-size:.72rem;line-height:1.5;color:#cfc9ba;
   }
@@ -218,6 +230,19 @@
   .gitlog span{overflow-wrap:anywhere}
   .gitlog small{display:block;color:#8f8a7c;font-size:.66rem}
   .gitlog-note{display:block;color:#8f8a7c;grid-template-columns:none}
+  /* inklapbare panelen: Bezoek en Bemanning */
+  .panel>summary{cursor:pointer;list-style:none;position:relative;padding-right:2.2rem}
+  .panel>summary::-webkit-details-marker{display:none}
+  .panel>summary::after{
+    content:"";position:absolute;right:.5rem;top:.5rem;width:.5em;height:.5em;
+    border-right:2px solid var(--brass);border-bottom:2px solid var(--brass);
+    transform:rotate(45deg);transition:transform .18s ease;
+  }
+  .panel[open]>summary::after{transform:rotate(-135deg);top:.8rem}
+  .panel>summary:focus-visible{outline:2px solid var(--brass-bright);outline-offset:4px;border-radius:4px}
+  .panel>summary:hover h2{color:var(--brass-bright)}
+  .panel h2{transition:color .15s ease}
+  .radar>summary,.aboard>summary{max-width:880px;margin:0 auto}
   @media(max-width:640px){
     .intro-row{grid-template-columns:1fr;gap:1.2rem;text-align:center}
     .intro-row .lede{margin:0 auto}
@@ -315,6 +340,7 @@
 
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
     <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
+    <p class="crew-link"><a href="crew.html" data-i18n="crewLink">Naar de Crew</a></p>
 
     <div class="cards">
       <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
@@ -324,10 +350,12 @@
   </section>
 </main>
 
-<section class="radar" aria-labelledby="radar-bezoek">
-  <div class="radar-inner">
+<details class="radar panel">
+  <summary>
     <p class="kicker" data-i18n="radarKicker">Radar</p>
-    <h2 id="radar-bezoek" data-i18n="radarTitle">Bezoek</h2>
+    <h2 data-i18n="radarTitle">Bezoek</h2>
+  </summary>
+  <div class="radar-inner">
     <p class="radar-note" data-i18n-html="radarNote">
       Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site:
       één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
@@ -338,12 +366,14 @@
     </ul>
     <p class="radar-meta" id="visits-meta"></p>
   </div>
-</section>
+</details>
 
-<section class="aboard" aria-labelledby="aboard-title">
-  <div class="aboard-inner">
+<details class="aboard panel">
+  <summary>
     <p class="kicker" data-i18n="aboardKicker">Bemanning</p>
-    <h2 id="aboard-title" data-i18n="aboardTitle">Who is on board</h2>
+    <h2 data-i18n="aboardTitle">Who is on board</h2>
+  </summary>
+  <div class="aboard-inner">
     <div class="aboard-grid">
       <div class="aboard-card">
         <b data-i18n="guideName">Natuurgids</b>
@@ -358,7 +388,7 @@
     </div>
     <p class="aboard-note" data-i18n="aboardNote">Aan een rooster en agenda wordt gewerkt.</p>
   </div>
-</section>
+</details>
 
 <section class="talk" aria-labelledby="talk-title">
   <div class="talk-inner">
@@ -383,12 +413,12 @@
     <span data-i18n="thanks">Dank aan</span><span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
   </p>
   <p class="sponsors" data-i18n="sponsors">Zoek nog sponsors voor de boot.</p>
-  <div class="logbook">
-    <p class="logbook-title"><span data-i18n="logbookTitle">Logboek</span> <code>$ git log --oneline -5</code></p>
+  <details class="logbook">
+    <summary class="logbook-title"><span data-i18n="logbookTitle">Logboek</span> <code>$ git log --oneline -5</code></summary>
     <ol class="gitlog" id="gitlog">
       <li class="gitlog-note" data-i18n="logbookLoading">git log ophalen…</li>
     </ol>
-  </div>
+  </details>
 </footer>
 
 <script>
@@ -399,6 +429,7 @@
         kicker: `Den Helder · Marsdiep · voor anker sinds 1667`,
         launchLabel: `Tewaterlating`,
         haikuThinking: `De gids denkt na…`, haikuError: `De gids is even stil.`,
+        crewLink: `Naar de Crew`,
         lede: `Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk: de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te vinden is, waar, en of het water mee- of tegenzit.`,
         cta: `Enter de Wildpluk-site`,
         fineprint: `Geen inloggen, geen schatkaart nodig — het getij staat al achter je.`,
@@ -441,6 +472,7 @@
         kicker: `Den Helder · Marsdiep · at anchor since 1667`,
         launchLabel: `Launch`,
         haikuThinking: `The guide is thinking…`, haikuError: `The guide is quiet for a moment.`,
+        crewLink: `Meet the crew`,
         lede: `A flag, a ship and a tide chart. From this roadstead you enter the real work: the <strong>wildpluk site</strong> along the Wadden coast — where you see what can be found right now, where, and whether the water is with you or against you.`,
         cta: `Enter the Wildpluk site`,
         fineprint: `No login, no treasure map needed — the tide is already at your back.`,
@@ -483,6 +515,7 @@
         kicker: `Den Helder · Marsdiep · vor Anker seit 1667`,
         launchLabel: `Stapellauf`,
         haikuThinking: `Der Guide denkt nach…`, haikuError: `Der Guide schweigt einen Moment.`,
+        crewLink: `Zur Crew`,
         lede: `Eine Flagge, ein Schiff und eine Gezeitenkarte. Von dieser Reede aus enterst du die eigentliche Arbeit: die <strong>Wildpluk-Seite</strong> an der Wattenküste — wo du siehst, was jetzt zu finden ist, wo, und ob das Wasser mitspielt oder dagegen.`,
         cta: `Enter die Wildpluk-Seite`,
         fineprint: `Kein Login, keine Schatzkarte nötig — die Gezeit steht schon hinter dir.`,
@@ -525,6 +558,7 @@
         kicker: `Den Helder · Marsdiep · na kotwicy od 1667`,
         launchLabel: `Wodowanie`,
         haikuThinking: `Przewodnik się zastanawia…`, haikuError: `Przewodnik na chwilę milczy.`,
+        crewLink: `Do załogi`,
         lede: `Flaga, statek i mapa pływów. Z tej redy wchodzisz do prawdziwej roboty: <strong>strona wildpluk</strong> wzdłuż wybrzeża Wadden — gdzie zobaczysz, co można teraz znaleźć, gdzie i czy woda jest z tobą, czy przeciw tobie.`,
         cta: `Wejdź na stronę Wildpluk`,
         fineprint: `Bez logowania i bez mapy skarbów — pływ już masz za sobą.`,
@@ -567,6 +601,7 @@
         kicker: `Ден Хелдер · Марсдип · на котва от 1667`,
         launchLabel: `Спускане на вода`,
         haikuThinking: `Гидът се замисля…`, haikuError: `Гидът за момент млъкна.`,
+        crewLink: `Към екипажа`,
         lede: `Флаг, кораб и карта на прилива. От този рейд влизаш в истинската работа: <strong>сайтът wildpluk</strong> по брега на Ваден — където виждаш какво има сега, къде и дали водата е с теб, или срещу теб.`,
         cta: `Влез в Wildpluk`,
         fineprint: `Без вход и без карта на съкровища — приливът вече е зад теб.`,
@@ -609,6 +644,7 @@
         kicker: `登海尔德 · 马斯迪普 · 自 1667 年起抛锚`,
         launchLabel: `下水`,
         haikuThinking: `向导正在思考…`, haikuError: `向导暂时沉默了。`,
+        crewLink: `前往船员`,
         lede: `一面旗、一艘船、一张潮汐图。从这个锚地进入真正的工作：<strong>wildpluk 网站</strong> 沿瓦登海岸——看看此刻有什么、在哪里，以及潮水是帮你还是挡你。`,
         cta: `进入 Wildpluk 网站`,
         fineprint: `无需登录，也不需要藏宝图——潮水已经在你身后。`,
@@ -750,7 +786,7 @@
       if (haikuPending) return;
       haikuPending = true;
       renderHaiku(t('haikuThinking'));
-      fetch(API + '/api/haiku', { mode: 'cors' })
+      fetch(API + '/api/haiku?t=' + Date.now(), { mode: 'cors', cache: 'no-store' })
         .then(function (resp) {
           if (!resp.ok) throw new Error('haiku');
           return resp.json();
@@ -868,8 +904,13 @@
         });
     }
 
-    // git-log in de footer (publieke GitHub-API)
-    if (logbook) {
+    // git-log in de footer (publieke GitHub-API) — pas ophalen als het logboek openklapt
+    var logbookBox = document.querySelector('.logbook');
+    var logbookLoaded = false;
+
+    function loadLogbook() {
+      if (!logbook || logbookLoaded) return;
+      logbookLoaded = true;
       fetch('https://api.github.com/repos/evtriest/evtriest.github.io/commits?per_page=5')
         .then(function (resp) {
           if (!resp.ok) throw new Error('github');
@@ -884,6 +925,12 @@
           logState = 'error';
           renderLogbook();
         });
+    }
+
+    if (logbookBox) {
+      logbookBox.addEventListener('toggle', function () {
+        if (logbookBox.open) loadLogbook();
+      });
     }
 
     applyLang('zh');

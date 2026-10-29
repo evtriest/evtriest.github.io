@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crew · Eeps Piracy Site</title>
+<meta name="description" content="Crew — praat met de natuurgids van de wildpluk-site over schelpen, vissen, zeewier en het getij bij Den Helder.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --ink:#f4f1e8;
+    --sand:#e8dcc0;
+    --brass:#e6a23c;
+    --brass-bright:#ffc861;
+    --sea:#081018;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:var(--ink);
+    font-family:var(--sans);
+    background:#081018 url("tide-bg.jpg") center/cover no-repeat fixed;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.12) 0%,rgba(4,10,16,.42) 55%,rgba(4,10,16,.80) 100%),
+      linear-gradient(to bottom,rgba(4,10,16,.42),rgba(4,10,16,.06) 40%,rgba(4,10,16,.76));
+    z-index:0;
+    pointer-events:none;
+  }
+  main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
+  .hero{text-align:center;max-width:640px;width:100%;min-width:0}
+  .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
+  .kicker{
+    margin:0 0 14px;font-family:var(--sans);font-size:.72rem;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--sand);opacity:.82;
+  }
+  h1{
+    margin:0;font-family:var(--serif);font-weight:700;
+    font-size:clamp(2.35rem,7.4vw,4.2rem);line-height:1.02;letter-spacing:.01em;
+    text-shadow:0 2px 4px rgba(0,0,0,.7),0 10px 40px rgba(0,0,0,.85);
+  }
+  h1 .the{display:block;font-size:.32em;letter-spacing:.30em;text-transform:uppercase;opacity:.78;margin-bottom:.55em;font-family:var(--sans);font-weight:600;text-indent:.30em}
+  .lede{
+    margin:1.05rem auto 0;max-width:34rem;font-size:clamp(.95rem,2.4vw,1.05rem);
+    line-height:1.66;color:#efece2;text-shadow:0 1px 3px rgba(0,0,0,.9),0 6px 26px rgba(0,0,0,.75);
+  }
+  .chat{
+    margin:1.8rem auto 0;max-width:560px;text-align:left;padding:1rem 1.1rem 1.1rem;
+    background:rgba(10,18,26,.66);border:1px solid rgba(232,220,192,.18);
+    border-radius:14px;backdrop-filter:blur(6px);
+  }
+  .chat h2{
+    margin:0 0 .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--brass);
+  }
+  .chat-log{
+    display:flex;flex-direction:column;gap:.55rem;max-height:46vh;
+    overflow-y:auto;padding-right:.2rem;
+  }
+  .msg{margin:0;max-width:88%;padding:.55rem .78rem;border-radius:10px;font-size:.86rem;line-height:1.5}
+  .msg-guide{background:rgba(232,220,192,.1);border:1px solid rgba(232,220,192,.16);color:#efece2;align-self:flex-start}
+  .msg-user{background:rgba(230,162,60,.92);color:#1a1206;align-self:flex-end;font-weight:600}
+  .msg-pending{opacity:.75;font-style:italic}
+  .msg-error{border-color:rgba(224,90,79,.55);background:rgba(224,90,79,.14);color:#ffc9c1}
+  .chat-captain{border-color:rgba(159,198,216,.28);background:rgba(10,20,30,.62)}
+  .chat-captain h2{color:#9fc6d8}
+  .msg-captain{background:rgba(159,198,216,.12);border:1px solid rgba(159,198,216,.24);color:#e6f0f5;align-self:flex-start}
+  .chat-form{display:flex;gap:.5rem;margin-top:.85rem}
+  .chat-form input{
+    flex:1;min-width:0;font:inherit;font-size:.88rem;padding:.62em .85em;
+    border-radius:999px;border:1px solid rgba(232,220,192,.28);
+    background:rgba(4,10,16,.72);color:var(--ink);
+  }
+  .chat-form input::placeholder{color:#a9a291}
+  .chat-form input:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}
+  .chat-form button{
+    font:inherit;font-size:.86rem;font-weight:700;padding:.62em 1.15em;border-radius:999px;
+    border:1px solid rgba(255,200,97,.55);cursor:pointer;color:#1a1206;
+    background:linear-gradient(180deg,rgba(230,162,60,.96),rgba(186,116,22,.96));
+  }
+  .chat-form button:hover{filter:brightness(1.06)}
+  .chat-form button:disabled{opacity:.6;cursor:progress}
+  .chat-note{margin:.6rem 0 0;font-size:.68rem;color:#8f8a7c;letter-spacing:.02em}
+  .chat-doubt{margin:.5rem 0 0;font-size:.68rem;color:#c9b98a;font-style:italic}
+  .cta{
+    display:inline-flex;align-items:center;gap:.6em;margin-top:1.7rem;
+    padding:.92em 1.7em;border-radius:999px;border:1px solid rgba(255,200,97,.55);
+    background:linear-gradient(180deg,rgba(230,162,60,.96),rgba(186,116,22,.96));
+    color:#1a1206;text-decoration:none;font-weight:800;font-size:1rem;letter-spacing:.02em;
+    box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45);
+    transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+  }
+  .cta:hover{transform:translateY(-2px);filter:brightness(1.06)}
+  .cta:focus-visible{outline:3px solid var(--brass-bright);outline-offset:3px}
+  .back{margin:1.3rem 0 0;font-size:.82rem}
+  .back a{color:var(--sand)}
+  .back a:hover{color:var(--brass-bright)}
+  footer{
+    position:relative;z-index:1;padding:20px 20px 24px;text-align:center;
+    border-top:1px solid rgba(232,220,192,.14);
+    background:linear-gradient(to bottom,rgba(4,10,16,.55),rgba(4,10,16,.92));
+  }
+  footer p{margin:0 auto;max-width:44rem;font-size:.74rem;line-height:1.7;color:#a9a291}
+  footer a{color:var(--sand)}
+  @media(max-width:520px){
+    body{background-attachment:scroll}
+    .flag{width:48px;height:48px}
+    .chat-log{max-height:40vh}
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <section class="hero">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
+    <p class="kicker">Den Helder · Marsdiep · bemanning</p>
+    <h1><span class="the">Eeps</span>Crew</h1>
+    <p class="lede">
+      De natuurgids van de wildpluk-site staat aan boord. Vraag wat je wilt over
+      schelpen, vissen, zeewier, het getij of de beste plek langs de Waddenkust.
+    </p>
+
+    <section class="chat" aria-labelledby="chat-title">
+      <h2 id="chat-title">Natuurgids</h2>
+      <div class="chat-log" id="chat-log" aria-live="polite">
+        <p class="msg msg-guide">Hoi, ik ben de gids. Wat wil je weten?</p>
+      </div>
+      <form class="chat-form" id="chat-form">
+        <label class="sr-only" for="chat-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag</label>
+        <input id="chat-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Vraag de gids…">
+        <button type="submit" id="chat-send">Stuur</button>
+      </form>
+      <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
+    </section>
+
+    <section class="chat chat-captain" aria-labelledby="captain-title">
+      <h2 id="captain-title">Kapitein</h2>
+      <div class="chat-log" id="captain-log" aria-live="polite">
+        <p class="msg msg-captain">De kapitein is aan boord. AI is nog niet slim genoeg voor de kapitein — vraag het hem zelf.</p>
+      </div>
+      <form class="chat-form" id="captain-form">
+        <label class="sr-only" for="captain-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je bericht aan de kapitein</label>
+        <input id="captain-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Praat tegen de kapitein…">
+        <button type="submit">Stuur</button>
+      </form>
+      <p class="chat-note">Deze box is niet aangesloten op de gids of de llama — puur voor de grap. AI is nog niet slim genoeg voor de kapitein.</p>
+      <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
+    </section>
+
+    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
+
+    <p class="back"><a href="index.html">← Terug naar de landing</a></p>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Eep · crew van de Eeps Piracy Site · gids: lokale llama op de VPS</p>
+</footer>
+
+<script>
+  (function () {
+    var API = location.hostname === 'evtriest.github.io'
+      ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
+      : '';
+    var form = document.getElementById('chat-form');
+    var input = document.getElementById('chat-input');
+    var button = document.getElementById('chat-send');
+    var log = document.getElementById('chat-log');
+    var history = [];
+
+    function bubble(text, kind) {
+      var el = document.createElement('p');
+      el.className = 'msg msg-' + kind;
+      el.textContent = text;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+      return el;
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var question = input.value.trim();
+      if (!question) return;
+      bubble(question, 'user');
+      history.push({ role: 'user', content: question });
+      input.value = '';
+      input.disabled = true;
+      button.disabled = true;
+      var pending = bubble('De gids denkt na…', 'guide msg-pending');
+
+      fetch(API + '/api/chat', {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      })
+        .then(function (resp) { return resp.json().then(function (data) { return { ok: resp.ok, data: data }; }); })
+        .then(function (result) {
+          var reply = result.ok && result.data && result.data.reply;
+          if (!reply) throw new Error((result.data && result.data.error) || 'geen antwoord');
+          pending.textContent = reply;
+          pending.classList.remove('msg-pending');
+          history.push({ role: 'assistant', content: reply });
+        })
+        .catch(function (err) {
+          pending.textContent = 'De gids is even stil: ' + err.message;
+          pending.classList.remove('msg-pending');
+          pending.classList.add('msg-error');
+        })
+        .then(function () {
+          input.disabled = false;
+          button.disabled = false;
+          input.focus();
+        });
+    });
+
+    /* Kapitein: geen netwerk, geen llama — gewoon de kapitein. */
+    var captainForm = document.getElementById('captain-form');
+    var captainInput = document.getElementById('captain-input');
+    var captainLog = document.getElementById('captain-log');
+    var captainReplies = [
+      'De kapitein leest je bericht, knikt, en zwijgt. AI is nog niet slim genoeg voor de kapitein.',
+      'De kapitein tuurt naar de horizon. Hij heeft geen AI nodig om te weten dat het laag water wordt.',
+      'De kapitein schrijft je vraag in het scheepsjournaal. Eén van de haken en ogen.',
+      'De kapitein zegt: “Vertel het nog eens, maar dan als een haiku.”',
+      'Ahoy. De kapitein is aan dek. De AI mag hier niet komen — nog niet slim genoeg.',
+      'De kapitein laat dit even bezinken. Daar had hij geen AI voor nodig, zei hij ooit.',
+      'De kapitein mompelt iets over kokkels en het getij. Verder zegt hij niets.',
+      'De kapitein kijkt door zijn verrekijker. Geen AI te bekennen.'
+    ];
+    var captainTurn = 0;
+
+    function captainBubble(text, kind) {
+      var el = document.createElement('p');
+      el.className = 'msg msg-' + kind;
+      el.textContent = text;
+      captainLog.appendChild(el);
+      captainLog.scrollTop = captainLog.scrollHeight;
+      return el;
+    }
+
+    captainForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var said = captainInput.value.trim();
+      if (!said) return;
+      captainBubble(said, 'user');
+      captainInput.value = '';
+      var reply = captainReplies[captainTurn % captainReplies.length];
+      captainTurn += 1;
+      captainBubble(reply, 'captain');
+    });
+  })();
+</script>
+</body>
+</html>
