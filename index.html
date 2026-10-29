@@ -236,8 +236,8 @@
     <h2 id="radar-bezoek">Bezoek</h2>
     <p class="radar-note">
       Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site:
-      tijd, IP, browser, besturingssysteem, apparaat, pagina, herkomst en taal —
-      alles wat er van een bezoek te weten is.
+      één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
+      herkomst en taal — alles wat er van dat adres te weten is.
     </p>
     <ul class="visits" id="visits">
       <li class="visit visit-note">Radar warmt op…</li>
@@ -341,7 +341,7 @@
         }).join('');
         if (meta) {
           meta.textContent = data.count + ' bezoeken van ' + data.unique +
-            ' IP\u2019s · bijgewerkt ' + data.fetched;
+            ' unieke IP\u2019s · bijgewerkt ' + data.fetched;
         }
       })
       .catch(function () {
