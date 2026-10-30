@@ -377,11 +377,10 @@
       één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
       herkomst en taal — alles wat er van dat adres te weten is.
     </p>
-    <!-- De inzending bij de Omarchy-marktplaats. Status aanpassen: klasse van
-         de .state hieronder op `wait` (in behandeling), `on` (goedgekeurd) of
-         `denied` (afgewezen) zetten, en de data-i18n mee naar pluginPending /
-         pluginApproved / pluginDenied. -->
-    <div class="plugin">
+    <!-- De inzending bij de Omarchy-marktplaats. De status volgt de marktplaats
+         zelf (zie loadPluginStatus): open = `wait`, gesloten mét label `listed`
+         = `on`, anders gesloten = `denied`. -->
+    <div class="plugin" id="plugin-submission">
       <span class="plugin-name">mouse-in-the-corner</span>
       <span class="state wait" data-i18n="pluginPending">in afwachting van goedkeuring</span>
       <a class="plugin-link" href="https://plugins.omarchy.org/#recent-section" data-i18n="pluginLink">Nieuwste Omarchy-plugins</a>
@@ -760,6 +759,47 @@
     var haikuPending = false;
     var DEVICES = { desktop: 'deviceDesktop', mobiel: 'deviceMobile', bot: 'deviceBot' };
 
+    // Status van de plugin-inzending volgt de marktplaats: zolang het issue open
+    // is staat hij op `wait`, sluit het met het label `listed` dan is hij
+    // opgenomen (`on`), sluit het zonder dat label dan is hij afgewezen
+    // (`denied`). Het label `listed` is wat de marktplaats zet bij publicatie.
+    var pluginBox = document.getElementById('plugin-submission');
+    var pluginStatus = null;
+    var PLUGIN_ISSUE = 'https://api.github.com/repos/omacom/omarchy-plugin-marketplace/issues/13379';
+
+    function renderPlugin() {
+      if (!pluginBox || !pluginStatus) return;
+      var badge = pluginBox.querySelector('.state');
+      if (!badge) return;
+      var key = pluginStatus === 'on' ? 'pluginApproved'
+        : (pluginStatus === 'denied' ? 'pluginDenied' : 'pluginPending');
+      badge.className = 'state ' + pluginStatus;
+      badge.setAttribute('data-i18n', key);
+      badge.textContent = t(key);
+    }
+
+    function loadPluginStatus() {
+      if (!pluginBox) return;
+      fetch(PLUGIN_ISSUE, { headers: { Accept: 'application/vnd.github+json' } })
+        .then(function (resp) {
+          if (!resp.ok) throw new Error('github');
+          return resp.json();
+        })
+        .then(function (issue) {
+          if (!issue) return;
+          if (issue.state !== 'closed') {
+            pluginStatus = 'wait';
+          } else {
+            var labels = (issue.labels || []).map(function (label) {
+              return typeof label === 'string' ? label : label.name;
+            });
+            pluginStatus = labels.indexOf('listed') !== -1 ? 'on' : 'denied';
+          }
+          renderPlugin();
+        })
+        .catch(function () { /* marktplaats onbereikbaar: statische status blijft staan */ });
+    }
+
     function t(key, vars) {
       var pack = I18N[current] || I18N.nl;
       var text = pack[key] != null ? pack[key] : I18N.nl[key];
@@ -912,6 +952,7 @@
       renderVisits();
       renderLaunch();
       renderLogbook();
+      renderPlugin();
       loadHaiku();
     }
 
@@ -991,6 +1032,7 @@
     }
 
     applyLang('zh');
+    loadPluginStatus();
   })();
 </script>
 </body>
