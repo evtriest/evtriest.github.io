@@ -155,6 +155,22 @@
   .visit small{display:block;margin-top:.15rem;font-size:.72rem;color:#a9a291}
   .visit-note{grid-template-columns:1fr;color:#a9a291;font-size:.78rem}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
+  .plugin{
+    display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .85rem;
+    margin:1.3rem 0 1.4rem;padding:.8rem 1rem;border-radius:12px;
+    background:rgba(10,18,26,.6);border:1px solid rgba(232,220,192,.16);
+    font-size:.82rem;line-height:1.45;color:#e7e2d4;
+  }
+  .plugin-name{font-family:var(--serif);font-size:.95rem;color:#f4f1e8}
+  .plugin-link{
+    margin-left:auto;font-size:.74rem;letter-spacing:.03em;color:var(--brass-bright);
+    text-decoration:none;border-bottom:1px solid rgba(255,200,97,.4);
+  }
+  .plugin-link:hover{border-bottom-color:var(--brass-bright)}
+  .state.wait{color:#f6e6bf}
+  .state.wait::before{background:#e0b23f;box-shadow:0 0 0 3px rgba(224,178,63,.2)}
+  .state.denied{color:#f4dcd8}
+  .state.denied::before{background:#e05a4f;box-shadow:0 0 0 3px rgba(224,90,79,.18)}
   .aboard{
     position:relative;z-index:1;padding:2.2rem 20px 2.6rem;
     border-top:1px solid rgba(232,220,192,.14);
@@ -361,6 +377,15 @@
       één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
       herkomst en taal — alles wat er van dat adres te weten is.
     </p>
+    <!-- De inzending bij de Omarchy-marktplaats. Status aanpassen: klasse van
+         de .state hieronder op `wait` (in behandeling), `on` (goedgekeurd) of
+         `denied` (afgewezen) zetten, en de data-i18n mee naar pluginPending /
+         pluginApproved / pluginDenied. -->
+    <div class="plugin">
+      <span class="plugin-name">mouse-in-the-corner</span>
+      <span class="state wait" data-i18n="pluginPending">in afwachting van goedkeuring</span>
+      <a class="plugin-link" href="https://plugins.omarchy.org/#recent-section" data-i18n="pluginLink">Nieuwste Omarchy-plugins</a>
+    </div>
     <ul class="visits" id="visits">
       <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
     </ul>
@@ -458,6 +483,8 @@
         radarEmpty: `Nog geen bezoeken op de radar.`,
         radarError: `De radar is buiten bereik.`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
+        pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
+        pluginDenied: `afgewezen`, pluginLink: `Nieuwste Omarchy-plugins`,
         seen: `{n}× vanaf dit IP, eerst {time}`, first: `eerste bezoek`,
         via: `via`, direct: `direct`, onDevice: `op`,
         deviceDesktop: `desktop`, deviceMobile: `mobiel`, deviceBot: `bot`,
@@ -503,6 +530,8 @@
         radarEmpty: `No visits on the radar yet.`,
         radarError: `The radar is out of range.`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
+        pluginPending: `awaiting approval`, pluginApproved: `approved`,
+        pluginDenied: `rejected`, pluginLink: `Newest Omarchy plugins`,
         seen: `{n}× from this IP, first {time}`, first: `first visit`,
         via: `via`, direct: `direct`, onDevice: `on`,
         deviceDesktop: `desktop`, deviceMobile: `mobile`, deviceBot: `bot`,
@@ -548,6 +577,8 @@
         radarEmpty: `Noch keine Besuche auf dem Radar.`,
         radarError: `Das Radar ist außer Reichweite.`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
+        pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
+        pluginDenied: `abgelehnt`, pluginLink: `Neueste Omarchy-Plugins`,
         seen: `{n}× von dieser IP, zuerst {time}`, first: `erster Besuch`,
         via: `über`, direct: `direkt`, onDevice: `auf`,
         deviceDesktop: `Desktop`, deviceMobile: `mobil`, deviceBot: `Bot`,
@@ -593,6 +624,8 @@
         radarEmpty: `Na radarze nie ma jeszcze odwiedzin.`,
         radarError: `Radar jest poza zasięgiem.`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
+        pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
+        pluginDenied: `odrzucony`, pluginLink: `Najnowsze pluginy Omarchy`,
         seen: `{n}× z tego IP, pierwszy raz {time}`, first: `pierwsza wizyta`,
         via: `z`, direct: `bezpośrednio`, onDevice: `na`,
         deviceDesktop: `komputer`, deviceMobile: `telefon`, deviceBot: `bot`,
@@ -638,6 +671,8 @@
         radarEmpty: `Още няма посещения на радара.`,
         radarError: `Радарът е извън обхват.`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
+        pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
+        pluginDenied: `отхвърлен`, pluginLink: `Най-новите плъгини за Omarchy`,
         seen: `{n}× от това IP, първо {time}`, first: `първо посещение`,
         via: `чрез`, direct: `директно`, onDevice: `на`,
         deviceDesktop: `компютър`, deviceMobile: `мобилен`, deviceBot: `бот`,
@@ -683,6 +718,8 @@
         radarEmpty: `雷达上还没有访客。`,
         radarError: `雷达超出范围。`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
+        pluginPending: `等待审核`, pluginApproved: `已通过`,
+        pluginDenied: `已拒绝`, pluginLink: `最新 Omarchy 插件`,
         seen: `该 IP 第 {n} 次，首次 {time}`, first: `首次访问`,
         via: `来自`, direct: `直接访问`, onDevice: `运行于`,
         deviceDesktop: `桌面`, deviceMobile: `手机`, deviceBot: `机器人`,
