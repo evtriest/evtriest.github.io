@@ -76,6 +76,27 @@
   .chat-captain{border-color:rgba(159,198,216,.28);background:rgba(10,20,30,.62)}
   .chat-captain h2{color:#9fc6d8}
   .msg-captain{background:rgba(159,198,216,.12);border:1px solid rgba(159,198,216,.24);color:#e6f0f5;align-self:flex-start}
+  .chat-birds{border-color:rgba(127,202,145,.30);background:rgba(8,20,16,.62)}
+  .chat-birds h2{color:#7fca91}
+  .msg-bird{background:rgba(127,202,145,.12);border:1px solid rgba(127,202,145,.26);color:#e6f5ea;align-self:flex-start}
+  .chat-bulg{border-color:rgba(240,128,112,.32);background:rgba(24,10,10,.55)}
+  .chat-bulg h2{color:#f09a8c}
+  .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
+  .chat-agents summary{cursor:pointer;list-style:none}
+  .chat-agents summary:hover{filter:brightness(1.1)}
+  .chat-agents summary h2{display:inline;cursor:pointer}
+  .chat-agents textarea{
+    width:100%;min-height:11rem;margin:.7rem 0 .4rem;resize:vertical;
+    font:.78rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    border-radius:10px;border:1px solid rgba(232,220,192,.28);
+    background:rgba(4,10,16,.72);color:var(--ink);padding:.6em .7em;
+  }
+  .chat-agents select{
+    font:inherit;font-size:.84rem;padding:.45em .9em;border-radius:999px;
+    border:1px solid rgba(232,220,192,.28);
+    background:rgba(4,10,16,.72);color:var(--ink);margin-top:.7rem;
+  }
+  .chat-row{display:flex;align-items:center;gap:.6rem;margin-top:.5rem}
   .chat-form{display:flex;gap:.5rem;margin-top:.85rem}
   .chat-form input{
     flex:1;min-width:0;font:inherit;font-size:.88rem;padding:.62em .85em;
@@ -129,7 +150,8 @@
     <h1><span class="the">Eeps</span>Crew</h1>
     <p class="lede">
       De natuurgids van de wildpluk-site staat aan boord. Vraag wat je wilt over
-      schelpen, vissen, zeewier, het getij of de beste plek langs de Waddenkust.
+      schelpen, vissen, zeewier, het getij, vogelgeluiden of de beste plek langs
+      de Waddenkust.
     </p>
 
     <section class="chat" aria-labelledby="chat-title">
@@ -143,6 +165,32 @@
         <button type="submit" id="chat-send">Stuur</button>
       </form>
       <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
+    </section>
+
+    <section class="chat chat-birds" aria-labelledby="birds-title">
+      <h2 id="birds-title">Vogelgeluiden</h2>
+      <div class="chat-log" id="birds-log" aria-live="polite">
+        <p class="msg msg-bird">Tsief! Ik ben de vogelgids. Beschrijf het geluid of de plek, en ik zoek de vogel met zijn roep erbij.</p>
+      </div>
+      <form class="chat-form" id="birds-form">
+        <label class="sr-only" for="birds-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag over vogelgeluiden</label>
+        <input id="birds-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Vraag de vogelgids…">
+        <button type="submit" id="birds-send">Stuur</button>
+      </form>
+      <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en geeft meteen een luister-link.</p>
+    </section>
+
+    <section class="chat chat-bulg" aria-labelledby="bg-title">
+      <h2 id="bg-title">Bulgaarse gids</h2>
+      <div class="chat-log" id="bg-log" aria-live="polite">
+        <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
+      </div>
+      <form class="chat-form" id="bg-form">
+        <label class="sr-only" for="bg-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag in het Bulgaars</label>
+        <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+        <button type="submit" id="bg-send">Stuur</button>
+      </form>
+      <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
     </section>
 
     <section class="chat chat-captain" aria-labelledby="captain-title">
@@ -159,6 +207,20 @@
       <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
 
+    <details class="chat chat-agents" id="agents-editor">
+      <summary><h2 id="agents-title">AGENTS.md-beheer</h2></summary>
+      <p class="chat-note">Elke chat hierboven heeft een eigen AGENTS.md met rol en regels. Kies een agent, pas de tekst aan en sla op (beheertoken nodig). Wijzigingen gelden meteen, zonder herstart — de laatste 10 versies blijven bewaard en zijn weer te laden.</p>
+      <select id="agents-keuze" aria-label="Te bewerken agent"></select>
+      <select id="agents-versie" aria-label="Te laden versie" style="margin-top:.35rem" disabled>
+        <option value="">Huidige versie</option>
+      </select>
+      <textarea id="agents-tekst" spellcheck="false"></textarea>
+      <div class="chat-row">
+        <button type="button" id="agents-opslaan">Opslaan</button>
+        <span id="agents-status" aria-live="polite" style="font-size:.7rem;color:#8f8a7c"></span>
+      </div>
+    </details>
+
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
 
     <p class="back"><a href="index.html">← Terug naar de landing</a></p>
@@ -174,57 +236,68 @@
     var API = location.hostname === 'evtriest.github.io'
       ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
       : '';
-    var form = document.getElementById('chat-form');
-    var input = document.getElementById('chat-input');
-    var button = document.getElementById('chat-send');
-    var log = document.getElementById('chat-log');
-    var history = [];
-
-    function bubble(text, kind) {
+    function bubble(text, kind, logEl) {
       var el = document.createElement('p');
       el.className = 'msg msg-' + kind;
       el.textContent = text;
-      log.appendChild(el);
-      log.scrollTop = log.scrollHeight;
+      logEl.appendChild(el);
+      logEl.scrollTop = logEl.scrollHeight;
       return el;
     }
 
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      var question = input.value.trim();
-      if (!question) return;
-      bubble(question, 'user');
-      history.push({ role: 'user', content: question });
-      input.value = '';
-      input.disabled = true;
-      button.disabled = true;
-      var pending = bubble('De gids denkt na…', 'guide msg-pending');
+    /* journalChat: één wiring voor beide AI-chats, met eigen ids, spreekkleur
+       en optioneel agent-veld (de backend kiest zo welke AGENTS.md er geldt). */
+    function frontChat(opts) {
+      var form = document.getElementById(opts.form);
+      var input = document.getElementById(opts.input);
+      var button = document.getElementById(opts.send);
+      var log = document.getElementById(opts.log);
+      var history = [];
 
-      fetch(API + '/api/chat', {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history })
-      })
-        .then(function (resp) { return resp.json().then(function (data) { return { ok: resp.ok, data: data }; }); })
-        .then(function (result) {
-          var reply = result.ok && result.data && result.data.reply;
-          if (!reply) throw new Error((result.data && result.data.error) || 'geen antwoord');
-          pending.textContent = reply;
-          pending.classList.remove('msg-pending');
-          history.push({ role: 'assistant', content: reply });
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var question = input.value.trim();
+        if (!question) return;
+        bubble(question, 'user', log);
+        history.push({ role: 'user', content: question });
+        input.value = '';
+        input.disabled = true;
+        button.disabled = true;
+        var pending = bubble(opts.thinking, opts.msg + ' msg-pending', log);
+
+        var body = { messages: history };
+        if (opts.agent) body.agent = opts.agent;
+
+        fetch(API + '/api/chat', {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
         })
-        .catch(function (err) {
-          pending.textContent = 'De gids is even stil: ' + err.message;
-          pending.classList.remove('msg-pending');
-          pending.classList.add('msg-error');
-        })
-        .then(function () {
-          input.disabled = false;
-          button.disabled = false;
-          input.focus();
-        });
-    });
+          .then(function (resp) { return resp.json().then(function (data) { return { ok: resp.ok, data: data }; }); })
+          .then(function (result) {
+            var reply = result.ok && result.data && result.data.reply;
+            if (!reply) throw new Error((result.data && result.data.error) || 'geen antwoord');
+            pending.textContent = reply;
+            pending.classList.remove('msg-pending');
+            history.push({ role: 'assistant', content: reply });
+          })
+          .catch(function (err) {
+            pending.textContent = opts.stil + err.message;
+            pending.classList.remove('msg-pending');
+            pending.classList.add('msg-error');
+          })
+          .then(function () {
+            input.disabled = false;
+            button.disabled = false;
+            input.focus();
+          });
+      });
+    }
+
+    frontChat({ form: 'chat-form', input: 'chat-input', send: 'chat-send', log: 'chat-log', msg: 'guide', thinking: 'De gids denkt na…', stil: 'De gids is even stil: ' });
+    frontChat({ form: 'birds-form', input: 'birds-input', send: 'birds-send', log: 'birds-log', msg: 'bird', agent: 'vogelgids', thinking: 'De vogelgids fluit na…', stil: 'De vogelgids is even stil: ' });
+    frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
 
     /* Kapitein: geen netwerk, geen llama — gewoon de kapitein. */
     var captainForm = document.getElementById('captain-form');
@@ -261,6 +334,112 @@
       captainTurn += 1;
       captainBubble(reply, 'captain');
     });
+
+    /* AGENTS.md-beheer: persona-tekst per chat lezen en opslaan. */
+    var agentsEditor = document.getElementById('agents-editor');
+    if (agentsEditor) {
+      var agentsKeuze = document.getElementById('agents-keuze');
+      var agentsVersie = document.getElementById('agents-versie');
+      var agentsTekst = document.getElementById('agents-tekst');
+      var agentsOpslaan = document.getElementById('agents-opslaan');
+      var agentsStatus = document.getElementById('agents-status');
+      var agentsToken = '';
+
+      function zetVersielijst(versies) {
+        agentsVersie.innerHTML = '';
+        var opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'Huidige versie';
+        agentsVersie.appendChild(opt);
+        (versies || []).forEach(function (v) {
+          var o = document.createElement('option');
+          o.value = v.nr;
+          o.textContent = 'Oudere versie ' + v.nr + '  (' + v.bytes + ' bytes)';
+          agentsVersie.appendChild(o);
+        });
+        agentsVersie.disabled = false;
+      }
+
+      function laadVersie(nr) {
+        if (!nr) { laadAgentTekst(); return; }
+        agentsStatus.textContent = 'Versie ' + nr + ' laden…';
+        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value)
+              + '?versie=' + nr, { mode: 'cors' })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (!res.ok) throw new Error((res.d && res.d.error) || 'onbekend');
+            agentsTekst.value = (res.d && res.d.tekst) || '';
+            agentsStatus.textContent = 'Oudere versie ' + nr
+              + ' staat in de editor — opslaan maakt hem actief; de dan draaiende tekst gaat naar de backups.';
+          })
+          .catch(function (err) { agentsStatus.textContent = 'Kon versie ' + nr + ' niet laden: ' + err.message; });
+      }
+
+      function laadAgentTekst() {
+        if (!agentsKeuze.value) return;
+        agentsStatus.textContent = 'Laden…';
+        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value), { mode: 'cors' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            agentsTekst.value = (d && d.tekst) || '';
+            zetVersielijst(d && d.versies);
+            agentsStatus.textContent = agentsTekst.value ? '' : 'Geen tekst ontvangen.';
+          })
+          .catch(function () { agentsStatus.textContent = 'Kon de tekst niet laden.'; });
+      }
+
+      agentsEditor.addEventListener('toggle', function () {
+        if (!agentsEditor.open) return;
+        fetch(API + '/api/agents', { mode: 'cors' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            agentsKeuze.innerHTML = '';
+            (d.agents || []).forEach(function (a) {
+              var opt = document.createElement('option');
+              opt.value = a.naam;
+              opt.textContent = a.naam + '  (' + a.bytes + ' bytes)';
+              agentsKeuze.appendChild(opt);
+            });
+            laadAgentTekst();
+          })
+          .catch(function () { agentsStatus.textContent = 'Kon de agentlijst niet laden.'; });
+      });
+      agentsKeuze.addEventListener('change', laadAgentTekst);
+      agentsVersie.addEventListener('change', function () {
+        laadVersie(agentsVersie.value);
+      });
+
+      agentsOpslaan.addEventListener('click', function () {
+        if (!agentsKeuze.value) return;
+        if (!agentsToken) {
+          try { agentsToken = localStorage.getItem('agents.beheer-token') || ''; } catch (e) {}
+        }
+        if (!agentsToken) {
+          agentsToken = window.prompt('Beheertoken (AGENTS_TOKEN of agents_token.txt):') || '';
+        }
+        if (!agentsToken) { agentsStatus.textContent = 'Geen token, niet opgeslagen.'; return; }
+        try { localStorage.setItem('agents.beheer-token', agentsToken); } catch (e) {}
+        agentsOpslaan.disabled = true;
+        agentsStatus.textContent = 'Opslaan…';
+        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value), {
+          method: 'PUT',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json', 'X-AGENTS-Token': agentsToken },
+          body: JSON.stringify({ tekst: agentsTekst.value })
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, antw: d }; }); })
+          .then(function (res) {
+            agentsStatus.textContent = res.ok
+              ? 'Opgeslagen — meteen van kracht. De vorige versie staat in de versielijst (max 10 bewaard).'
+              : 'Fout: ' + ((res.antw && res.antw.error) || 'onbekend');
+          })
+          .catch(function (err) { agentsStatus.textContent = 'Fout: ' + err.message; })
+          .then(function () {
+            agentsOpslaan.disabled = false;
+            if (agentsEditor.open) laadAgentTekst();
+          });
+      });
+    }
   })();
 </script>
 </body>
