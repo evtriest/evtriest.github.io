@@ -520,7 +520,7 @@
     <p class="kicker" data-i18n="aboardKicker">Bemanning</p>
   </summary>
   <div class="aboard-inner">
-    <div class="aboard-grid">
+    <div class="aboard-grid" id="agent-grid">
       <div class="aboard-card">
         <b data-i18n="guideName">Natuurgids</b>
         <small data-i18n="guideRole">van de wildpluk-site</small>
@@ -1199,7 +1199,34 @@
     applyLang('nl');
     loadPluginStatus();
 
-    function toggleChatSelector(){
+    function loadAgents(){
+  fetch('/api/agents')
+    .then(function(r){ return r.json().then(function(data){ return {ok:r.ok, data:data}; }); })
+    .then(function(result){
+      if(!result.ok || !result.data || !result.data.agents) return;
+      var grid = document.getElementById('agent-grid');
+      if(!grid) return;
+      grid.innerHTML = '';
+      result.data.agents.forEach(function(a){
+        var card = document.createElement('div');
+        card.className = 'aboard-card';
+        var b = document.createElement('b');
+        b.textContent = a.naam;
+        var small = document.createElement('small');
+        small.textContent = a.agenda ? 'met agenda' : 'zonder agenda';
+        var state = document.createElement('span');
+        state.className = 'state';
+        state.textContent = a.bytes > 0 ? 'actief' : 'inactief';
+        card.appendChild(b);
+        card.appendChild(small);
+        card.appendChild(state);
+        grid.appendChild(card);
+      });
+    })
+    .catch(function(){ /* niet-kritisch */ });
+}
+loadAgents();
+function toggleChatSelector(){
       const sel=document.getElementById('chatSelector');
       const isOpen=sel.classList.contains('open');
       sel.classList.toggle('open', !isOpen);
