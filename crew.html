@@ -39,7 +39,16 @@
     pointer-events:none;
   }
   main{position:relative;z-index:1;flex:1;padding:min(7vh,52px) 20px 32px}
-  .hero{text-align:center;max-width:640px;width:100%;min-width:0}
+  .hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;max-width:1200px;width:100%;margin:0 auto;text-align:left}
+  .hero .flag{grid-column:1/-1;justify-self:center}
+  .hero .kicker{grid-column:1/-1;text-align:center}
+  .hero h1{grid-column:1/-1;text-align:center}
+  .hero .lede{grid-column:1/-1;text-align:center}
+  .hero .chat{grid-column:1/-1;max-width:100%}
+  @media(min-width:900px){
+    .hero{grid-template-columns:repeat(2,1fr)}
+    .hero .chat{grid-column:auto}
+  }
   .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
   .kicker{
     margin:0 0 14px;font-family:var(--sans);font-size:.72rem;letter-spacing:.34em;
