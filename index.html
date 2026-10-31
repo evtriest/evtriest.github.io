@@ -385,22 +385,8 @@
   <button class="chat-selector-btn" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleChatSelector()">
     💬 Chat met de bemanning
   </button>
-  <div class="chat-selector-menu" role="menu">
-    <a class="chat-selector-item" href="crew.html#sectie-bulgaars" role="menuitem">
-      <span class="icon">🇧🇬</span>
-      <span class="label">Iva</span>
-      <span class="arrow">→</span>
-    </a>
-    <a class="chat-selector-item" href="crew.html#sectie-natuurgids" role="menuitem">
-      <span class="icon">🌿</span>
-      <span class="label">Natuurgids</span>
-      <span class="arrow">→</span>
-    </a>
-    <a class="chat-selector-item" href="crew.html#sectie-vogelgids" role="menuitem">
-      <span class="icon">🐦</span>
-      <span class="label">Vogelgeluiden</span>
-      <span class="arrow">→</span>
-    </a>
+  <div class="chat-selector-menu" role="menu" id="chatSelectorMenu">
+    <!-- dynamically filled from /api/agents -->
   </div>
 </div>
 
@@ -1198,23 +1184,56 @@
     .then(function(result){
       if(!result.ok || !result.data || !result.data.agents) return;
       var grid = document.getElementById('agent-grid');
-      if(!grid) return;
-      grid.innerHTML = '';
-      result.data.agents.forEach(function(a){
-        var card = document.createElement('div');
-        card.className = 'aboard-card';
-        var b = document.createElement('b');
-        b.textContent = a.naam;
-        var small = document.createElement('small');
-        small.textContent = a.agenda ? 'met agenda' : 'zonder agenda';
-        var state = document.createElement('span');
-        state.className = 'state';
-        state.textContent = a.bytes > 0 ? 'actief' : 'inactief';
-        card.appendChild(b);
-        card.appendChild(small);
-        card.appendChild(state);
-        grid.appendChild(card);
-      });
+      if(grid){
+        grid.innerHTML = '';
+        result.data.agents.forEach(function(a){
+          var card = document.createElement('div');
+          card.className = 'aboard-card';
+          var b = document.createElement('b');
+          b.textContent = a.naam;
+          var small = document.createElement('small');
+          small.textContent = a.agenda ? 'met agenda' : 'zonder agenda';
+          var state = document.createElement('span');
+          state.className = 'state';
+          state.textContent = a.bytes > 0 ? 'actief' : 'inactief';
+          card.appendChild(b);
+          card.appendChild(small);
+          card.appendChild(state);
+          grid.appendChild(card);
+        });
+      }
+      // chat selector: only agents with chat
+      var chatMenu = document.getElementById('chatSelectorMenu');
+      if(chatMenu){
+        chatMenu.innerHTML = '';
+        result.data.agents.forEach(function(a){
+          if(!a.chat) return;
+          var item = document.createElement('a');
+          item.className = 'chat-selector-item';
+          item.href = 'crew.html#sectie-' + encodeURIComponent(a.naam);
+          item.setAttribute('role', 'menuitem');
+          var icon = document.createElement('span');
+          icon.className = 'icon';
+          icon.textContent = a.naam === 'bulgaars' ? '🇧🇬' : a.naam === 'natuurgids' ? '🌿' : a.naam === 'vogelgids' ? '🐦' : a.naam === 'admin' ? '🛡️' : '🤖';
+          var label = document.createElement('span');
+          label.className = 'label';
+          label.textContent = a.naam === 'bulgaars' ? 'Iva' : a.naam === 'vogelgids' ? 'Vogelgeluiden' : a.naam.charAt(0).toUpperCase() + a.naam.slice(1);
+          var arrow = document.createElement('span');
+          arrow.className = 'arrow';
+          arrow.textContent = '→';
+          item.appendChild(icon);
+          item.appendChild(label);
+          item.appendChild(arrow);
+          chatMenu.appendChild(item);
+        });
+        if(!chatMenu.children.length){
+          var empty = document.createElement('span');
+          empty.className = 'chat-selector-item';
+          empty.style.color = '#a9a291';
+          empty.textContent = 'Geen chat beschikbaar';
+          chatMenu.appendChild(empty);
+        }
+      }
     })
     .catch(function(){ /* niet-kritisch */ });
 }
