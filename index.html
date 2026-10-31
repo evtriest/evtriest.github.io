@@ -298,6 +298,18 @@
     .cards{margin-top:1.8rem}
     .visit{grid-template-columns:1fr}
   }
+  .chat-selector{position:relative;display:inline-flex;margin:1.2rem auto 0;max-width:560px}
+  .chat-selector-btn{font:inherit;font-size:.82rem;font-weight:700;letter-spacing:.06em;padding:.65em 1.2em;border-radius:999px;border:1px solid rgba(255,200,97,.5);background:rgba(230,162,60,.12);color:var(--brass-bright);cursor:pointer;display:inline-flex;align-items:center;gap:.5em;transition:background .15s,border-color .15s}
+  .chat-selector-btn:hover{background:rgba(230,162,60,.22);border-color:rgba(255,200,97,.7)}
+  .chat-selector-btn::after{content:"▾";font-size:.7em;margin-left:.2em;transition:transform .2s}
+  .chat-selector.open .chat-selector-btn::after{transform:rotate(180deg)}
+  .chat-selector-menu{position:absolute;top:calc(100% + 6px);left:0;right:auto;min-width:220px;background:rgba(10,18,26,.95);border:1px solid rgba(232,220,192,.2);border-radius:12px;padding:.4rem 0;display:none;z-index:50;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .chat-selector.open .chat-selector-menu{display:block}
+  .chat-selector-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .9rem;font-size:.82rem;color:#e7e2d4;cursor:pointer;transition:background .12s;text-decoration:none;border:0;background:0;width:100%;text-align:left;font:inherit}
+  .chat-selector-item:hover{background:rgba(230,162,60,.14)}
+  .chat-selector-item .icon{font-size:1.1rem;width:1.6rem;text-align:center}
+  .chat-selector-item .label{flex:1}
+  .chat-selector-item .arrow{margin-left:auto;font-size:.7rem;color:var(--brass);opacity:.7}
   @media(prefers-reduced-motion:reduce){.cta{transition:none}}
 </style>
 </head>
@@ -368,12 +380,33 @@
   </section>
 </div>
 
-<section class="gids-haiku" aria-labelledby="gids-haiku-title">
-  <div class="gids-haiku-inner">
-    <p class="gids-haiku-label" id="gids-haiku-title">De natuurgids met lokale llm</p>
-    <p class="gids-haiku-lines" id="gids-haiku-lines">…</p>
+<div class="chat-selector" id="chatSelector">
+  <button class="chat-selector-btn" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleChatSelector()">
+    💬 Chat met de bemanning
+  </button>
+  <div class="chat-selector-menu" role="menu">
+    <a class="chat-selector-item" href="crew.html#sectie-kapitein" role="menuitem">
+      <span class="icon">👤</span>
+      <span class="label">Kapitein</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="chat-selector-item" href="crew.html#sectie-bulgaars" role="menuitem">
+      <span class="icon">🇧🇬</span>
+      <span class="label">Iva</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="chat-selector-item" href="crew.html#sectie-natuurgids" role="menuitem">
+      <span class="icon">🌿</span>
+      <span class="label">Natuurgids</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="chat-selector-item" href="crew.html#sectie-vogelgids" role="menuitem">
+      <span class="icon">🐦</span>
+      <span class="label">Vogelgeluiden</span>
+      <span class="arrow">→</span>
+    </a>
   </div>
-</section>
+</div>
 
 <main>
   <section class="hero">
@@ -440,18 +473,7 @@
           </div>
         </div>
       </section>
-    <section class="chat" id="sectie-bulgaars" aria-labelledby="bg-title">
-      <h2 id="bg-title">Iva</h2>
-      <div class="chat-log" id="bg-log" aria-live="polite">
-        <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
-      </div>
-      <form class="chat-form" id="bg-form">
-        <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
-        <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
-        <button type="submit" id="bg-send">Stuur</button>
-      </form>
-      <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
-    </section>
+
   </section>
 </main>
 
@@ -1177,7 +1199,19 @@
     applyLang('nl');
     loadPluginStatus();
 
-    frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
+    function toggleChatSelector(){
+      const sel=document.getElementById('chatSelector');
+      const isOpen=sel.classList.contains('open');
+      sel.classList.toggle('open', !isOpen);
+      sel.querySelector('.chat-selector-btn').setAttribute('aria-expanded', !isOpen);
+    }
+    document.addEventListener('click', function(e){
+      const sel=document.getElementById('chatSelector');
+      if(sel && !sel.contains(e.target)){
+        sel.classList.remove('open');
+        sel.querySelector('.chat-selector-btn').setAttribute('aria-expanded', 'false');
+      }
+    });
   })();
 </script>
 </body>
