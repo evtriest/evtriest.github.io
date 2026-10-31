@@ -6,165 +6,222 @@
 <title>Radar · Eeps Site</title>
 <style>
   :root{
-    --ink:#f4f1e8;--sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;
-    --sea:#081018;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
-    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --bg:#0a0e12; --green:#00ff88; --amber:#ffaa00; --red:#ff3355;
+    --glow-green:rgba(0,255,136,.35); --glow-amber:rgba(255,170,0,.4); --glow-red:rgba(255,51,85,.45);
   }
-  *{box-sizing:border-box}
-  html,body{height:100%}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
   body{
-    margin:0;color:var(--ink);font-family:var(--sans);background:var(--sea);
-    display:flex;flex-direction:column;min-height:100vh;
+    background:radial-gradient(ellipse at center,#0d1117 0%,#06080a 70%,#000 100%);
+    color:var(--green);font-family:'Courier New',Courier,monospace;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;
   }
+  /* scanlines */
   body::before{
-    content:"";position:fixed;inset:0;
-    background:
-      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.12) 0%,rgba(4,10,16,.42) 55%,rgba(4,10,16,.80) 100%),
-      linear-gradient(to bottom,rgba(4,10,16,.42),rgba(4,10,16,.06) 40%,rgba(4,10,16,.76));
-    z-index:0;pointer-events:none;
+    content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);
   }
-  main{position:relative;z-index:1;flex:1;padding:min(7vh,52px) 20px 32px}
+  /* vignette */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(circle at center,transparent 40%,rgba(0,0,0,.65) 100%);
+  }
+  .radar-container{
+    position:relative;z-index:3;width:min(90vw,90vh,800px);height:min(90vw,90vh,800px);
+    border-radius:50%;box-shadow:0 0 80px rgba(0,255,136,.12),inset 0 0 60px rgba(0,255,136,.06);
+  }
   .radar{
-    position:relative;z-index:1;padding:2.2rem 20px 2.8rem;
-    border-top:1px solid rgba(232,220,192,.14);
-    background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.92));
+    position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;
+    background:radial-gradient(circle,rgba(0,20,10,.35) 0%,rgba(0,10,5,.55) 100%);
+    border:2px solid rgba(0,255,136,.25);
   }
-  .radar-inner{max-width:880px;margin:0 auto}
-  .radar .kicker{margin:0 0 .4rem}
-  .radar-note{margin:.55rem 0 1.25rem;max-width:46rem;font-size:.8rem;line-height:1.65;color:#c9c3b4}
-  .visits{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-  .visit{
-    display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:.2rem .9rem;
-    padding:.72rem .95rem;border-radius:10px;background:rgba(10,18,26,.6);
-    border:1px solid rgba(232,220,192,.14);font-size:.82rem;line-height:1.45;color:#e7e2d4;
+  /* grid */
+  .ring{
+    position:absolute;top:50%;left:50%;border-radius:50%;
+    border:1px solid rgba(0,255,136,.12);transform:translate(-50%,-50%);
   }
-  .visit-time{color:var(--brass);font-size:.72rem;letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .visit b{font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-  .visit small{display:block;margin-top:.15rem;font-size:.72rem;color:#a9a291}
-  .visit-note{grid-template-columns:1fr;color:#a9a291;font-size:.78rem}
-  .visits-wrap{margin:.5rem 0 0;border:1px solid rgba(232,220,192,.16);border-radius:10px;background:rgba(4,10,16,.45);overflow:hidden}
-  .visits-wrap summary{cursor:pointer;padding:.5rem .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);list-style:none;display:flex;align-items:center;justify-content:space-between}
-  .visits-wrap summary::-webkit-details-marker{display:none}
-  .visits-wrap summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--brass);border-bottom:2px solid var(--brass);transform:rotate(45deg);transition:transform .2s ease}
-  .visits-wrap[open] summary::after{transform:rotate(-135deg)}
-  .visits-wrap .visits{max-height:50vh;overflow-y:auto;margin:0;padding:.3rem .5rem .6rem;scrollbar-width:thin;scrollbar-color:rgba(255,200,97,.35) transparent}
-  .visits-wrap .visits::-webkit-scrollbar{width:6px}
-  .visits-wrap .visits::-webkit-scrollbar-thumb{background:rgba(255,200,97,.35);border-radius:3px}
-  .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
-  .plugin{
-    display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .85rem;
-    margin:1.3rem 0 1.4rem;padding:.8rem 1rem;border-radius:12px;
-    background:rgba(10,18,26,.6);border:1px solid rgba(232,220,192,.16);
-    font-size:.82rem;line-height:1.45;color:#e7e2d4;
+  .ring.r1{width:25%;height:25%}
+  .ring.r2{width:50%;height:50%}
+  .ring.r3{width:75%;height:75%}
+  .ring.r4{width:100%;height:100%}
+  .radial{
+    position:absolute;top:0;left:50%;width:1px;height:100%;
+    background:linear-gradient(to bottom,transparent 0%,rgba(0,255,136,.1) 50%,transparent 100%);
+    transform-origin:bottom center;
   }
-  .plugin-name{font-family:var(--serif);font-size:.95rem;color:#f4f1e8}
-  .plugin-link{
-    margin-left:auto;font-size:.74rem;letter-spacing:.03em;color:var(--brass-bright);
-    text-decoration:none;border-bottom:1px solid rgba(255,200,97,.4);
+  /* sweep */
+  .sweep{
+    position:absolute;top:50%;left:50%;width:50%;height:2px;
+    background:linear-gradient(90deg,rgba(0,255,136,.8),transparent);
+    transform-origin:left center;animation:sweep 4s linear infinite;
+    box-shadow:0 0 12px var(--glow-green);
   }
-  .plugin-link:hover{border-bottom-color:var(--brass-bright)}
-  .plugin-verify{display:inline-flex;align-items:center;gap:.5em;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#f4dcd8}
-  .red-light{width:.58em;height:.58em;border-radius:50%;background:#e05a4f;box-shadow:0 0 0 3px rgba(224,90,79,.18);animation:pulse 1.6s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-  .state.wait{color:#f6e6bf}
-  .state.wait::before{background:#e0b23f;box-shadow:0 0 0 3px rgba(224,178,63,.2)}
-  .state.denied{color:#f4dcd8}
-  .state.denied::before{background:#e05a4f;box-shadow:0 0 0 3px rgba(224,90,79,.18)}
-  .state.on{color:#d9f2e2}
-  .state.on::before{background:#38b06b;box-shadow:0 0 0 3px rgba(56,176,107,.2)}
-  .back{margin:1.3rem 0 0;font-size:.82rem;text-align:center}
-  .back a{color:var(--sand)}.back a:hover{color:var(--brass-bright)}
-  footer{position:relative;z-index:1;padding:20px 20px 24px;text-align:center;border-top:1px solid rgba(232,220,192,.14);background:linear-gradient(to bottom,rgba(4,10,16,.55),rgba(4,10,16,.92))}
-  footer p{margin:0 auto;max-width:44rem;font-size:.74rem;line-height:1.7;color:#a9a291}
-  footer a{color:var(--sand)}
+  @keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  /* blips */
+  .blip{
+    position:absolute;width:8px;height:8px;border-radius:50%;
+    transform:translate(-50%,-50%);cursor:pointer;opacity:0;
+    box-shadow:0 0 8px currentColor;transition:opacity .3s;
+  }
+  .blip.ok{background:var(--green);color:var(--green)}
+  .blip.warning{background:var(--amber);color:var(--amber)}
+  .blip.critical{background:var(--red);color:var(--red);animation:blip-pulse 1s infinite}
+  .blip.visible{opacity:1}
+  @keyframes blip-pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
+  /* detail panel */
+  .panel{
+    position:fixed;right:-420px;top:0;width:min(400px,90vw);height:100vh;
+    background:rgba(8,12,16,.96);border-left:1px solid rgba(0,255,136,.25);
+    box-shadow:-8px 0 30px rgba(0,0,0,.7);z-index:10;padding:1.5rem;
+    transition:right .3s ease;overflow-y:auto;
+  }
+  .panel.open{right:0}
+  .panel h2{color:var(--green);font-size:1.1rem;margin-bottom:.8rem;letter-spacing:.05em}
+  .panel .status{
+    display:inline-block;padding:.3em .8em;border-radius:4px;font-size:.75rem;
+    letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;
+  }
+  .panel .status.ok{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3)}
+  .panel .status.warning{background:rgba(255,170,0,.15);color:var(--amber);border:1px solid rgba(255,170,0,.3)}
+  .panel .status.critical{background:rgba(255,51,85,.15);color:var(--red);border:1px solid rgba(255,51,85,.3)}
+  .panel .metric{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(0,255,136,.1);font-size:.85rem}
+  .panel .metric b{color:var(--green)}
+  .panel .metric span{color:#a0b8a8}
+  .panel .close{
+    position:absolute;top:1rem;right:1rem;background:0;border:1px solid rgba(0,255,136,.3);
+    color:var(--green);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;
+  }
+  .panel .close:hover{background:rgba(0,255,136,.1)}
+  /* timestamp */
+  .timestamp{
+    position:fixed;bottom:1.5rem;right:1.5rem;z-index:5;
+    font-size:.7rem;letter-spacing:.15em;color:var(--green);opacity:.7;
+    text-shadow:0 0 6px var(--glow-green);
+  }
+  .back{
+    position:fixed;top:1.5rem;left:1.5rem;z-index:5;
+    color:var(--green);text-decoration:none;font-size:.8rem;letter-spacing:.1em;
+    opacity:.7;
+  }
+  .back:hover{opacity:1}
 </style>
 </head>
 <body>
-<main>
-  <section class="radar">
-    <div class="radar-inner">
-      <p class="kicker">Radar</p>
-      <div class="plugin" id="plugin-submission">
-        <span class="plugin-name">mouse-in-the-corner</span>
-        <span class="state wait">in afwachting van goedkeuring</span>
-        <a class="plugin-link" href="https://plugins.omarchy.org/plugin.html?id=eep.window-controls">mouse-in-the-corner</a>
-        <span class="plugin-verify">Update needs to be approved?! <span class="red-light"></span></span>
-      </div>
-      <p class="radar-note">Bezoekers</p>
-      <details class="visits-wrap">
-        <summary>Toon bezoeken</summary>
-        <ul class="visits" id="visits">
-          <li class="visit visit-note">Radar warmt op…</li>
-        </ul>
-      </details>
-      <p class="radar-meta" id="visits-meta"></p>
-    </div>
-  </section>
-  <p class="back"><a href="/">← Terug naar de landing</a></p>
-</main>
-<footer>
-  <p>© 2026 Eep · radar van de Eeps Site</p>
-</footer>
+<a class="back" href="/">← Landing</a>
+<div class="radar-container">
+  <div class="radar" id="radar">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="ring r4"></div>
+    <div class="radial" style="transform:rotate(0deg)"></div>
+    <div class="radial" style="transform:rotate(45deg)"></div>
+    <div class="radial" style="transform:rotate(90deg)"></div>
+    <div class="radial" style="transform:rotate(135deg)"></div>
+    <div class="sweep"></div>
+  </div>
+</div>
+<div class="timestamp" id="timestamp">LAST SCAN: --</div>
+<div class="panel" id="panel">
+  <button class="close" onclick="closePanel()">✕</button>
+  <h2 id="panel-name">--</h2>
+  <div class="status" id="panel-status">--</div>
+  <div id="panel-metrics"></div>
+</div>
+
 <script>
-  (function(){
-    var API = location.hostname === 'evtriest.github.io'
-      ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
-      : '';
-    var list = document.getElementById('visits');
-    var meta = document.getElementById('visits-meta');
-    var visitData = null;
-    var firstVisit = null;
+const MOCK_DATA = [
+  { id: 1,  name: "CPU Usage",          status: "ok",       value: 23,    unit: "%",    details: { cores: 4, load_avg: [0.42, 0.38, 0.35], top_process: "node (12%)" } },
+  { id: 2,  name: "Memory Usage",       status: "ok",       value: 41,    unit: "%",    details: { total_gb: 8, used_gb: 3.3, free_gb: 4.7, buff_cache_gb: 1.2 } },
+  { id: 3,  name: "Disk Usage",         status: "warning",  value: 82,    unit: "%",    details: { total_gb: 100, used_gb: 82, inode_pct: 34, filesystem: "ext4" } },
+  { id: 4,  name: "Disk I/O",           status: "ok",       value: 12,    unit: "MB/s", details: { read_mbps: 8, write_mbps: 4, iops: 145, device: "sda" } },
+  { id: 5,  name: "Network In",         status: "ok",       value: 4.2,   unit: "Mbps", details: { peak_mbps: 11.3, packets_s: 2340, errors: 0 } },
+  { id: 6,  name: "Network Out",        status: "ok",       value: 7.8,   unit: "Mbps", details: { peak_mbps: 15.1, packets_s: 3120, errors: 0 } },
+  { id: 7,  name: "Uptime",             status: "ok",       value: 142,   unit: "days", details: { since: "2026-06-11 04:32 UTC", reboots: 0 } },
+  { id: 8,  name: "CPU Temperature",    status: "ok",       value: 47,    unit: "°C",   details: { max_c: 52, threshold_c: 85, sensor: "coretemp" } },
+  { id: 9,  name: "Swap Usage",         status: "ok",       value: 3,     unit: "%",    details: { total_mb: 4096, used_mb: 124, free_mb: 3972 } },
+  { id: 10, name: "Load Average",       status: "ok",       value: 0.42,  unit: "1m",   details: { load_5m: 0.38, load_15m: 0.35, cores: 4, ratio: 0.10 } },
+  { id: 11, name: "Open Connections",   status: "ok",       value: 87,    unit: "",     details: { tcp: 72, udp: 15, max_allowed: 1024 } },
+  { id: 12, name: "DNS Response",       status: "ok",       value: 12,    unit: "ms",   details: { provider: "Cloudflare", avg_ms: 12, p99_ms: 34 } },
+  { id: 13, name: "SSL Certificate",    status: "warning",  value: 14,    unit: "days", details: { domain: "vps.example.nl", issuer: "Let's Encrypt", expires: "2026-11-14" } },
+  { id: 14, name: "Bandwidth Used",     status: "ok",       value: 34,    unit: "%",    details: { used_gb: 340, quota_gb: 1000, month: "Oct 2026" } },
+  { id: 15, name: "Process Count",      status: "ok",       value: 148,   unit: "",     details: { running: 12, sleeping: 136, zombies: 0, max: 4096 } },
+  { id: 16, name: "File Descriptors",   status: "ok",       value: 28,    unit: "%",    details: { used: 285, max: 1024 } },
+  { id: 17, name: "DB Connection Pool", status: "critical", value: 95,    unit: "%",    details: { active: 38, max: 40, waiting: 7, avg_wait_ms: 340 } },
+  { id: 18, name: "Queue Depth",        status: "ok",       value: 3,     unit: "jobs", details: { pending: 3, processing: 1, failed: 0, worker: "bull" } },
+  { id: 19, name: "HTTP Error Rate",    status: "ok",       value: 0.2,   unit: "%",    details: { total_req: 12840, errors_5xx: 26, errors_4xx: 142, window: "1h" } },
+  { id: 20, name: "Backup Status",      status: "ok",       value: 6,     unit: "h ago", details: { last_run: "2026-10-31 04:00 UTC", size_gb: 2.1, status: "success" } }
+];
 
-    function when(iso) {
-      var d = new Date(iso);
-      if (isNaN(d)) return iso || '?';
-      try {
-        return new Intl.DateTimeFormat('nl', {
-          day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
-        }).format(d);
-      } catch (err) {
-        return d.toISOString().slice(0, 16).replace('T', ' ');
-      }
-    }
+const radar = document.getElementById('radar');
+const panel = document.getElementById('panel');
+const blips = [];
+let scanTime = null;
 
-    function renderVisits() {
-      if (!list) return;
-      if (!visitData) {
-        list.innerHTML = '<li class="visit visit-note">Radar warmt op…</li>';
-        return;
-      }
-      var items = visitData.items || [];
-      if (!items.length) {
-        list.innerHTML = '<li class="visit visit-note">Nog geen bezoeken op de radar.</li>';
-        if (meta) meta.textContent = '';
-        return;
-      }
-      list.innerHTML = items.map(function(v) {
-        var seen = v.visits_from_ip > 1
-          ? v.visits_from_ip + '× vanaf dit IP, eerst ' + when(v.first_seen_ip)
-          : 'eerste bezoek';
-        return '<li class="visit">' +
-          '<span class="visit-time">' + when(v.time) + '</span>' +
-          '<span><b>' + v.ip + '</b> · ' + v.browser + ' op ' + v.os + ' (' + v.device + ')' +
-          '<small>' + v.page + ' · ' + (v.referrer ? 'via ' + v.referrer : 'direct') + ' · ' + (v.lang || '?') + ' · ' + seen + '</small></span></li>';
-      }).join('');
-      if (meta) {
-        meta.textContent = items.length + ' bezoeken · bijgewerkt ' + when(visitData.fetched);
-      }
-    }
+function polarToCart(angleDeg, radiusPct){
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  const r = radiusPct / 100;
+  return { x: 50 + 50 * r * Math.cos(rad), y: 50 + 50 * r * Math.sin(rad) };
+}
 
-    fetch(API + '/api/bezoek?limit=8', { mode: 'cors' })
-      .then(function(resp){ return resp.json(); })
-      .then(function(data){
-        visitData = data;
-        firstVisit = data && data.tewaterlating ? data.tewaterlating : null;
-        renderVisits();
-      })
-      .catch(function(){
-        visitData = null;
-        list.innerHTML = '<li class="visit visit-note">De radar is buiten bereik.</li>';
-      });
-  })();
+function createBlip(item, delay){
+  const pos = polarToCart(Math.random() * 360, 15 + Math.random() * 75);
+  const el = document.createElement('div');
+  el.className = 'blip ' + item.status;
+  el.style.left = pos.x + '%';
+  el.style.top = pos.y + '%';
+  el.title = item.name;
+  el.dataset.id = item.id;
+  el.addEventListener('click', () => openPanel(item));
+  radar.appendChild(el);
+  blips.push({ el, delay, shown: false });
+}
+
+function scheduleBlips(){
+  blips.forEach(b => {
+    setTimeout(() => {
+      b.el.classList.add('visible');
+      b.shown = true;
+    }, b.delay);
+  });
+}
+
+function openPanel(item){
+  document.getElementById('panel-name').textContent = item.name;
+  const statusEl = document.getElementById('panel-status');
+  statusEl.className = 'status ' + item.status;
+  statusEl.textContent = item.status;
+  const metrics = document.getElementById('panel-metrics');
+  metrics.innerHTML = '';
+  const main = document.createElement('div'); main.className='metric';
+  main.innerHTML = `<b>Value</b><span>${item.value} ${item.unit}</span>`;
+  metrics.appendChild(main);
+  Object.entries(item.details).forEach(([k,v]) => {
+    const row = document.createElement('div'); row.className='metric';
+    const val = Array.isArray(v) ? v.join(', ') : v;
+    row.innerHTML = `<b>${k}</b><span>${val}</span>`;
+    metrics.appendChild(row);
+  });
+  panel.classList.add('open');
+}
+function closePanel(){ panel.classList.remove('open'); }
+document.addEventListener('click', e => {
+  if (!panel.contains(e.target) && !e.target.closest('.blip')) closePanel();
+});
+
+function init(){
+  // timestamp on load
+  const now = new Date();
+  scanTime = now.toISOString().replace('T',' ').slice(0,19) + ' UTC';
+  document.getElementById('timestamp').textContent = 'LAST SCAN: ' + scanTime;
+
+  // place blips with staggered delays based on sweep angle (0-4s)
+  MOCK_DATA.forEach((item, i) => {
+    const delay = (i / MOCK_DATA.length) * 4000 + Math.random() * 600;
+    createBlip(item, delay);
+  });
+  scheduleBlips();
+}
+
+window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
