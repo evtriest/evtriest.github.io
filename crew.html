@@ -94,6 +94,9 @@
   .chat-bulg{border-color:rgba(240,128,112,.32);background:rgba(24,10,10,.55)}
   .chat-bulg h2{color:#f09a8c}
   .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
+  .chat-admin{border-color:rgba(0,255,136,.28);background:rgba(6,18,12,.62)}
+  .chat-admin h2{color:#00ff88}
+  .msg-admin{background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.26);color:#e6f5ea;align-self:flex-start}
   /* Profiel per chatbox: links de foto met Profiel-beheer en agenda-knop,
      rechts de chat. De agenda zelf opent als balk onder de box. */
   .chat-grid{display:grid;grid-template-columns:132px minmax(0,1fr);gap:.8rem;align-items:start}
@@ -280,6 +283,19 @@
       <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en speelt de roep meteen af. Hoort het niet? Klik op de play-knop van de speler.</p>
     </section>
 
+    <section class="chat chat-admin" id="sectie-admin" aria-labelledby="admin-title">
+      <h2 id="admin-title">Admin</h2>
+      <div class="chat-log" id="admin-log" aria-live="polite">
+        <p class="msg msg-admin">🛡️ Admin online. Monitoring API calls, rate limits en systeemstatus. Wat is je vraag?</p>
+      </div>
+      <form class="chat-form" id="admin-form">
+        <label class="sr-only" for="admin-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag aan de admin</label>
+        <input id="admin-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Vraag de admin…">
+        <button type="submit" id="admin-send">Stuur</button>
+      </form>
+      <p class="chat-note">De admin bewaakt de API-gateway en helpt bij technische problemen.</p>
+    </section>
+
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
 
     <p class="back"><a href="index.html">← Terug naar de landing</a></p>
@@ -430,6 +446,7 @@
     frontChat({ form: 'chat-form', input: 'chat-input', send: 'chat-send', log: 'chat-log', msg: 'guide', thinking: 'De gids denkt na…', stil: 'De gids is even stil: ' });
     frontChat({ form: 'birds-form', input: 'birds-input', send: 'birds-send', log: 'birds-log', msg: 'bird', agent: 'vogelgids', speelMp3: true, thinking: 'De vogelgids fluit na…', stil: 'De vogelgids is even stil: ' });
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
+    frontChat({ form: 'admin-form', input: 'admin-input', send: 'admin-send', log: 'admin-log', msg: 'admin', agent: 'admin', thinking: '🛡️ Admin scant…', stil: 'Admin is even stil: ' });
 
     /* Kapitein: geen netwerk, geen llama — gewoon de kapitein. */
     var captainForm = document.getElementById('captain-form');
@@ -705,7 +722,8 @@
     agentPaneel({ sectie: 'sectie-kapitein', agent: 'kapitein', titel: 'Kapitein' });
     agentPaneel({ sectie: 'sectie-bulgaars', agent: 'bulgaars', titel: 'Iva' });
     agentPaneel({ sectie: 'sectie-natuurgids', agent: 'natuurgids', titel: 'Natuurgids' });
-    agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgids' });
+    agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgeluiden' });
+    agentPaneel({ sectie: 'sectie-admin', agent: 'admin', titel: 'Admin' });
 
     /* ── Taglijst uit de agenda van de kapitein ── */
     (function laadTags() {
@@ -735,7 +753,8 @@
             'iva': 'https://evtriest.github.io/crew.html#sectie-bulgaars',
             'natuurgids': 'https://evtriest.github.io/crew.html#sectie-natuurgids',
             'vogelgeluiden': 'https://evtriest.github.io/crew.html#sectie-vogelgids',
-            'kapitein': 'https://evtriest.github.io/crew.html#sectie-kapitein'
+            'kapitein': 'https://evtriest.github.io/crew.html#sectie-kapitein',
+            'admin': 'https://evtriest.github.io/crew.html#sectie-admin'
           };
           tags.forEach(function (t) {
             var a = document.createElement('a');
