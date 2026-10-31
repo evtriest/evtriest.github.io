@@ -236,7 +236,10 @@ function polarToCart(angleDeg, radiusPct){
 }
 
 function createBlip(item, delay){
-  const pos = polarToCart(Math.random() * 360, 15 + Math.random() * 75);
+  // automatic blips in upper-left quadrant only
+  const angle = 270 + Math.random() * 90; // 270-360°
+  const radius = 15 + Math.random() * 40; // 15-55%
+  const pos = polarToCart(angle, radius);
   const el = document.createElement('div');
   el.className = 'blip ' + item.status;
   el.style.left = pos.x + '%';

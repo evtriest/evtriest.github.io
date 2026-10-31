@@ -471,6 +471,20 @@
       </section>
 
   </section>
+
+  <section class="chat" id="sectie-bulgaars" aria-labelledby="bg-title">
+    <h2 id="bg-title">Iva</h2>
+    <div class="chat-log" id="bg-log" aria-live="polite">
+      <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
+    </div>
+    <form class="chat-form" id="bg-form">
+      <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
+      <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+      <button type="submit" id="bg-send">Stuur</button>
+    </form>
+    <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
+  </section>
+
 </main>
 
     <div class="cta-wrap">
@@ -1175,6 +1189,8 @@
 
     applyLang('nl');
     loadPluginStatus();
+
+    frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
 
     function loadAgents(){
   fetch('/api/agents')
