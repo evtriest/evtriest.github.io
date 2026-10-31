@@ -71,6 +71,11 @@
     text-transform:uppercase;color:var(--brass);opacity:.9;
   }
   .launch time{font-variant-numeric:tabular-nums}
+  .uptime{margin:-4px 0 6px;font-family:var(--sans);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sand);opacity:.78}
+  .outages{margin:0 0 18px;padding:.55rem .7rem;border-radius:10px;background:rgba(10,18,26,.55);border:1px solid rgba(232,220,192,.16);display:inline-block;text-align:left}
+  .outages summary{cursor:pointer;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+  .outages summary::-webkit-details-marker{display:none}
+  .outages ul{margin:.4rem 0 0;padding:0 0 0 1.1rem;font-size:.76rem;line-height:1.55;color:#c9c3b4}
   h1{
     margin:0;font-family:var(--serif);font-weight:700;
     font-size:clamp(2.35rem,7.4vw,4.6rem);line-height:1.02;letter-spacing:.01em;
@@ -153,6 +158,14 @@
   .visit b{font-weight:700;color:var(--brass-bright);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
   .visit small{display:block;margin-top:.15rem;font-size:.72rem;color:#a9a291}
   .visit-note{grid-template-columns:1fr;color:#a9a291;font-size:.78rem}
+  .visits-wrap{margin:.5rem 0 0;border:1px solid rgba(232,220,192,.16);border-radius:10px;background:rgba(4,10,16,.45);overflow:hidden}
+  .visits-wrap summary{cursor:pointer;padding:.5rem .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);list-style:none;display:flex;align-items:center;justify-content:space-between}
+  .visits-wrap summary::-webkit-details-marker{display:none}
+  .visits-wrap summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--brass);border-bottom:2px solid var(--brass);transform:rotate(45deg);transition:transform .2s ease}
+  .visits-wrap[open] summary::after{transform:rotate(-135deg)}
+  .visits-wrap .visits{max-height:50vh;overflow-y:auto;margin:0;padding:.3rem .5rem .6rem;scrollbar-width:thin;scrollbar-color:rgba(255,200,97,.35) transparent}
+  .visits-wrap .visits::-webkit-scrollbar{width:6px}
+  .visits-wrap .visits::-webkit-scrollbar-thumb{background:rgba(255,200,97,.35);border-radius:3px}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
   .plugin{
     display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .85rem;
@@ -293,7 +306,14 @@
     <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
     <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
-    <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
+    <p class="uptime"><span data-i18n="uptimeLabel">Uptime</span> · <span id="uptime-status">…</span></p>
+    <details class="outages">
+      <summary><span data-i18n="outagesLabel">Outages</span></summary>
+      <ul id="outages-list">
+        <li>6 hour site unreachable, hmm door menselijke fout zegt de kapitein</li>
+      </ul>
+    </details>
+    <h1><span class="the">Eeps</span>Site</h1>
     <div class="intro-row">
       <p class="lede" data-i18n-html="lede">
         Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
@@ -301,7 +321,6 @@
         vinden is, waar, en of het water mee- of tegenzit.
       </p>
       <section class="musings">
-        <h2 data-i18n="musingsTitle">Laatste gedichtjes</h2>
         <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
           <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels" data-i18n="tabKokkels">Kokkels</button>
           <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids" data-i18n="tabGids">De gids</button>
@@ -352,6 +371,7 @@
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
     <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
     <p class="crew-link"><a href="crew.html" data-i18n="crewLink">Naar de Crew</a></p>
+    <p class="crew-link"><a href="https://evtriest.github.io/bookmarks.html">📚 Bookmarks</a></p>
 
     <div class="cards">
       <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
@@ -371,17 +391,16 @@
   <div class="plugin" id="plugin-submission">
     <span class="plugin-name">mouse-in-the-corner</span>
     <span class="state wait" data-i18n="pluginPending">in afwachting van goedkeuring</span>
-    <a class="plugin-link" href="https://plugins.omarchy.org/#recent-section" data-i18n="pluginLink">Nieuwste Omarchy-plugins</a>
+    <a class="plugin-link" href="https://plugins.omarchy.org/plugin.html?id=eep.window-controls" data-i18n="pluginLink">mouse-in-the-corner</a>
   </div>
   <div class="radar-inner">
-    <p class="radar-note" data-i18n-html="radarNote">
-      Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site:
-      één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina,
-      herkomst en taal — alles wat er van dat adres te weten is.
-    </p>
-    <ul class="visits" id="visits">
-      <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
-    </ul>
+    <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
+    <details class="visits-wrap">
+      <summary><span data-i18n="visitsSummary">Toon bezoeken</span></summary>
+      <ul class="visits" id="visits">
+        <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
+      </ul>
+    </details>
     <p class="radar-meta" id="visits-meta"></p>
   </div>
 </details>
@@ -456,10 +475,11 @@
         lede: `Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk: de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te vinden is, waar, en of het water mee- of tegenzit.`,
         cta: `Enter de Wildpluk-site`,
         fineprint: `Geen inloggen, geen schatkaart nodig — het getij staat al achter je.`,
+        uptimeLabel: `Uptime`,
+        outagesLabel: `Outages`,
         card1: `Buit`, card1s: `schelpen, zeewier en één krab met een mening`,
         card2: `Vloot`, card2s: `1 schip (geleend) · 0 kanonnen (belasting)`,
         card3: `Getij`, card3s: `elke 10 minuten vers, recht uit Rijkswaterstaat`,
-        musingsTitle: `Laatste gedichtjes`,
         tabKokkels: `Kokkels`, tabGids: `De gids`, tabVlag: `De vlag`,
         tabBulgaars: `Bulgaars`, tabZorgen: `Zorgen`,
         hKokkels: `Kokkels in het nat<br>de kijker zoekt langs de dijk<br>het tij zegt: nog niet`,
@@ -467,13 +487,14 @@
         hVlag: `Mijn vlag hangt nog hoog<br>straks strijk ik hem voor het laatst<br>betaald varen, ja`,
         hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
         hZorgen: `Radar kwijt, gin op<br>FreeBuff blijft toch gratis, hoop<br>China houdt nog vol`,
-        radarKicker: `Radar`, radarNote: `Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site: één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina, herkomst en taal — alles wat er van dat adres te weten is.`,
+        radarKicker: `Radar`, radarNote: `Bezoekers`,
         radarLoading: `Radar warmt op…`,
         radarEmpty: `Nog geen bezoeken op de radar.`,
         radarError: `De radar is buiten bereik.`,
+        visitsSummary: `Toon bezoeken`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
-        pluginDenied: `afgewezen`, pluginLink: `Nieuwste Omarchy-plugins`,
+        pluginDenied: `afgewezen`, pluginLink: `mouse-in-the-corner`,
         seen: `{n}× vanaf dit IP, eerst {time}`, first: `eerste bezoek`,
         via: `via`, direct: `direct`, onDevice: `op`,
         deviceDesktop: `desktop`, deviceMobile: `mobiel`, deviceBot: `bot`,
@@ -499,10 +520,11 @@
         lede: `A flag, a ship and a tide chart. From this roadstead you enter the real work: the <strong>wildpluk site</strong> along the Wadden coast — where you see what can be found right now, where, and whether the water is with you or against you.`,
         cta: `Enter the Wildpluk site`,
         fineprint: `No login, no treasure map needed — the tide is already at your back.`,
+        uptimeLabel: `Uptime`,
+        outagesLabel: `Outages`,
         card1: `Loot`, card1s: `shells, seaweed and one opinionated crab`,
         card2: `Fleet`, card2s: `1 ship (borrowed) · 0 cannons (tax)`,
         card3: `Tide`, card3s: `fresh every 10 minutes, straight from Rijkswaterstaat`,
-        musingsTitle: `Just a bit of rowing`,
         tabKokkels: `Shells`, tabGids: `The guide`, tabVlag: `The flag`,
         tabBulgaars: `Bulgarian`, tabZorgen: `Worries`,
         hKokkels: `Cockles in the wet<br>the glass scans along the dike<br>the tide says: not yet`,
@@ -510,13 +532,14 @@
         hVlag: `My flag still flies high<br>soon I strike it one last time<br>paid sailing, yes`,
         hBulgaars: `Gin gleams in the glass<br>an avatar teaches me<br>Den Helder joins in`,
         hZorgen: `Radar lost, gin gone<br>FreeBuff stays free, I hope<br>China holds on still`,
-        radarKicker: `Radar`, radarNote: `What the radar picked up lately on this roadstead and on the wildpluk site: one row per IP, with time, browser, operating system, device, page, referrer and language — everything known about that address.`,
+        radarKicker: `Radar`, radarNote: `Visitors`,
         radarLoading: `Warming up the radar…`,
         radarEmpty: `No visits on the radar yet.`,
         radarError: `The radar is out of range.`,
+        visitsSummary: `Show visits`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
-        pluginDenied: `rejected`, pluginLink: `Newest Omarchy plugins`,
+        pluginDenied: `rejected`, pluginLink: `mouse-in-the-corner`,
         seen: `{n}× from this IP, first {time}`, first: `first visit`,
         via: `via`, direct: `direct`, onDevice: `on`,
         deviceDesktop: `desktop`, deviceMobile: `mobile`, deviceBot: `bot`,
@@ -542,10 +565,11 @@
         lede: `Eine Flagge, ein Schiff und eine Gezeitenkarte. Von dieser Reede aus enterst du die eigentliche Arbeit: die <strong>Wildpluk-Seite</strong> an der Wattenküste — wo du siehst, was jetzt zu finden ist, wo, und ob das Wasser mitspielt oder dagegen.`,
         cta: `Enter die Wildpluk-Seite`,
         fineprint: `Kein Login, keine Schatzkarte nötig — die Gezeit steht schon hinter dir.`,
+        uptimeLabel: `Uptime`,
+        outagesLabel: `Ausfälle`,
         card1: `Beute`, card1s: `Muscheln, Seetang und eine Krabbe mit Meinung`,
         card2: `Flotte`, card2s: `1 Schiff (geliehen) · 0 Kanonen (Steuer)`,
         card3: `Gezeit`, card3s: `alle 10 Minuten frisch, direkt von Rijkswaterstaat`,
-        musingsTitle: `Mal ein Stück rudern`,
         tabKokkels: `Muscheln`, tabGids: `Der Guide`, tabVlag: `Die Flagge`,
         tabBulgaars: `Bulgarisch`, tabZorgen: `Sorgen`,
         hKokkels: `Muscheln im Nassen<br>das Glas sucht längs des Deichs<br>die Flut sagt: noch nicht`,
@@ -553,13 +577,14 @@
         hVlag: `Meine Flagge weht hoch<br>bald streiche ich sie zum letzten Mal<br>bezahlt segeln, ja`,
         hBulgaars: `Gin glänzt im Glas<br>ein Avatar lehrt mich Bulgarisch<br>Den Helder lernt mit`,
         hZorgen: `Radar weg, Gin leer<br>FreeBuff bleibt gratis, hoffentlich<br>China hält noch durch`,
-        radarKicker: `Radar`, radarNote: `Was das Radar zuletzt auf dieser Reede und auf der Wildpluk-Seite aufgefangen hat: eine Zeile pro IP, mit Zeit, Browser, Betriebssystem, Gerät, Seite, Herkunft und Sprache — alles, was über diese Adresse bekannt ist.`,
+        radarKicker: `Radar`, radarNote: `Besuche`,
         radarLoading: `Radar wärmt auf…`,
         radarEmpty: `Noch keine Besuche auf dem Radar.`,
         radarError: `Das Radar ist außer Reichweite.`,
+        visitsSummary: `Besuche anzeigen`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
-        pluginDenied: `abgelehnt`, pluginLink: `Neueste Omarchy-Plugins`,
+        pluginDenied: `abgelehnt`, pluginLink: `mouse-in-the-corner`,
         seen: `{n}× von dieser IP, zuerst {time}`, first: `erster Besuch`,
         via: `über`, direct: `direkt`, onDevice: `auf`,
         deviceDesktop: `Desktop`, deviceMobile: `mobil`, deviceBot: `Bot`,
@@ -585,10 +610,11 @@
         lede: `Flaga, statek i mapa pływów. Z tej redy wchodzisz do prawdziwej roboty: <strong>strona wildpluk</strong> wzdłuż wybrzeża Wadden — gdzie zobaczysz, co można teraz znaleźć, gdzie i czy woda jest z tobą, czy przeciw tobie.`,
         cta: `Wejdź na stronę Wildpluk`,
         fineprint: `Bez logowania i bez mapy skarbów — pływ już masz za sobą.`,
+        uptimeLabel: `Uptime`,
+        outagesLabel: `Przerwy`,
         card1: `Łup`, card1s: `muszle, wodorosty i jeden krab z opinią`,
         card2: `Flota`, card2s: `1 statek (pożyczony) · 0 dział (podatek)`,
         card3: `Pływ`, card3s: `świeży co 10 minut, prosto z Rijkswaterstaat`,
-        musingsTitle: `Trochę wiosłowania`,
         tabKokkels: `Muszle`, tabGids: `Przewodnik`, tabVlag: `Flaga`,
         tabBulgaars: `Bułgarski`, tabZorgen: `Troski`,
         hKokkels: `Muszle w mokrym<br>lornetka bada wał<br>pływ mówi: jeszcze nie`,
@@ -596,13 +622,14 @@
         hVlag: `Flaga jeszcze w górze<br>wkrótce opuszczę ją na zawsze<br>pływanie za opłatą, tak`,
         hBulgaars: `Gin błyszczy w szkle<br>awatar uczy mnie bułgarskiego<br>Den Helder wtóruje`,
         hZorgen: `Radar zginął, gin znikł<br>FreeBuff wciąż darmowy, mam nadzieję<br>Chiny trwają`,
-        radarKicker: `Radar`, radarNote: `Co radar ostatnio złapał na tej redzie i na stronie wildpluk: jeden wiersz na IP, z czasem, przeglądarką, systemem, urządzeniem, stroną, źródłem i językiem — wszystko, co wiadomo o tym adresie.`,
+        radarKicker: `Radar`, radarNote: `Odwiedziny`,
         radarLoading: `Radar się rozgrzewa…`,
         radarEmpty: `Na radarze nie ma jeszcze odwiedzin.`,
         radarError: `Radar jest poza zasięgiem.`,
+        visitsSummary: `Pokaż wizyty`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
-        pluginDenied: `odrzucony`, pluginLink: `Najnowsze pluginy Omarchy`,
+        pluginDenied: `odrzucony`, pluginLink: `mouse-in-the-corner`,
         seen: `{n}× z tego IP, pierwszy raz {time}`, first: `pierwsza wizyta`,
         via: `z`, direct: `bezpośrednio`, onDevice: `na`,
         deviceDesktop: `komputer`, deviceMobile: `telefon`, deviceBot: `bot`,
@@ -628,10 +655,11 @@
         lede: `Флаг, кораб и карта на прилива. От този рейд влизаш в истинската работа: <strong>сайтът wildpluk</strong> по брега на Ваден — където виждаш какво има сега, къде и дали водата е с теб, или срещу теб.`,
         cta: `Влез в Wildpluk`,
         fineprint: `Без вход и без карта на съкровища — приливът вече е зад теб.`,
+        uptimeLabel: `Uptime`,
+        outagesLabel: `Проблеми`,
         card1: `Плячка`, card1s: `миди, водорасли и един рак с мнение`,
         card2: `Флота`, card2s: `1 кораб (зает назаем) · 0 оръдия (данък)`,
         card3: `Прилив`, card3s: `пресен на всеки 10 минути, направо от Rijkswaterstaat`,
-        musingsTitle: `Малко гребане`,
         tabKokkels: `Миди`, tabGids: `Гидът`, tabVlag: `Флагът`,
         tabBulgaars: `Български`, tabZorgen: `Тревоги`,
         hKokkels: `Миди в мокрото<br>далекогледът търси<br>приливът: не още`,
@@ -639,13 +667,14 @@
         hVlag: `Флагът ми още вее<br>скоро ще го сваля за последно<br>платено плаване, да`,
         hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
         hZorgen: `Радарът го няма, джинът свърши<br>FreeBuff още е безплатен, надявам се<br>Китай издържа`,
-        radarKicker: `Радар`, radarNote: `Какво улови радарът напоследък на този рейд и на сайта wildpluk: по един ред за IP, с време, браузър, система, устройство, страница, източник и език — всичко, което се знае за този адрес.`,
+        radarKicker: `Радар`, radarNote: `Посещения`,
         radarLoading: `Радарът загрява…`,
         radarEmpty: `Още няма посещения на радара.`,
         radarError: `Радарът е извън обхват.`,
+        visitsSummary: `Покажи посещения`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
-        pluginDenied: `отхвърлен`, pluginLink: `Най-новите плъгини за Omarchy`,
+        pluginDenied: `отхвърлен`, pluginLink: `mouse-in-the-corner`,
         seen: `{n}× от това IP, първо {time}`, first: `първо посещение`,
         via: `чрез`, direct: `директно`, onDevice: `на`,
         deviceDesktop: `компютър`, deviceMobile: `мобилен`, deviceBot: `бот`,
@@ -671,10 +700,11 @@
         lede: `一面旗、一艘船、一张潮汐图。从这个锚地进入真正的工作：<strong>wildpluk 网站</strong> 沿瓦登海岸——看看此刻有什么、在哪里，以及潮水是帮你还是挡你。`,
         cta: `进入 Wildpluk 网站`,
         fineprint: `无需登录，也不需要藏宝图——潮水已经在你身后。`,
+        uptimeLabel: `运行时间`,
+        outagesLabel: `故障`,
         card1: `收获`, card1s: `贝壳、海藻，还有一只有主见的螃蟹`,
         card2: `船队`, card2s: `1 艘船（借的）· 0 门炮（交税）`,
         card3: `潮汐`, card3s: `每 10 分钟更新，直接来自 Rijkswaterstaat`,
-        musingsTitle: `划一会儿桨`,
         tabKokkels: `贝壳`, tabGids: `向导`, tabVlag: `旗帜`,
         tabBulgaars: `保加利亚语`, tabZorgen: `担忧`,
         hKokkels: `湿沙里的蛤蜊<br>望远镜扫过堤岸<br>潮水说：还不到`,
@@ -682,13 +712,14 @@
         hVlag: `我的旗还高挂<br>不久要最后一次降下<br>付费航行，是的`,
         hBulgaars: `琴酒在杯中闪<br>头像教我保加利亚语<br>登海尔德也跟着学`,
         hZorgen: `雷达丢了，酒也空了<br>FreeBuff 还免费，但愿如此<br>中国仍在坚持`,
-        radarKicker: `雷达`, radarNote: `雷达最近在这片锚地和 wildpluk 网站上捕捉到的：每个 IP 一行，含时间、浏览器、操作系统、设备、页面、来源和语言——关于该地址所知道的一切。`,
+        radarKicker: `雷达`, radarNote: `访客`,
         radarLoading: `雷达正在预热…`,
         radarEmpty: `雷达上还没有访客。`,
         radarError: `雷达超出范围。`,
+        visitsSummary: `显示访客`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
-        pluginDenied: `已拒绝`, pluginLink: `最新 Omarchy 插件`,
+        pluginDenied: `已拒绝`, pluginLink: `mouse-in-the-corner`,
         seen: `该 IP 第 {n} 次，首次 {time}`, first: `首次访问`,
         via: `来自`, direct: `直接访问`, onDevice: `运行于`,
         deviceDesktop: `桌面`, deviceMobile: `手机`, deviceBot: `机器人`,
