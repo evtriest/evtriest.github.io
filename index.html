@@ -167,6 +167,23 @@
   .visits-wrap .visits::-webkit-scrollbar{width:6px}
   .visits-wrap .visits::-webkit-scrollbar-thumb{background:rgba(255,200,97,.35);border-radius:3px}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:#8f8a7c;letter-spacing:.02em}
+  .chat{margin:1.8rem auto 0;max-width:560px;text-align:left;padding:1rem 1.1rem 1.1rem;background:rgba(10,18,26,.66);border:1px solid rgba(232,220,192,.18);border-radius:14px;backdrop-filter:blur(6px)}
+  .chat h2{margin:0 0 .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
+  .chat-log{display:flex;flex-direction:column;gap:.55rem;max-height:46vh;overflow-y:auto;padding-right:.2rem}
+  .msg{margin:0;max-width:88%;padding:.55rem .78rem;border-radius:10px;font-size:.86rem;line-height:1.5}
+  .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
+  .msg-user{background:rgba(230,162,60,.92);color:#1a1206;align-self:flex-end;font-weight:600}
+  .msg-pending{opacity:.75;font-style:italic}
+  .msg-error{border-color:rgba(224,90,79,.55);background:rgba(224,90,79,.14);color:#ffc9c1}
+  .chat-form{display:flex;gap:.5rem;margin-top:.85rem}
+  .chat-form input{flex:1;min-width:0;font:inherit;font-size:.88rem;padding:.62em .85em;border-radius:999px;border:1px solid rgba(232,220,192,.28);background:rgba(4,10,16,.72);color:var(--ink)}
+  .chat-form input::placeholder{color:#a9a291}
+  .chat-form input:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}
+  .chat-form button{font:inherit;font-size:.86rem;font-weight:700;padding:.62em 1.15em;border-radius:999px;border:1px solid rgba(255,200,97,.55);cursor:pointer;color:#1a1206;background:linear-gradient(180deg,rgba(230,162,60,.96),rgba(186,116,22,.96))}
+  .chat-form button:hover{filter:brightness(1.06)}
+  .chat-form button:disabled{opacity:.6;cursor:progress}
+  .chat-note{margin:.6rem 0 0;font-size:.68rem;color:#8f8a7c;letter-spacing:.02em}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .plugin{
     display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .85rem;
     margin:1.3rem 0 1.4rem;padding:.8rem 1rem;border-radius:12px;
@@ -297,6 +314,60 @@
   </div>
 </nav>
 
+<div class="intro-row">
+  <p class="lede" data-i18n-html="lede">
+    Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
+    de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
+    vinden is, waar, en of het water mee- of tegenzit.
+  </p>
+  <section class="musings">
+    <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
+      <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels" data-i18n="tabKokkels">Kokkels</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids" data-i18n="tabGids">De gids</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag" data-i18n="tabVlag">De vlag</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars" data-i18n="tabBulgaars">Bulgaars</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen" data-i18n="tabZorgen">Zorgen</button>
+    </div>
+    <div class="haiku">
+      <div class="haiku-piece" id="haiku-kokkels">
+        <p data-i18n-html="hKokkels">
+          Kokkels in het nat<br>
+          de kijker zoekt langs de dijk<br>
+          het tij zegt: nog niet
+        </p>
+      </div>
+      <div class="haiku-piece" id="haiku-gids" hidden>
+        <p data-i18n-html="hGids">
+          Bot praat in het rond<br>
+          venv, github, geen chocola<br>
+          de gids knikt maar wat
+        </p>
+      </div>
+      <div class="haiku-piece" id="haiku-vlag" hidden>
+        <p data-i18n-html="hVlag">
+          Mijn vlag hangt nog hoog<br>
+          straks strijk ik hem voor het laatst<br>
+          betaald varen, ja
+        </p>
+      </div>
+      <div class="haiku-piece" id="haiku-bulgaars" hidden>
+        <p data-i18n-html="hBulgaars">
+          Джин блести в чаша<br>
+          аватар ме учи днес<br>
+          Хелдер учи с мен
+        </p>
+      </div>
+      <div class="haiku-piece" id="haiku-zorgen" hidden>
+        <p data-i18n-html="hZorgen">
+          Radar kwijt, gin op<br>
+          FreeBuff blijft toch gratis, hoop<br>
+          China houdt nog vol
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <section class="gids-haiku" aria-labelledby="gids-haiku-title">
   <div class="gids-haiku-inner">
     <p class="gids-haiku-label" id="gids-haiku-title">De natuurgids met lokale llm</p>
@@ -381,6 +452,19 @@
       <div class="card"><b data-i18n="card2">Vloot</b><span data-i18n="card2s">1 schip (geleend) · 0 kanonnen (belasting)</span></div>
       <div class="card"><b data-i18n="card3">Getij</b><span data-i18n="card3s">elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
     </div>
+
+    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
+      <h2 id="bg-title">Iva</h2>
+      <div class="chat-log" id="bg-log" aria-live="polite">
+        <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
+      </div>
+      <form class="chat-form" id="bg-form">
+        <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
+        <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+        <button type="submit" id="bg-send">Stuur</button>
+      </form>
+      <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
+    </section>
   </section>
 </main>
 
@@ -820,6 +904,63 @@
       });
     }
 
+    function frontChat(opts) {
+      var form = document.getElementById(opts.form);
+      var input = document.getElementById(opts.input);
+      var button = document.getElementById(opts.send);
+      var log = document.getElementById(opts.log);
+      var history = [];
+
+      function bubble(text, kind, logEl) {
+        var el = document.createElement('p');
+        el.className = 'msg msg-' + kind;
+        el.textContent = text;
+        logEl.appendChild(el);
+        logEl.scrollTop = logEl.scrollHeight;
+        return el;
+      }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var question = input.value.trim();
+        if (!question) return;
+        bubble(question, 'user', log);
+        history.push({ role: 'user', content: question });
+        input.value = '';
+        input.disabled = true;
+        button.disabled = true;
+        var pending = bubble(opts.thinking || '…', opts.msg + ' msg-pending', log);
+
+        var body = { messages: history };
+        if (opts.agent) body.agent = opts.agent;
+
+        fetch(API + '/api/chat', {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        })
+          .then(function (resp) { return resp.json().then(function (data) { return { ok: resp.ok, data: data }; }); })
+          .then(function (result) {
+            var reply = result.ok && result.data && result.data.reply;
+            if (!reply) throw new Error((result.data && result.data.error) || 'geen antwoord');
+            pending.textContent = reply;
+            pending.classList.remove('msg-pending');
+            history.push({ role: 'assistant', content: reply });
+          })
+          .catch(function (err) {
+            pending.textContent = (opts.stil || 'Fout: ') + err.message;
+            pending.classList.remove('msg-pending');
+            pending.classList.add('msg-error');
+          })
+          .then(function () {
+            input.disabled = false;
+            button.disabled = false;
+            input.focus();
+          });
+      });
+    }
+
     function when(iso) {
       var d = new Date(iso);
       if (isNaN(d)) return iso || '?';
@@ -1035,6 +1176,8 @@
 
     applyLang('nl');
     loadPluginStatus();
+
+    frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
   })();
 </script>
 </body>
