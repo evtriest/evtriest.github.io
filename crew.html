@@ -180,7 +180,8 @@
   }
   .tag-list{display:flex;flex-wrap:wrap;gap:.45rem .6rem;margin:0 auto 1.4rem;max-width:880px;width:100%;padding:0 20px;box-sizing:border-box}
   .tag{font-size:.6rem;letter-spacing:.06em;padding:.3em .65em;border-radius:999px;
-    background:rgba(230,162,60,.14);border:1px solid rgba(255,200,97,.35);color:var(--brass-bright)}
+    background:rgba(230,162,60,.14);border:1px solid rgba(255,200,97,.35);color:var(--brass-bright);text-decoration:none;cursor:pointer}
+  .tag:hover{background:rgba(230,162,60,.22);border-color:rgba(255,200,97,.55)}
 </style>
 </head>
 <body>
@@ -672,11 +673,23 @@
           });
           if (!tags.length) return;
           lijst.innerHTML = '';
+          var crewLinks = {
+            'iva': 'https://evtriest.github.io/crew.html#sectie-bulgaars',
+            'natuurgids': 'https://evtriest.github.io/crew.html#sectie-natuurgids',
+            'vogelgeluiden': 'https://evtriest.github.io/crew.html#sectie-vogelgids',
+            'kapitein': 'https://evtriest.github.io/crew.html#sectie-kapitein'
+          };
           tags.forEach(function (t) {
-            var span = document.createElement('span');
-            span.className = 'tag';
-            span.textContent = t;
-            lijst.appendChild(span);
+            var a = document.createElement('a');
+            a.className = 'tag';
+            var key = t.toLowerCase();
+            if (crewLinks[key]) {
+              a.href = crewLinks[key];
+            } else {
+              a.href = 'https://evtriest.github.io/crew.html';
+            }
+            a.textContent = t;
+            lijst.appendChild(a);
           });
         })
         .catch(function () { /* tags zijn niet kritisch */ });
