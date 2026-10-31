@@ -179,6 +179,9 @@
     text-decoration:none;border-bottom:1px solid rgba(255,200,97,.4);
   }
   .plugin-link:hover{border-bottom-color:var(--brass-bright)}
+  .plugin-verify{display:inline-flex;align-items:center;gap:.5em;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#f4dcd8}
+  .red-light{width:.58em;height:.58em;border-radius:50%;background:#e05a4f;box-shadow:0 0 0 3px rgba(224,90,79,.18);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
   .state.wait{color:#f6e6bf}
   .state.wait::before{background:#e0b23f;box-shadow:0 0 0 3px rgba(224,178,63,.2)}
   .state.denied{color:#f4dcd8}
@@ -392,6 +395,7 @@
     <span class="plugin-name">mouse-in-the-corner</span>
     <span class="state wait" data-i18n="pluginPending">in afwachting van goedkeuring</span>
     <a class="plugin-link" href="https://plugins.omarchy.org/plugin.html?id=eep.window-controls" data-i18n="pluginLink">mouse-in-the-corner</a>
+    <span class="plugin-verify">Update needs to be approved?! <span class="red-light"></span></span>
   </div>
   <div class="radar-inner">
     <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
