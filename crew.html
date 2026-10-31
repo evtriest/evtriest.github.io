@@ -79,22 +79,61 @@
   .chat-birds{border-color:rgba(127,202,145,.30);background:rgba(8,20,16,.62)}
   .chat-birds h2{color:#7fca91}
   .msg-bird{background:rgba(127,202,145,.12);border:1px solid rgba(127,202,145,.26);color:#e6f5ea;align-self:flex-start}
+  .speler-box{display:block;margin-top:.45rem;padding:.5rem .6rem .55rem;border-radius:10px;background:rgba(4,12,8,.55);border:1px solid rgba(127,202,145,.3)}
+  .speler-box > span{display:block;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7fca91;margin-bottom:.3rem}
+  .msg audio{display:block;width:min(300px,100%);border-radius:8px}
   .chat-bulg{border-color:rgba(240,128,112,.32);background:rgba(24,10,10,.55)}
   .chat-bulg h2{color:#f09a8c}
   .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
-  .chat-agents summary{cursor:pointer;list-style:none}
-  .chat-agents summary:hover{filter:brightness(1.1)}
-  .chat-agents summary h2{display:inline;cursor:pointer}
-  .chat-agents textarea{
-    width:100%;min-height:11rem;margin:.7rem 0 .4rem;resize:vertical;
-    font:.78rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    border-radius:10px;border:1px solid rgba(232,220,192,.28);
-    background:rgba(4,10,16,.72);color:var(--ink);padding:.6em .7em;
+  /* Profiel per chatbox: links de chat, rechts de foto met AGENT.md-
+     beheer en de agenda-knop. De agenda zelf opent als balk onder de box. */
+  .chat-grid{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:.8rem;align-items:start}
+  .chat-main{min-width:0}
+  .profiel{display:flex;flex-direction:column;gap:.55rem}
+  .profiel-foto{
+    width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;
+    border:1px solid rgba(232,220,192,.28);background:rgba(4,10,16,.7);
+    box-shadow:0 6px 18px rgba(0,0,0,.5);display:block;
   }
-  .chat-agents select{
-    font:inherit;font-size:.84rem;padding:.45em .9em;border-radius:999px;
-    border:1px solid rgba(232,220,192,.28);
-    background:rgba(4,10,16,.72);color:var(--ink);margin-top:.7rem;
+  .profiel details{
+    background:rgba(4,10,16,.5);border:1px solid rgba(232,220,192,.2);
+    border-radius:10px;padding:.45rem .55rem;
+  }
+  .profiel summary{
+    cursor:pointer;list-style:none;font-size:.6rem;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--brass);
+  }
+  .profiel summary::-webkit-details-marker{display:none}
+  .profiel .agents-beheer textarea,
+  .agenda-beheer textarea{
+    width:100%;min-height:9rem;margin:.5rem 0 .35rem;resize:vertical;
+    font:.7rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    border-radius:8px;border:1px solid rgba(232,220,192,.28);
+    background:rgba(4,10,16,.72);color:var(--ink);padding:.55em .6em;
+  }
+  .profiel .agents-beheer select{
+    width:100%;font:inherit;font-size:.68rem;padding:.4em .6em;
+    border-radius:8px;border:1px solid rgba(232,220,192,.28);
+    background:rgba(4,10,16,.72);color:var(--ink);margin:.2rem 0 .35rem;
+  }
+  .profiel-knop{
+    font:inherit;font-size:.68rem;font-weight:700;padding:.55em .8em;
+    border-radius:999px;border:1px solid rgba(255,200,97,.55);cursor:pointer;
+    color:#1a1206;background:linear-gradient(180deg,rgba(230,162,60,.92),rgba(186,116,22,.92));
+  }
+  .profiel-knop:hover{filter:brightness(1.06)}
+  .profiel-status,.agenda-status{font-size:.64rem;color:#8f8a7c;line-height:1.45}
+  .agenda-beheer{
+    background:rgba(4,10,16,.5);border:1px solid rgba(232,220,192,.2);
+    border-radius:12px;padding:.6rem .8rem;margin-top:.7rem;
+  }
+  .agenda-beheer summary{cursor:pointer;list-style:none;color:var(--sand);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .agenda-beheer summary::-webkit-details-marker{display:none}
+  @media(max-width:640px){
+    .chat-grid{grid-template-columns:1fr}
+    .profiel{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
+    .profiel-foto{width:104px;flex:none}
+    .profiel .agents-beheer{flex:1 1 170px}
   }
   .chat-row{display:flex;align-items:center;gap:.6rem;margin-top:.5rem}
   .chat-form{display:flex;gap:.5rem;margin-top:.85rem}
@@ -154,7 +193,7 @@
       de Waddenkust.
     </p>
 
-    <section class="chat" aria-labelledby="chat-title">
+    <section class="chat" id="sectie-natuurgids" aria-labelledby="chat-title">
       <h2 id="chat-title">Natuurgids</h2>
       <div class="chat-log" id="chat-log" aria-live="polite">
         <p class="msg msg-guide">Hoi, ik ben de gids. Wat wil je weten?</p>
@@ -167,7 +206,7 @@
       <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
     </section>
 
-    <section class="chat chat-birds" aria-labelledby="birds-title">
+    <section class="chat chat-birds" id="sectie-vogelgids" aria-labelledby="birds-title">
       <h2 id="birds-title">Vogelgeluiden</h2>
       <div class="chat-log" id="birds-log" aria-live="polite">
         <p class="msg msg-bird">Tsief! Ik ben de vogelgids. Beschrijf het geluid of de plek, en ik zoek de vogel met zijn roep erbij.</p>
@@ -177,10 +216,10 @@
         <input id="birds-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Vraag de vogelgids…">
         <button type="submit" id="birds-send">Stuur</button>
       </form>
-      <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en geeft meteen een luister-link.</p>
+      <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en speelt de roep meteen af. Hoort het niet? Klik op de play-knop van de speler.</p>
     </section>
 
-    <section class="chat chat-bulg" aria-labelledby="bg-title">
+    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
       <h2 id="bg-title">Bulgaarse gids</h2>
       <div class="chat-log" id="bg-log" aria-live="polite">
         <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
@@ -193,7 +232,7 @@
       <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
     </section>
 
-    <section class="chat chat-captain" aria-labelledby="captain-title">
+    <section class="chat chat-captain" id="sectie-kapitein" aria-labelledby="captain-title">
       <h2 id="captain-title">Kapitein</h2>
       <div class="chat-log" id="captain-log" aria-live="polite">
         <p class="msg msg-captain">De kapitein is aan boord. AI is nog niet slim genoeg voor de kapitein — vraag het hem zelf.</p>
@@ -206,20 +245,6 @@
       <p class="chat-note">Deze box is niet aangesloten op de gids of de llama — puur voor de grap. AI is nog niet slim genoeg voor de kapitein.</p>
       <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
-
-    <details class="chat chat-agents" id="agents-editor">
-      <summary><h2 id="agents-title">AGENTS.md-beheer</h2></summary>
-      <p class="chat-note">Elke chat hierboven heeft een eigen AGENTS.md met rol en regels. Kies een agent, pas de tekst aan en sla op (beheertoken nodig). Wijzigingen gelden meteen, zonder herstart — de laatste 10 versies blijven bewaard en zijn weer te laden.</p>
-      <select id="agents-keuze" aria-label="Te bewerken agent"></select>
-      <select id="agents-versie" aria-label="Te laden versie" style="margin-top:.35rem" disabled>
-        <option value="">Huidige versie</option>
-      </select>
-      <textarea id="agents-tekst" spellcheck="false"></textarea>
-      <div class="chat-row">
-        <button type="button" id="agents-opslaan">Opslaan</button>
-        <span id="agents-status" aria-live="polite" style="font-size:.7rem;color:#8f8a7c"></span>
-      </div>
-    </details>
 
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
 
@@ -243,6 +268,46 @@
       logEl.appendChild(el);
       logEl.scrollTop = logEl.scrollHeight;
       return el;
+    }
+
+    /* mp3UrlUit: haal de .mp3-url (en de rest van de tekst) uit een antwoord. */
+    function mp3UrlUit(antwoord) {
+      var tekst = String(antwoord);
+      var match = tekst.match(/https?:\/\/[^\s)\"]+?\.mp3(?![\w.-])/i);
+      if (!match) return null;
+      return { url: match[0], zonder: tekst.replace(match[0], '').trim() };
+    }
+
+    /* vogelNaamUit: lees de vogelnaam uit de mp3-bestandsnaam
+       (…/koolmees-roep-1474.mp3 → "Koolmees"; cijfers en "roep"/"zang"/… vallen weg). */
+    function vogelNaamUit(url) {
+      var woorden = url.split('/').pop().replace(/\.mp3$/i, '').split('-')
+        .filter(function (w) {
+          return w && !/^\d+$/.test(w) && !/^(roep|zang|alarm|vlucht|bedel|podcast)$/.test(w);
+        });
+      if (!woorden.length) return '';
+      return woorden.map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+    }
+
+    /* speelAudio: de vogelgids antwoordt met alleen een .mp3-url. De kale url
+       verdwijnt uit de bubbel en komt in een speler-box: vogelnaam erop en
+       een audio-element dat meteen probeert af te spelen — lukt dat niet,
+       dan staat de play-knop direct klaar om te starten. */
+    function speelAudio(bubbel, logEl, url) {
+      var box = document.createElement('span');
+      box.className = 'speler-box';
+      var label = document.createElement('span');
+      label.textContent = '🐦 ' + (vogelNaamUit(url) || 'Roep van de vogel');
+      var speler = document.createElement('audio');
+      speler.controls = true;
+      speler.autoplay = true;
+      speler.src = url;
+      box.appendChild(label);
+      box.appendChild(speler);
+      bubbel.appendChild(box);
+      var p = speler.play();
+      if (p && p.catch) p.catch(function () {}); /* browser blokkeert soms autoplay; de play-knop blijft staan */
+      logEl.scrollTop = logEl.scrollHeight;
     }
 
     /* journalChat: één wiring voor beide AI-chats, met eigen ids, spreekkleur
@@ -278,9 +343,11 @@
           .then(function (result) {
             var reply = result.ok && result.data && result.data.reply;
             if (!reply) throw new Error((result.data && result.data.error) || 'geen antwoord');
-            pending.textContent = reply;
+            var mp3 = opts.speelMp3 ? mp3UrlUit(reply) : null;
+            pending.textContent = mp3 ? (mp3.zonder || 'Luister! 🐦') : reply;
             pending.classList.remove('msg-pending');
             history.push({ role: 'assistant', content: reply });
+            if (mp3) speelAudio(pending, log, mp3.url);
           })
           .catch(function (err) {
             pending.textContent = opts.stil + err.message;
@@ -296,7 +363,7 @@
     }
 
     frontChat({ form: 'chat-form', input: 'chat-input', send: 'chat-send', log: 'chat-log', msg: 'guide', thinking: 'De gids denkt na…', stil: 'De gids is even stil: ' });
-    frontChat({ form: 'birds-form', input: 'birds-input', send: 'birds-send', log: 'birds-log', msg: 'bird', agent: 'vogelgids', thinking: 'De vogelgids fluit na…', stil: 'De vogelgids is even stil: ' });
+    frontChat({ form: 'birds-form', input: 'birds-input', send: 'birds-send', log: 'birds-log', msg: 'bird', agent: 'vogelgids', speelMp3: true, thinking: 'De vogelgids fluit na…', stil: 'De vogelgids is even stil: ' });
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
 
     /* Kapitein: geen netwerk, geen llama — gewoon de kapitein. */
@@ -304,14 +371,14 @@
     var captainInput = document.getElementById('captain-input');
     var captainLog = document.getElementById('captain-log');
     var captainReplies = [
-      'De kapitein leest je bericht, knikt, en zwijgt. AI is nog niet slim genoeg voor de kapitein.',
-      'De kapitein tuurt naar de horizon. Hij heeft geen AI nodig om te weten dat het laag water wordt.',
-      'De kapitein schrijft je vraag in het scheepsjournaal. Eén van de haken en ogen.',
-      'De kapitein zegt: “Vertel het nog eens, maar dan als een haiku.”',
-      'Ahoy. De kapitein is aan dek. De AI mag hier niet komen — nog niet slim genoeg.',
-      'De kapitein laat dit even bezinken. Daar had hij geen AI voor nodig, zei hij ooit.',
-      'De kapitein mompelt iets over kokkels en het getij. Verder zegt hij niets.',
-      'De kapitein kijkt door zijn verrekijker. Geen AI te bekennen.'
+      'De kapitein leest je bericht, knikt, en zwijgt. 🚢 AI is nog niet slim genoeg voor de kapitein. ⚓',
+      'De kapitein tuurt naar de horizon 🌊. Hij heeft geen AI nodig om te weten dat het laag water wordt. ⛈️',
+      'De kapitein schrijft je vraag in het scheepsjournaal. 🧭 Eén van de haken en ogen. 📡',
+      'De kapitein zegt: “Vertel het nog eens, 🐦 maar dan als een haiku.” 🌊',
+      'Ahoy. ⚓ De kapitein is aan dek. 🎣 De AI mag hier niet komen — nog niet slim genoeg. 🚢',
+      'De kapitein laat dit even bezinken. 🥃 Daar had hij geen AI voor nodig, zei hij ooit. ⚓',
+      'De kapitein mompelt iets over kokkels 🐟 en het getij 🌊. Verder zegt hij niets. ⛈️',
+      'De kapitein kijkt door zijn verrekijker. 🐦 Geen AI te bekennen. 📡'
     ];
     var captainTurn = 0;
 
@@ -335,111 +402,245 @@
       captainBubble(reply, 'captain');
     });
 
-    /* AGENTS.md-beheer: persona-tekst per chat lezen en opslaan. */
-    var agentsEditor = document.getElementById('agents-editor');
-    if (agentsEditor) {
-      var agentsKeuze = document.getElementById('agents-keuze');
-      var agentsVersie = document.getElementById('agents-versie');
-      var agentsTekst = document.getElementById('agents-tekst');
-      var agentsOpslaan = document.getElementById('agents-opslaan');
-      var agentsStatus = document.getElementById('agents-status');
-      var agentsToken = '';
+    /* Beheertoken: eenmalig vragen en bewaren in localStorage. */
+    var beheerToken = '';
+    function vraagBeheerToken() {
+      if (!beheerToken) {
+        try { beheerToken = localStorage.getItem('agents.beheer-token') || ''; } catch (e) {}
+      }
+      if (!beheerToken) {
+        beheerToken = window.prompt('Beheertoken (AGENTS_TOKEN of agents_token.txt):') || '';
+      }
+      if (beheerToken) {
+        try { localStorage.setItem('agents.beheer-token', beheerToken); } catch (e) {}
+      }
+      return beheerToken;
+    }
 
+    /* Placeholder-foto met initialen als er geen foto in de agentmap staat. */
+    function placeholderSvg(titel) {
+      var init = (titel || '?').split(' ')
+        .map(function (w) { return (w.charAt(0) || '').toUpperCase(); })
+        .slice(0, 2).join('') || '?';
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="264" height="264">'
+        + '<rect width="100%" height="100%" fill="#0a141a"/>'
+        + '<circle cx="132" cy="104" r="36" fill="none" stroke="#e6a23c" stroke-width="3"/>'
+        + '<text x="132" y="184" font-family="sans-serif" font-size="18" '
+        + 'fill="#8f8a7c" text-anchor="middle">' + init + '</text></svg>';
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    /* Profiel per chatbox: bestaande kind-elementen in een .chat-main
+       tilen en ernaast een .profiel-kolom bouwen met foto, AGENT.md-
+       beheer (lezen + opslaan met versielijst) en een agenda-knop die de
+       beheerbare agenda van de agent opent (AGENDA.md op de server). */
+    function agentPaneel(opts) {
+      var sectie = document.getElementById(opts.sectie);
+      if (!sectie) return;
+
+      var grid = document.createElement('div');
+      grid.className = 'chat-grid';
+      var main = document.createElement('div');
+      main.className = 'chat-main';
+      while (sectie.firstChild) main.appendChild(sectie.firstChild);
+
+      var aside = document.createElement('aside');
+      aside.className = 'profiel';
+
+      var foto = document.createElement('img');
+      foto.className = 'profiel-foto';
+      foto.alt = 'Foto van ' + opts.titel;
+      foto.src = API + '/api/agents/' + opts.agent + '/foto';
+      foto.addEventListener('error', function () {
+        if (foto.dataset.placeholder) return;
+        foto.dataset.placeholder = '1';
+        foto.src = placeholderSvg(opts.titel);
+      });
+
+      var beheer = document.createElement('details');
+      beheer.className = 'agents-beheer';
+      var bhead = document.createElement('summary');
+      bhead.textContent = 'Agent.md';
+      var btekst = document.createElement('textarea');
+      btekst.spellcheck = false; btekst.placeholder = 'Rol en regels van ' + opts.titel + '…';
+      var bversie = document.createElement('select');
+      var bopt = document.createElement('option');
+      bopt.value = '';
+      bopt.textContent = 'Huidige versie';
+      bversie.appendChild(bopt);
+      var brow = document.createElement('div');
+      brow.className = 'chat-row';
+      var bopslaan = document.createElement('button');
+      bopslaan.type = 'button';
+      bopslaan.textContent = 'Opslaan';
+      var bstatus = document.createElement('span');
+      bstatus.className = 'profiel-status';
+      bstatus.setAttribute('aria-live', 'polite');
+      beheer.appendChild(bhead);
+      beheer.appendChild(btekst);
+      beheer.appendChild(bversie);
+      beheer.appendChild(brow);
+      brow.appendChild(bopslaan);
+      brow.appendChild(bstatus);
+
+      var agendaKnop = document.createElement('button');
+      agendaKnop.type = 'button';
+      agendaKnop.className = 'profiel-knop';
+      agendaKnop.textContent = '📅 Agenda';
+
+      aside.appendChild(foto);
+      aside.appendChild(beheer);
+      aside.appendChild(agendaKnop);
+      grid.appendChild(main);
+      grid.appendChild(aside);
+
+      /* Agenda-balk onder de chatbox, pas gevuld bij openen. */
+      var ag = document.createElement('details');
+      ag.className = 'agenda-beheer';
+      var ahead = document.createElement('summary');
+      ahead.textContent = 'Agenda · ' + opts.titel;
+      var atekst = document.createElement('textarea');
+      atekst.spellcheck = false;
+      var arow = document.createElement('div');
+      arow.className = 'chat-row';
+      var aopslaan = document.createElement('button');
+      aopslaan.type = 'button';
+      aopslaan.textContent = 'Agenda opslaan';
+      var astatus = document.createElement('span');
+      astatus.className = 'agenda-status';
+      astatus.setAttribute('aria-live', 'polite');
+      ag.appendChild(ahead);
+      ag.appendChild(atekst);
+      ag.appendChild(arow);
+      arow.appendChild(aopslaan);
+      arow.appendChild(astatus);
+
+      sectie.appendChild(grid);
+      sectie.appendChild(ag);
+
+      /* ── AGENT.md beheer ── */
       function zetVersielijst(versies) {
-        agentsVersie.innerHTML = '';
+        bversie.innerHTML = '';
         var opt = document.createElement('option');
         opt.value = '';
         opt.textContent = 'Huidige versie';
-        agentsVersie.appendChild(opt);
+        bversie.appendChild(opt);
         (versies || []).forEach(function (v) {
           var o = document.createElement('option');
           o.value = v.nr;
-          o.textContent = 'Oudere versie ' + v.nr + '  (' + v.bytes + ' bytes)';
-          agentsVersie.appendChild(o);
+          o.textContent = 'Versie ' + v.nr + ' (' + v.bytes + ' B)';
+          bversie.appendChild(o);
         });
-        agentsVersie.disabled = false;
+        bversie.disabled = false;
       }
 
-      function laadVersie(nr) {
-        if (!nr) { laadAgentTekst(); return; }
-        agentsStatus.textContent = 'Versie ' + nr + ' laden…';
-        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value)
-              + '?versie=' + nr, { mode: 'cors' })
-          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
-          .then(function (res) {
-            if (!res.ok) throw new Error((res.d && res.d.error) || 'onbekend');
-            agentsTekst.value = (res.d && res.d.tekst) || '';
-            agentsStatus.textContent = 'Oudere versie ' + nr
-              + ' staat in de editor — opslaan maakt hem actief; de dan draaiende tekst gaat naar de backups.';
-          })
-          .catch(function (err) { agentsStatus.textContent = 'Kon versie ' + nr + ' niet laden: ' + err.message; });
-      }
-
-      function laadAgentTekst() {
-        if (!agentsKeuze.value) return;
-        agentsStatus.textContent = 'Laden…';
-        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value), { mode: 'cors' })
+      function laadAgent() {
+        bstatus.textContent = 'Laden…';
+        fetch(API + '/api/agents/' + encodeURIComponent(opts.agent), { mode: 'cors' })
           .then(function (r) { return r.json(); })
           .then(function (d) {
-            agentsTekst.value = (d && d.tekst) || '';
+            btekst.value = (d && d.tekst) || '';
             zetVersielijst(d && d.versies);
-            agentsStatus.textContent = agentsTekst.value ? '' : 'Geen tekst ontvangen.';
+            bstatus.textContent = btekst.value ? '' : 'Geen tekst ontvangen.';
           })
-          .catch(function () { agentsStatus.textContent = 'Kon de tekst niet laden.'; });
+          .catch(function () { bstatus.textContent = 'Kon de tekst niet laden.'; });
       }
 
-      agentsEditor.addEventListener('toggle', function () {
-        if (!agentsEditor.open) return;
-        fetch(API + '/api/agents', { mode: 'cors' })
+      bversie.addEventListener('change', function () {
+        var nr = bversie.value;
+        if (!nr) { laadAgent(); return; }
+        bstatus.textContent = 'Versie ' + nr + ' laden…';
+        fetch(API + '/api/agents/' + encodeURIComponent(opts.agent)
+              + '?versie=' + nr, { mode: 'cors' })
           .then(function (r) { return r.json(); })
           .then(function (d) {
-            agentsKeuze.innerHTML = '';
-            (d.agents || []).forEach(function (a) {
-              var opt = document.createElement('option');
-              opt.value = a.naam;
-              opt.textContent = a.naam + '  (' + a.bytes + ' bytes)';
-              agentsKeuze.appendChild(opt);
-            });
-            laadAgentTekst();
+            if (d && d.error) throw new Error(d.error);
+            btekst.value = (d && d.tekst) || '';
+            bstatus.textContent = 'Oudere versie ' + nr
+              + ' staat in de editor — opslaan maakt hem actief; de vorige tekst gaat naar de backups.';
           })
-          .catch(function () { agentsStatus.textContent = 'Kon de agentlijst niet laden.'; });
-      });
-      agentsKeuze.addEventListener('change', laadAgentTekst);
-      agentsVersie.addEventListener('change', function () {
-        laadVersie(agentsVersie.value);
-      });
-
-      agentsOpslaan.addEventListener('click', function () {
-        if (!agentsKeuze.value) return;
-        if (!agentsToken) {
-          try { agentsToken = localStorage.getItem('agents.beheer-token') || ''; } catch (e) {}
-        }
-        if (!agentsToken) {
-          agentsToken = window.prompt('Beheertoken (AGENTS_TOKEN of agents_token.txt):') || '';
-        }
-        if (!agentsToken) { agentsStatus.textContent = 'Geen token, niet opgeslagen.'; return; }
-        try { localStorage.setItem('agents.beheer-token', agentsToken); } catch (e) {}
-        agentsOpslaan.disabled = true;
-        agentsStatus.textContent = 'Opslaan…';
-        fetch(API + '/api/agents/' + encodeURIComponent(agentsKeuze.value), {
-          method: 'PUT',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json', 'X-AGENTS-Token': agentsToken },
-          body: JSON.stringify({ tekst: agentsTekst.value })
-        })
-          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, antw: d }; }); })
-          .then(function (res) {
-            agentsStatus.textContent = res.ok
-              ? 'Opgeslagen — meteen van kracht. De vorige versie staat in de versielijst (max 10 bewaard).'
-              : 'Fout: ' + ((res.antw && res.antw.error) || 'onbekend');
-          })
-          .catch(function (err) { agentsStatus.textContent = 'Fout: ' + err.message; })
-          .then(function () {
-            agentsOpslaan.disabled = false;
-            if (agentsEditor.open) laadAgentTekst();
+          .catch(function (err) {
+            bstatus.textContent = 'Kon versie ' + nr + ' niet laden: ' + err.message;
           });
       });
+
+      beheer.addEventListener('toggle', function () {
+        if (beheer.open) laadAgent();
+      });
+
+      bopslaan.addEventListener('click', function () {
+        var token = vraagBeheerToken();
+        if (!token) { bstatus.textContent = 'Geen token, niet opgeslagen.'; return; }
+        bopslaan.disabled = true;
+        bstatus.textContent = 'Opslaan…';
+        fetch(API + '/api/agents/' + encodeURIComponent(opts.agent), {
+          method: 'PUT',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json', 'X-AGENTS-Token': token },
+          body: JSON.stringify({ tekst: btekst.value })
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (res.ok) {
+              bstatus.textContent = 'Opgeslagen — meteen van kracht; de vorige versie staat in de versielijst.';
+              laadAgent();
+            } else {
+              bstatus.textContent = 'Fout: ' + ((res.d && res.d.error) || 'onbekend');
+            }
+          })
+          .catch(function (err) { bstatus.textContent = 'Fout: ' + err.message; })
+          .then(function () { bopslaan.disabled = false; });
+      });
+
+      /* ── Agenda beheer ── */
+      function laadAgenda() {
+        astatus.textContent = 'Laden…';
+        fetch(API + '/api/agents/' + encodeURIComponent(opts.agent) + '/agenda', { mode: 'cors' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            atekst.value = (d && d.tekst) || '';
+            astatus.textContent = (d && d.nieuw)
+              ? 'Startersagenda — opslaan legt ze vast.'
+              : '';
+          })
+          .catch(function () { astatus.textContent = 'Kon de agenda niet laden.'; });
+      }
+
+      agendaKnop.addEventListener('click', function () {
+        if (!ag.open) laadAgenda();
+        ag.open = !ag.open;
+      });
+
+      ag.addEventListener('toggle', function () {
+        if (ag.open && !atekst.value) laadAgenda();
+      });
+
+      aopslaan.addEventListener('click', function () {
+        var token = vraagBeheerToken();
+        if (!token) { astatus.textContent = 'Geen token, niet opgeslagen.'; return; }
+        aopslaan.disabled = true;
+        astatus.textContent = 'Opslaan…';
+        fetch(API + '/api/agents/' + encodeURIComponent(opts.agent) + '/agenda', {
+          method: 'PUT',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json', 'X-AGENTS-Token': token },
+          body: JSON.stringify({ tekst: atekst.value })
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            astatus.textContent = res.ok
+              ? 'Agenda opgeslagen; de vorige versie staat als backup bewaard.'
+              : 'Fout: ' + ((res.d && res.d.error) || 'onbekend');
+          })
+          .catch(function (err) { astatus.textContent = 'Fout: ' + err.message; })
+          .then(function () { aopslaan.disabled = false; });
+      });
     }
+
+    agentPaneel({ sectie: 'sectie-natuurgids', agent: 'natuurgids', titel: 'Natuurgids' });
+    agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgids' });
+    agentPaneel({ sectie: 'sectie-bulgaars', agent: 'bulgaars', titel: 'Bulgaarse gids' });
+    agentPaneel({ sectie: 'sectie-kapitein', agent: 'kapitein', titel: 'Kapitein' });
   })();
 </script>
 </body>
