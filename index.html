@@ -1184,9 +1184,21 @@
     .then(function(result){
       if(!result.ok || !result.data || !result.data.agents) return;
       var grid = document.getElementById('agent-grid');
+      var agents = result.data && result.data.agents ? result.data.agents : [];
+      // Fallback for GitHub Pages (no backend)
+      if(!agents.length){
+        agents = [
+          {naam:'admin', bytes:1663, agenda:false, chat:true},
+          {naam:'bulgaars', bytes:2052, agenda:true, chat:true},
+          {naam:'kapitein', bytes:1785, agenda:true, chat:false},
+          {naam:'mouseinthecorner', bytes:557, agenda:false, chat:false},
+          {naam:'natuurgids', bytes:879, agenda:false, chat:true},
+          {naam:'vogelgids', bytes:1854, agenda:true, chat:true}
+        ];
+      }
       if(grid){
         grid.innerHTML = '';
-        result.data.agents.forEach(function(a){
+        agents.forEach(function(a){
           var card = document.createElement('div');
           card.className = 'aboard-card';
           var b = document.createElement('b');
@@ -1206,7 +1218,7 @@
       var chatMenu = document.getElementById('chatSelectorMenu');
       if(chatMenu){
         chatMenu.innerHTML = '';
-        result.data.agents.forEach(function(a){
+        agents.forEach(function(a){
           if(!a.chat) return;
           var item = document.createElement('a');
           item.className = 'chat-selector-item';
