@@ -193,6 +193,33 @@
       de Waddenkust.
     </p>
 
+    <section class="chat chat-captain" id="sectie-kapitein" aria-labelledby="captain-title">
+      <h2 id="captain-title">Kapitein</h2>
+      <div class="chat-log" id="captain-log" aria-live="polite">
+        <p class="msg msg-captain">De kapitein is aan boord. AI is nog niet slim genoeg voor de kapitein — vraag het hem zelf.</p>
+      </div>
+      <form class="chat-form" id="captain-form">
+        <label class="sr-only" for="captain-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je bericht aan de kapitein</label>
+        <input id="captain-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Praat tegen de kapitein…">
+        <button type="submit">Stuur</button>
+      </form>
+      <p class="chat-note">Deze box is niet aangesloten op de gids of de llama — puur voor de grap. AI is nog niet slim genoeg voor de kapitein.</p>
+      <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
+    </section>
+
+    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
+      <h2 id="bg-title">Bulgaarse gids</h2>
+      <div class="chat-log" id="bg-log" aria-live="polite">
+        <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
+      </div>
+      <form class="chat-form" id="bg-form">
+        <label class="sr-only" for="bg-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag in het Bulgaars</label>
+        <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+        <button type="submit" id="bg-send">Stuur</button>
+      </form>
+      <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
+    </section>
+
     <section class="chat" id="sectie-natuurgids" aria-labelledby="chat-title">
       <h2 id="chat-title">Natuurgids</h2>
       <div class="chat-log" id="chat-log" aria-live="polite">
@@ -217,33 +244,6 @@
         <button type="submit" id="birds-send">Stuur</button>
       </form>
       <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en speelt de roep meteen af. Hoort het niet? Klik op de play-knop van de speler.</p>
-    </section>
-
-    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
-      <h2 id="bg-title">Bulgaarse gids</h2>
-      <div class="chat-log" id="bg-log" aria-live="polite">
-        <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
-      </div>
-      <form class="chat-form" id="bg-form">
-        <label class="sr-only" for="bg-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je vraag in het Bulgaars</label>
-        <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
-        <button type="submit" id="bg-send">Stuur</button>
-      </form>
-      <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
-    </section>
-
-    <section class="chat chat-captain" id="sectie-kapitein" aria-labelledby="captain-title">
-      <h2 id="captain-title">Kapitein</h2>
-      <div class="chat-log" id="captain-log" aria-live="polite">
-        <p class="msg msg-captain">De kapitein is aan boord. AI is nog niet slim genoeg voor de kapitein — vraag het hem zelf.</p>
-      </div>
-      <form class="chat-form" id="captain-form">
-        <label class="sr-only" for="captain-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Je bericht aan de kapitein</label>
-        <input id="captain-input" name="q" type="text" autocomplete="off" maxlength="500" placeholder="Praat tegen de kapitein…">
-        <button type="submit">Stuur</button>
-      </form>
-      <p class="chat-note">Deze box is niet aangesloten op de gids of de llama — puur voor de grap. AI is nog niet slim genoeg voor de kapitein.</p>
-      <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
 
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
@@ -637,10 +637,10 @@
       });
     }
 
+    agentPaneel({ sectie: 'sectie-kapitein', agent: 'kapitein', titel: 'Kapitein' });
+    agentPaneel({ sectie: 'sectie-bulgaars', agent: 'bulgaars', titel: 'Bulgaarse gids' });
     agentPaneel({ sectie: 'sectie-natuurgids', agent: 'natuurgids', titel: 'Natuurgids' });
     agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgids' });
-    agentPaneel({ sectie: 'sectie-bulgaars', agent: 'bulgaars', titel: 'Bulgaarse gids' });
-    agentPaneel({ sectie: 'sectie-kapitein', agent: 'kapitein', titel: 'Kapitein' });
   })();
 </script>
 </body>
