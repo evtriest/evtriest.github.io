@@ -191,9 +191,28 @@
   .tag{font-size:.6rem;letter-spacing:.06em;padding:.3em .65em;border-radius:999px;
     background:rgba(230,162,60,.14);border:1px solid rgba(255,200,97,.35);color:var(--brass-bright);text-decoration:none;cursor:pointer}
   .tag:hover{background:rgba(230,162,60,.22);border-color:rgba(255,200,97,.55)}
+  /* password overlay */
+  .auth-overlay{position:fixed;inset:0;z-index:1000;background:rgba(4,10,16,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+  .auth-box{background:rgba(10,18,26,.95);border:1px solid rgba(232,220,192,.2);border-radius:14px;padding:2rem;max-width:400px;width:90%;text-align:center}
+  .auth-box h2{color:var(--brass);font-size:1.1rem;margin-bottom:1rem;letter-spacing:.08em;text-transform:uppercase}
+  .auth-box input{width:100%;padding:.7em .9em;border-radius:10px;border:1px solid rgba(232,220,192,.28);background:rgba(4,10,16,.72);color:var(--ink);font:inherit;font-size:.9rem;margin-bottom:.8rem}
+  .auth-box input:focus{outline:2px solid var(--brass-bright);outline-offset:1px}
+  .auth-box button{font:inherit;font-size:.86rem;font-weight:700;padding:.62em 1.15em;border-radius:999px;border:1px solid rgba(255,200,97,.55);cursor:pointer;color:#1a1206;background:linear-gradient(180deg,rgba(230,162,60,.96),rgba(186,116,22,.96))}
+  .auth-box button:hover{filter:brightness(1.06)}
+  .auth-box .error{color:#ffc9c1;font-size:.8rem;margin-top:.6rem;min-height:1.2em}
+  .auth-overlay.hidden{display:none}
 </style>
 </head>
 <body>
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <h2>🔒 Beveiligd</h2>
+    <p style="color:#c9c3b4;font-size:.82rem;margin-bottom:1rem">Voer het beheertoken in om deze pagina te openen.</p>
+    <input type="password" id="authToken" placeholder="Beheertoken…" autocomplete="current-password">
+    <button id="authSubmit">Openen</button>
+    <div class="error" id="authError"></div>
+  </div>
+</div>
 
 <main>
   <div class="tag-list" id="tag-list"></div>
@@ -274,6 +293,36 @@
 
 <script>
   (function () {
+    // auth check
+    var AUTH_TOKEN = 'geheimpje'; // AGENTS_TOKEN
+    (function checkAuth(){
+      try {
+        if (localStorage.getItem('agents.beheer-token') === AUTH_TOKEN) {
+          document.getElementById('authOverlay').classList.add('hidden');
+          return;
+        }
+      } catch (e) {}
+      // show overlay
+      var overlay = document.getElementById('authOverlay');
+      var input = document.getElementById('authToken');
+      var error = document.getElementById('authError');
+      var submit = document.getElementById('authSubmit');
+      function tryAuth(){
+        var val = input.value.trim();
+        if (val === AUTH_TOKEN) {
+          try { localStorage.setItem('agents.beheer-token', val); } catch (e) {}
+          overlay.classList.add('hidden');
+        } else {
+          error.textContent = 'Onjuist token. Probeer opnieuw.';
+          input.value = '';
+          input.focus();
+        }
+      }
+      submit.addEventListener('click', tryAuth);
+      input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryAuth(); });
+      input.focus();
+    })();
+
     var API = location.hostname === 'evtriest.github.io'
       ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
       : '';
