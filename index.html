@@ -6,7 +6,7 @@
 <title>Eeps Site</title>
 <meta name="description" content="Eeps Site — het voorportaal naar de wildpluk-site langs de Waddenkust, met het getij van Den Helder op de achtergrond.">
 <meta name="theme-color" content="#0b0b0b">
-<link rel="icon" type="image/svg+xml" href="/static/piracy/japan-flag.svg">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
 <style>
   :root{
     --ink:#f4f1e8;
@@ -23,7 +23,7 @@
     margin:0;
     color:var(--ink);
     font-family:var(--sans);
-    background:#081018 url("/static/piracy/tide-bg.jpg") center/cover no-repeat fixed;
+    background:#081018 url("tide-bg.jpg") center/cover no-repeat fixed;
     display:flex;
     flex-direction:column;
     min-height:100vh;
@@ -142,7 +142,6 @@
   }
   .radar-inner{max-width:880px;margin:0 auto}
   .radar .kicker{margin:0 0 .4rem}
-  .radar h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
   .radar-note{margin:.55rem 0 1.25rem;max-width:46rem;font-size:.8rem;line-height:1.65;color:#c9c3b4}
   .visits{list-style:none;margin:0;padding:0;display:grid;gap:8px}
   .visit{
@@ -177,8 +176,6 @@
     background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.9));
   }
   .aboard-inner{max-width:880px;margin:0 auto}
-  .aboard .kicker{margin:0 0 .4rem}
-  .aboard h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
   .aboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px;margin-top:1.1rem}
   .aboard-card{
     padding:.9rem 1.05rem;border-radius:12px;background:rgba(10,18,26,.6);
@@ -197,8 +194,6 @@
     background:linear-gradient(to bottom,rgba(4,10,16,.5),rgba(4,10,16,.9));
   }
   .talk-inner{max-width:880px;margin:0 auto}
-  .talk .kicker{margin:0 0 .4rem}
-  .talk h2{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.6)}
   .talk-body{
     margin:.95rem 0 0;max-width:46rem;padding-left:1.05rem;
     border-left:2px solid rgba(230,162,60,.5);
@@ -295,7 +290,7 @@
 
 <main>
   <section class="hero">
-    <img class="flag" src="/static/piracy/pirate-flag.svg" width="58" height="58" alt="Solovlag">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
     <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
     <h1><span class="the">Eeps</span>Piracy&nbsp;Site</h1>
@@ -354,9 +349,9 @@
       </section>
     </div>
 
-    <a class="cta" href="/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
+    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
     <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
-    <p class="crew-link"><a href="/static/piracy/crew.html" data-i18n="crewLink">Naar de Crew</a></p>
+    <p class="crew-link"><a href="crew.html" data-i18n="crewLink">Naar de Crew</a></p>
 
     <div class="cards">
       <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
@@ -369,7 +364,6 @@
 <details class="radar panel">
   <summary>
     <p class="kicker" data-i18n="radarKicker">Radar</p>
-    <h2 data-i18n="radarTitle">Bezoek</h2>
   </summary>
   <!-- De inzending bij de Omarchy-marktplaats. De status volgt de marktplaats
        zelf (zie loadPluginStatus): open = `wait`, gesloten mét label `listed`
@@ -395,7 +389,6 @@
 <details class="aboard panel">
   <summary>
     <p class="kicker" data-i18n="aboardKicker">Bemanning</p>
-    <h2 data-i18n="aboardTitle">Who is on board</h2>
   </summary>
   <div class="aboard-inner">
     <div class="aboard-grid">
@@ -414,18 +407,16 @@
   </div>
 </details>
 
-<section class="talk" aria-labelledby="trip-title">
+<section class="talk">
   <div class="talk-inner">
     <p class="kicker" data-i18n="tripKicker">Aan wal</p>
-    <h2 id="trip-title" data-i18n="tripTitle">Het uitje</h2>
     <p class="talk-body" data-i18n-html="tripBody">De kapitein ging eropuit: verrekijker om de nek, emmer in de hand, op zoek naar kokkels langs de dijk. Nog één keer de wildpluk-site open voor het getij — en toen een praatje met de gids over agentic llama-bots, python venvs en github. De gids knikte vriendelijk en had er geen chocola van gemaakt. De kokkels hielden zich stil.</p>
   </div>
 </section>
 
-<section class="talk" aria-labelledby="talk-title">
+<section class="talk">
   <div class="talk-inner">
     <p class="kicker" data-i18n="talkKicker">Aan de praat</p>
-    <h2 id="talk-title" data-i18n="talkTitle">Praatjes</h2>
     <p class="talk-body" data-i18n-html="talkBody">Een e-mailadres en een oude laptop — meer heb je niet nodig om deze landingspagina meteen te laten maken, helemaal gratis. Je praat wat je wilt en het wordt voor je gemaakt. Er zitten wel wat haken en ogen aan. Consultje? De eerste is gratis ;) Daarna gaan we automatiseren.</p>
   </div>
 </section>
@@ -439,7 +430,7 @@
   </p>
   <p data-i18n-html="foot2">
     © 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) ·
-    achtergrond: Omarchy-thema “ship at sea” · <a href="/CHANGELOG.md">logboek</a>
+    achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>
   </p>
   <p class="thanks">
     <span data-i18n="thanks">Dank aan</span><span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">✈️</span>Telegram</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
@@ -476,8 +467,7 @@
         hVlag: `Mijn vlag hangt nog hoog<br>straks strijk ik hem voor het laatst<br>betaald varen, ja`,
         hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
         hZorgen: `Radar kwijt, gin op<br>FreeBuff blijft toch gratis, hoop<br>China houdt nog vol`,
-        radarKicker: `Radar`, radarTitle: `Bezoek`,
-        radarNote: `Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site: één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina, herkomst en taal — alles wat er van dat adres te weten is.`,
+        radarKicker: `Radar`, radarNote: `Wat de radar de laatste tijd opving op deze rede en op de wildpluk-site: één regel per IP, met tijd, browser, besturingssysteem, apparaat, pagina, herkomst en taal — alles wat er van dat adres te weten is.`,
         radarLoading: `Radar warmt op…`,
         radarEmpty: `Nog geen bezoeken op de radar.`,
         radarError: `De radar is buiten bereik.`,
@@ -487,17 +477,14 @@
         seen: `{n}× vanaf dit IP, eerst {time}`, first: `eerste bezoek`,
         via: `via`, direct: `direct`, onDevice: `op`,
         deviceDesktop: `desktop`, deviceMobile: `mobiel`, deviceBot: `bot`,
-        aboardKicker: `Bemanning`, aboardTitle: `Who is on board`,
-        guideName: `Natuurgids`, guideRole: `van de wildpluk-site`,
+        aboardKicker: `Bemanning`, guideName: `Natuurgids`, guideRole: `van de wildpluk-site`,
         captainName: `De kapitein`, captainRole: `deze rede`,
         offBoard: `van boord`,
         aboardNote: `Aan een rooster en agenda wordt gewerkt.`,
-        tripKicker: `Aan wal`, tripTitle: `Het uitje`,
-        tripBody: `De kapitein ging eropuit: verrekijker om de nek, emmer in de hand, op zoek naar kokkels langs de dijk. Nog één keer de wildpluk-site open voor het getij — en toen een praatje met de gids over agentic llama-bots, python venvs en github. De gids knikte vriendelijk en had er geen chocola van gemaakt. De kokkels hielden zich stil.`,
-        talkKicker: `Aan de praat`, talkTitle: `Praatjes`,
-        talkBody: `Een e-mailadres en een oude laptop — meer heb je niet nodig om deze landingspagina meteen te laten maken, helemaal gratis. Je praat wat je wilt en het wordt voor je gemaakt. Er zitten wel wat haken en ogen aan. Consultje? De eerste is gratis ;) Daarna gaan we automatiseren.`,
+        tripKicker: `Aan wal`, tripBody: `De kapitein ging eropuit: verrekijker om de nek, emmer in de hand, op zoek naar kokkels langs de dijk. Nog één keer de wildpluk-site open voor het getij — en toen een praatje met de gids over agentic llama-bots, python venvs en github. De gids knikte vriendelijk en had er geen chocola van gemaakt. De kokkels hielden zich stil.`,
+        talkKicker: `Aan de praat`, talkBody: `Een e-mailadres en een oude laptop — meer heb je niet nodig om deze landingspagina meteen te laten maken, helemaal gratis. Je praat wat je wilt en het wordt voor je gemaakt. Er zitten wel wat haken en ogen aan. Consultje? De eerste is gratis ;) Daarna gaan we automatiseren.`,
         foot1: `Gebouwd in de <strong>Cave</strong>: een vochtige grot achter de dijk waar de server op walvisolie draait en de boekhouding in <span class='trade'>traderotes</span> gaat. Alle prijzen zijn inclusief piratenkorting en exclusief papegaaienbelasting. Twijfel je of iets eetbaar is? vraag het de krab — die liegt, maar weet het wél.`,
-        foot2: `© 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · achtergrond: Omarchy-thema “ship at sea” · <a href="/CHANGELOG.md">logboek</a>`,
+        foot2: `© 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>`,
         thanks: `Dank aan`,
         sponsors: `Zoek nog sponsors voor de boot.`,
         logbookTitle: `Logboek`, logbookLoading: `git log ophalen…`,
@@ -523,8 +510,7 @@
         hVlag: `My flag still flies high<br>soon I strike it one last time<br>paid sailing, yes`,
         hBulgaars: `Gin gleams in the glass<br>an avatar teaches me<br>Den Helder joins in`,
         hZorgen: `Radar lost, gin gone<br>FreeBuff stays free, I hope<br>China holds on still`,
-        radarKicker: `Radar`, radarTitle: `Visits`,
-        radarNote: `What the radar picked up lately on this roadstead and on the wildpluk site: one row per IP, with time, browser, operating system, device, page, referrer and language — everything known about that address.`,
+        radarKicker: `Radar`, radarNote: `What the radar picked up lately on this roadstead and on the wildpluk site: one row per IP, with time, browser, operating system, device, page, referrer and language — everything known about that address.`,
         radarLoading: `Warming up the radar…`,
         radarEmpty: `No visits on the radar yet.`,
         radarError: `The radar is out of range.`,
@@ -534,17 +520,14 @@
         seen: `{n}× from this IP, first {time}`, first: `first visit`,
         via: `via`, direct: `direct`, onDevice: `on`,
         deviceDesktop: `desktop`, deviceMobile: `mobile`, deviceBot: `bot`,
-        aboardKicker: `Crew`, aboardTitle: `Who is on board`,
-        guideName: `Nature guide`, guideRole: `of the wildpluk site`,
+        aboardKicker: `Crew`, guideName: `Nature guide`, guideRole: `of the wildpluk site`,
         captainName: `The captain`, captainRole: `this roadstead`,
         offBoard: `off board`,
         aboardNote: `A roster and calendar are being worked on.`,
-        tripKicker: `Ashore`, tripTitle: `The outing`,
-        tripBody: `The captain went out: binoculars around his neck, bucket in hand, looking for cockles along the dike. One last look at the wildpluk site for the tide — and then a chat with the guide about agentic llama bots, python venvs and github. The guide nodded politely and understood none of it. The cockles kept quiet.`,
-        talkKicker: `Let's talk`, talkTitle: `Talk`,
-        talkBody: `An email address and an old laptop — that is all you need to have this landing page made for you right away, completely free. You talk, and it gets built for you. There are a few catches, mind you. A consult? The first one is free ;) Then we start automating.`,
+        tripKicker: `Ashore`, tripBody: `The captain went out: binoculars around his neck, bucket in hand, looking for cockles along the dike. One last look at the wildpluk site for the tide — and then a chat with the guide about agentic llama bots, python venvs and github. The guide nodded politely and understood none of it. The cockles kept quiet.`,
+        talkKicker: `Let's talk`, talkBody: `An email address and an old laptop — that is all you need to have this landing page made for you right away, completely free. You talk, and it gets built for you. There are a few catches, mind you. A consult? The first one is free ;) Then we start automating.`,
         foot1: `Built in the <strong>Cave</strong>: a damp cave behind the dike where the server runs on whale oil and the bookkeeping is done in <span class='trade'>traderotes</span>. All prices include the pirate discount and exclude parrot tax. Not sure something is edible? Ask the crab — it lies, but it knows.`,
-        foot2: `© 2026 Eep · tide: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · background: Omarchy theme “ship at sea” · <a href="/CHANGELOG.md">logbook</a>`,
+        foot2: `© 2026 Eep · tide: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · background: Omarchy theme “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logbook</a>`,
         thanks: `Thanks to`,
         sponsors: `Still looking for sponsors for the boat.`,
         logbookTitle: `Logbook`, logbookLoading: `fetching git log…`,
@@ -570,8 +553,7 @@
         hVlag: `Meine Flagge weht hoch<br>bald streiche ich sie zum letzten Mal<br>bezahlt segeln, ja`,
         hBulgaars: `Gin glänzt im Glas<br>ein Avatar lehrt mich Bulgarisch<br>Den Helder lernt mit`,
         hZorgen: `Radar weg, Gin leer<br>FreeBuff bleibt gratis, hoffentlich<br>China hält noch durch`,
-        radarKicker: `Radar`, radarTitle: `Besuche`,
-        radarNote: `Was das Radar zuletzt auf dieser Reede und auf der Wildpluk-Seite aufgefangen hat: eine Zeile pro IP, mit Zeit, Browser, Betriebssystem, Gerät, Seite, Herkunft und Sprache — alles, was über diese Adresse bekannt ist.`,
+        radarKicker: `Radar`, radarNote: `Was das Radar zuletzt auf dieser Reede und auf der Wildpluk-Seite aufgefangen hat: eine Zeile pro IP, mit Zeit, Browser, Betriebssystem, Gerät, Seite, Herkunft und Sprache — alles, was über diese Adresse bekannt ist.`,
         radarLoading: `Radar wärmt auf…`,
         radarEmpty: `Noch keine Besuche auf dem Radar.`,
         radarError: `Das Radar ist außer Reichweite.`,
@@ -581,17 +563,14 @@
         seen: `{n}× von dieser IP, zuerst {time}`, first: `erster Besuch`,
         via: `über`, direct: `direkt`, onDevice: `auf`,
         deviceDesktop: `Desktop`, deviceMobile: `mobil`, deviceBot: `Bot`,
-        aboardKicker: `Besatzung`, aboardTitle: `Wer ist an Bord`,
-        guideName: `Naturführer`, guideRole: `von der Wildpluk-Seite`,
+        aboardKicker: `Besatzung`, guideName: `Naturführer`, guideRole: `von der Wildpluk-Seite`,
         captainName: `Der Kapitän`, captainRole: `diese Reede`,
         offBoard: `von Bord`,
         aboardNote: `An einem Dienstplan und Kalender wird gearbeitet.`,
-        tripKicker: `An Land`, tripTitle: `Der Ausflug`,
-        tripBody: `Der Kapitän zog los: Fernglas um den Hals, Eimer in der Hand, auf der Suche nach Muscheln am Deich. Noch einmal die Wildpluk-Seite für die Gezeit — und dann ein Gespräch mit dem Guide über agentische Llama-Bots, Python-venvs und GitHub. Der Guide nickte freundlich und verstand kein Wort. Die Muscheln blieben still.`,
-        talkKicker: `Im Gespräch`, talkTitle: `Geplauder`,
-        talkBody: `Eine E-Mail-Adresse und ein alter Laptop — mehr brauchst du nicht, um diese Landingpage sofort machen zu lassen, völlig gratis. Du redest, und es wird für dich gebaut. Ein paar Haken und Ösen hat das allerdings. Ein Beratungsgespräch? Das erste ist gratis ;) Danach automatisieren wir.`,
+        tripKicker: `An Land`, tripBody: `Der Kapitän zog los: Fernglas um den Hals, Eimer in der Hand, auf der Suche nach Muscheln am Deich. Noch einmal die Wildpluk-Seite für die Gezeit — und dann ein Gespräch mit dem Guide über agentische Llama-Bots, Python-venvs und GitHub. Der Guide nickte freundlich und verstand kein Wort. Die Muscheln blieben still.`,
+        talkKicker: `Im Gespräch`, talkBody: `Eine E-Mail-Adresse und ein alter Laptop — mehr brauchst du nicht, um diese Landingpage sofort machen zu lassen, völlig gratis. Du redest, und es wird für dich gebaut. Ein paar Haken und Ösen hat das allerdings. Ein Beratungsgespräch? Das erste ist gratis ;) Danach automatisieren wir.`,
         foot1: `Gebaut in der <strong>Cave</strong>: eine feuchte Grotte hinter dem Deich, wo der Server mit Walöl läuft und die Buchhaltung in <span class='trade'>traderotes</span> geht. Alle Preise inklusive Piratenrabatt und exklusive Papageiensteuer. Unsicher, ob etwas essbar ist? Frag die Krabbe — sie lügt, aber sie weiß es.`,
-        foot2: `© 2026 Eep · Gezeit: Rijkswaterstaat Waterinfo (Station Den Helder, Marsdiep) · Hintergrund: Omarchy-Theme „ship at sea“ · <a href="/CHANGELOG.md">Logbuch</a>`,
+        foot2: `© 2026 Eep · Gezeit: Rijkswaterstaat Waterinfo (Station Den Helder, Marsdiep) · Hintergrund: Omarchy-Theme „ship at sea“ · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">Logbuch</a>`,
         thanks: `Dank an`,
         sponsors: `Noch Sponsoren für das Boot gesucht.`,
         logbookTitle: `Logbuch`, logbookLoading: `git log wird geladen…`,
@@ -617,8 +596,7 @@
         hVlag: `Flaga jeszcze w górze<br>wkrótce opuszczę ją na zawsze<br>pływanie za opłatą, tak`,
         hBulgaars: `Gin błyszczy w szkle<br>awatar uczy mnie bułgarskiego<br>Den Helder wtóruje`,
         hZorgen: `Radar zginął, gin znikł<br>FreeBuff wciąż darmowy, mam nadzieję<br>Chiny trwają`,
-        radarKicker: `Radar`, radarTitle: `Odwiedziny`,
-        radarNote: `Co radar ostatnio złapał na tej redzie i na stronie wildpluk: jeden wiersz na IP, z czasem, przeglądarką, systemem, urządzeniem, stroną, źródłem i językiem — wszystko, co wiadomo o tym adresie.`,
+        radarKicker: `Radar`, radarNote: `Co radar ostatnio złapał na tej redzie i na stronie wildpluk: jeden wiersz na IP, z czasem, przeglądarką, systemem, urządzeniem, stroną, źródłem i językiem — wszystko, co wiadomo o tym adresie.`,
         radarLoading: `Radar się rozgrzewa…`,
         radarEmpty: `Na radarze nie ma jeszcze odwiedzin.`,
         radarError: `Radar jest poza zasięgiem.`,
@@ -628,17 +606,14 @@
         seen: `{n}× z tego IP, pierwszy raz {time}`, first: `pierwsza wizyta`,
         via: `z`, direct: `bezpośrednio`, onDevice: `na`,
         deviceDesktop: `komputer`, deviceMobile: `telefon`, deviceBot: `bot`,
-        aboardKicker: `Załoga`, aboardTitle: `Kto jest na pokładzie`,
-        guideName: `Przewodnik przyrody`, guideRole: `ze strony wildpluk`,
+        aboardKicker: `Załoga`, guideName: `Przewodnik przyrody`, guideRole: `ze strony wildpluk`,
         captainName: `Kapitan`, captainRole: `ta reda`,
         offBoard: `poza pokładem`,
         aboardNote: `Trwają prace nad grafikiem i kalendarzem.`,
-        tripKicker: `Na lądzie`, tripTitle: `Wyprawa`,
-        tripBody: `Kapitan wyruszył: lornetka na szyi, wiadro w ręce, szukać sercówek wzdłuż wału. Jeszcze raz strona wildpluk, żeby sprawdzić pływ — a potem rozmowa z przewodnikiem o agentowych botach llama, pythonowych venv i githubie. Przewodnik uprzejmie kiwał i nie zrozumiał ani słowa. Sercówki milczały.`,
-        talkKicker: `Rozmowa`, talkTitle: `Pogaduchy`,
-        talkBody: `Adres e-mail i stary laptop — nic więcej nie trzeba, żeby ta strona powstała od razu, całkiem za darmo. Mówisz, co chcesz, i to powstaje. Są jednak pewne haczyki. Konsultacja? Pierwsza jest gratis ;) Potem zaczynamy automatyzację.`,
+        tripKicker: `Na lądzie`, tripBody: `Kapitan wyruszył: lornetka na szyi, wiadro w ręce, szukać sercówek wzdłuż wału. Jeszcze raz strona wildpluk, żeby sprawdzić pływ — a potem rozmowa z przewodnikiem o agentowych botach llama, pythonowych venv i githubie. Przewodnik uprzejmie kiwał i nie zrozumiał ani słowa. Sercówki milczały.`,
+        talkKicker: `Rozmowa`, talkBody: `Adres e-mail i stary laptop — nic więcej nie trzeba, żeby ta strona powstała od razu, całkiem za darmo. Mówisz, co chcesz, i to powstaje. Są jednak pewne haczyki. Konsultacja? Pierwsza jest gratis ;) Potem zaczynamy automatyzację.`,
         foot1: `Zbudowane w <strong>Cave</strong>: wilgotna grota za wałem, gdzie serwer chodzi na oleju wielorybim, a księgowość prowadzi się w <span class='trade'>traderotes</span>. Wszystkie ceny z pirackim rabatem i bez podatku od papug. Nie wiesz, czy coś jest jadalne? Zapytaj kraba — kłamie, ale wie.`,
-        foot2: `© 2026 Eep · pływ: Rijkswaterstaat Waterinfo (stacja Den Helder, Marsdiep) · tło: motyw Omarchy „ship at sea” · <a href="/CHANGELOG.md">dziennik</a>`,
+        foot2: `© 2026 Eep · pływ: Rijkswaterstaat Waterinfo (stacja Den Helder, Marsdiep) · tło: motyw Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">dziennik</a>`,
         thanks: `Dziękujemy`,
         sponsors: `Nadal szukamy sponsorów dla łodzi.`,
         logbookTitle: `Dziennik`, logbookLoading: `pobieram git log…`,
@@ -664,8 +639,7 @@
         hVlag: `Флагът ми още вее<br>скоро ще го сваля за последно<br>платено плаване, да`,
         hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
         hZorgen: `Радарът го няма, джинът свърши<br>FreeBuff още е безплатен, надявам се<br>Китай издържа`,
-        radarKicker: `Радар`, radarTitle: `Посещения`,
-        radarNote: `Какво улови радарът напоследък на този рейд и на сайта wildpluk: по един ред за IP, с време, браузър, система, устройство, страница, източник и език — всичко, което се знае за този адрес.`,
+        radarKicker: `Радар`, radarNote: `Какво улови радарът напоследък на този рейд и на сайта wildpluk: по един ред за IP, с време, браузър, система, устройство, страница, източник и език — всичко, което се знае за този адрес.`,
         radarLoading: `Радарът загрява…`,
         radarEmpty: `Още няма посещения на радара.`,
         radarError: `Радарът е извън обхват.`,
@@ -675,17 +649,14 @@
         seen: `{n}× от това IP, първо {time}`, first: `първо посещение`,
         via: `чрез`, direct: `директно`, onDevice: `на`,
         deviceDesktop: `компютър`, deviceMobile: `мобилен`, deviceBot: `бот`,
-        aboardKicker: `Екипаж`, aboardTitle: `Кой е на борда`,
-        guideName: `Природен гид`, guideRole: `от сайта wildpluk`,
+        aboardKicker: `Екипаж`, guideName: `Природен гид`, guideRole: `от сайта wildpluk`,
         captainName: `Капитанът`, captainRole: `този рейд`,
         offBoard: `извън борда`,
         aboardNote: `Работи се по график и календар.`,
-        tripKicker: `На брега`, tripTitle: `Разходката`,
-        tripBody: `Капитанът излезе: бинокъл на врата, кофа в ръка, да търси сърцевидни миди по дигата. Още веднъж сайта wildpluk за прилива — и после разговор с гида за агентни llama ботове, python venv и github. Гидът кимна любезно и не разбра нищо. Мидите мълчаха.`,
-        talkKicker: `На приказка`, talkTitle: `Приказки`,
-        talkBody: `Имейл адрес и стар лаптоп — нищо друго не ти трябва, за да ти направят тази страница веднага, напълно безплатно. Говориш каквото искаш и то се прави. Има си обаче някои уловки. Консултация? Първата е безплатна ;) После автоматизираме.`,
+        tripKicker: `На брега`, tripBody: `Капитанът излезе: бинокъл на врата, кофа в ръка, да търси сърцевидни миди по дигата. Още веднъж сайта wildpluk за прилива — и после разговор с гида за агентни llama ботове, python venv и github. Гидът кимна любезно и не разбра нищо. Мидите мълчаха.`,
+        talkKicker: `На приказка`, talkBody: `Имейл адрес и стар лаптоп — нищо друго не ти трябва, за да ти направят тази страница веднага, напълно безплатно. Говориш каквото искаш и то се прави. Има си обаче някои уловки. Консултация? Първата е безплатна ;) После автоматизираме.`,
         foot1: `Построено в <strong>Cave</strong>: влажна пещера зад дигата, където сървърът работи на китова мас и счетоводството се води в <span class='trade'>traderotes</span>. Всички цени са с пиратска отстъпка и без данък за папагали. Не си сигурен дали нещо е за ядене? Питай рака — лъже, но знае.`,
-        foot2: `© 2026 Eep · прилив: Rijkswaterstaat Waterinfo (станция Ден Хелдер, Марсдип) · фон: тема Omarchy „ship at sea” · <a href="/CHANGELOG.md">дневник</a>`,
+        foot2: `© 2026 Eep · прилив: Rijkswaterstaat Waterinfo (станция Ден Хелдер, Марсдип) · фон: тема Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">дневник</a>`,
         thanks: `Благодарности на`,
         sponsors: `Още търсим спонсори за лодката.`,
         logbookTitle: `Дневник`, logbookLoading: `зареждане на git log…`,
@@ -711,8 +682,7 @@
         hVlag: `我的旗还高挂<br>不久要最后一次降下<br>付费航行，是的`,
         hBulgaars: `琴酒在杯中闪<br>头像教我保加利亚语<br>登海尔德也跟着学`,
         hZorgen: `雷达丢了，酒也空了<br>FreeBuff 还免费，但愿如此<br>中国仍在坚持`,
-        radarKicker: `雷达`, radarTitle: `访客`,
-        radarNote: `雷达最近在这片锚地和 wildpluk 网站上捕捉到的：每个 IP 一行，含时间、浏览器、操作系统、设备、页面、来源和语言——关于该地址所知道的一切。`,
+        radarKicker: `雷达`, radarNote: `雷达最近在这片锚地和 wildpluk 网站上捕捉到的：每个 IP 一行，含时间、浏览器、操作系统、设备、页面、来源和语言——关于该地址所知道的一切。`,
         radarLoading: `雷达正在预热…`,
         radarEmpty: `雷达上还没有访客。`,
         radarError: `雷达超出范围。`,
@@ -722,17 +692,14 @@
         seen: `该 IP 第 {n} 次，首次 {time}`, first: `首次访问`,
         via: `来自`, direct: `直接访问`, onDevice: `运行于`,
         deviceDesktop: `桌面`, deviceMobile: `手机`, deviceBot: `机器人`,
-        aboardKicker: `船员`, aboardTitle: `谁在船上`,
-        guideName: `自然向导`, guideRole: `来自 wildpluk 网站`,
+        aboardKicker: `船员`, guideName: `自然向导`, guideRole: `来自 wildpluk 网站`,
         captainName: `船长`, captainRole: `这片锚地`,
         offBoard: `已离船`,
         aboardNote: `正在制定值班表和日程。`,
-        tripKicker: `上岸`, tripTitle: `一次出行`,
-        tripBody: `船长出门了：望远镜挂在脖子上，手里拎着桶，沿着堤岸去找鸟蛤。最后又打开 wildpluk 网站看了一眼潮水——然后和向导聊起 agentic llama 机器人、python venv 和 github。向导客气地点头，一句也没听懂。鸟蛤一声不响。`,
-        talkKicker: `聊一聊`, talkTitle: `闲聊`,
-        talkBody: `一个邮箱地址和一台旧笔记本——就这些，就能立刻把这张落地页做出来，完全免费。你说想要什么，它就被做出来。当然，还是有些坑。咨询？第一次免费 ;) 之后就自动化了。`,
+        tripKicker: `上岸`, tripBody: `船长出门了：望远镜挂在脖子上，手里拎着桶，沿着堤岸去找鸟蛤。最后又打开 wildpluk 网站看了一眼潮水——然后和向导聊起 agentic llama 机器人、python venvs 和 github。向导客气地点头，一句也没听懂。鸟蛤一声不响。`,
+        talkKicker: `聊一聊`, talkBody: `一个邮箱地址和一台旧笔记本——就这些，就能立刻把这张落地页做出来，完全免费。你说想要什么，它就被做出来。当然，还是有些坑。咨询？第一次免费 ;) 之后就自动化了。`,
         foot1: `建于 <strong>Cave</strong>：堤后一个潮湿的洞穴，服务器靠鲸油运转，账目用 <span class='trade'>traderotes</span> 结算。所有价格含海盗折扣，不含鹦鹉税。不确定能不能吃？问那只螃蟹——它撒谎，但它知道。`,
-        foot2: `© 2026 Eep · 潮汐：Rijkswaterstaat Waterinfo（登海尔德站，马斯迪普）· 背景：Omarchy 主题“ship at sea” · <a href="/CHANGELOG.md">航海日志</a>`,
+        foot2: `© 2026 Eep · 潮汐：Rijkswaterstaat Waterinfo（登海尔德站，马斯迪普）· 背景：Omarchy 主题“ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">航海日志</a>`,
         thanks: `感谢`,
         sponsors: `仍在为这艘船寻找赞助商。`,
         logbookTitle: `日志`, logbookLoading: `正在获取 git log…`,

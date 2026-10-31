@@ -6,7 +6,7 @@
 <title>Crew · Eeps Site</title>
 <meta name="description" content="Crew — praat met de natuurgids van de wildpluk-site over schelpen, vissen, zeewier en het getij bij Den Helder.">
 <meta name="theme-color" content="#0b0b0b">
-<link rel="icon" type="image/svg+xml" href="/static/piracy/japan-flag.svg">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
 <style>
   :root{
     --ink:#f4f1e8;
@@ -23,7 +23,7 @@
     margin:0;
     color:var(--ink);
     font-family:var(--sans);
-    background:#081018 url("/static/piracy/tide-bg.jpg") center/cover no-repeat fixed;
+    background:#081018 url("tide-bg.jpg") center/cover no-repeat fixed;
     display:flex;
     flex-direction:column;
     min-height:100vh;
@@ -85,12 +85,9 @@
   .chat-bulg{border-color:rgba(240,128,112,.32);background:rgba(24,10,10,.55)}
   .chat-bulg h2{color:#f09a8c}
   .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
-  /* Profiel per chatbox: links de foto met AGENT.md-beheer en agenda-knop,
+  /* Profiel per chatbox: links de foto met Profiel-beheer en agenda-knop,
      rechts de chat. De agenda zelf opent als balk onder de box. */
   .chat-grid{display:grid;grid-template-columns:132px minmax(0,1fr);gap:.8rem;align-items:start}
-  .hierarchy-1{margin-left:1.2rem;border-left:2px solid rgba(159,198,216,.35);padding-left:.8rem}
-  .hierarchy-2{margin-left:2.4rem;border-left:2px solid rgba(127,202,145,.35);padding-left:.8rem}
-  .hierarchy-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8f8a7c;margin-left:.5rem;vertical-align:middle}
   .chat-main{min-width:0}
   .profiel{display:flex;flex-direction:column;gap:.55rem}
   .profiel-foto{
@@ -181,13 +178,18 @@
     .flag{width:48px;height:48px}
     .chat-log{max-height:40vh}
   }
+  .tag-list{display:flex;flex-wrap:wrap;gap:.45rem .6rem;margin:.6rem 0 1.2rem}
+  .tag{font-size:.66rem;letter-spacing:.06em;padding:.35em .7em;border-radius:999px;
+    background:rgba(230,162,60,.14);border:1px solid rgba(255,200,97,.35);color:var(--brass-bright)}
 </style>
 </head>
 <body>
 
 <main>
+  <div class="tag-list" id="tag-list"></div>
+
   <section class="hero">
-    <img class="flag" src="/static/piracy/pirate-flag.svg" width="58" height="58" alt="Solovlag">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
     <p class="kicker">Den Helder · Marsdiep · bemanning</p>
     <h1><span class="the">Eeps</span>Crew</h1>
     <p class="lede">
@@ -210,8 +212,8 @@
       <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
 
-    <section class="chat chat-bulg hierarchy-0" id="sectie-bulgaars" aria-labelledby="bg-title">
-      <h2 id="bg-title">Iva <span class="hierarchy-badge"></span></h2>
+    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
+      <h2 id="bg-title">Iva</h2>
       <div class="chat-log" id="bg-log" aria-live="polite">
         <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
       </div>
@@ -223,8 +225,8 @@
       <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
     </section>
 
-    <section class="chat hierarchy-1" id="sectie-natuurgids" aria-labelledby="chat-title">
-      <h2 id="chat-title">Natuurgids <span class="hierarchy-badge">onder kapitein</span></h2>
+    <section class="chat" id="sectie-natuurgids" aria-labelledby="chat-title">
+      <h2 id="chat-title">Natuurgids</h2>
       <div class="chat-log" id="chat-log" aria-live="polite">
         <p class="msg msg-guide">Hoi, ik ben de natuurgids, lastige materie maar altijd in voor een babbeltje, speciliteit trekvogels, compagnon vogelgeluiden gent</p>
       </div>
@@ -236,8 +238,8 @@
       <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
     </section>
 
-    <section class="chat chat-birds hierarchy-2" id="sectie-vogelgids" aria-labelledby="birds-title">
-      <h2 id="birds-title">Vogelgeluiden <span class="hierarchy-badge">onder natuurgids</span></h2>
+    <section class="chat chat-birds" id="sectie-vogelgids" aria-labelledby="birds-title">
+      <h2 id="birds-title">Vogelgeluiden</h2>
       <div class="chat-log" id="birds-log" aria-live="polite">
         <p class="msg msg-bird">Tsief! Ik ben de vogelgids. Beschrijf het geluid of de plek, en ik zoek de vogel met zijn roep erbij.</p>
       </div>
@@ -249,9 +251,9 @@
       <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en speelt de roep meteen af. Hoort het niet? Klik op de play-knop van de speler.</p>
     </section>
 
-    <a class="cta" href="/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
+    <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
 
-    <p class="back"><a href="/static/piracy/index.html">← Terug naar de landing</a></p>
+    <p class="back"><a href="index.html">← Terug naar de landing</a></p>
     <p class="back"><a href="/static/piracy/bookmarks.html">📚 Bookmarks</a></p>
   </section>
 </main>
@@ -435,7 +437,7 @@
     }
 
     /* Profiel per chatbox: bestaande kind-elementen in een .chat-main
-       tilen en ernaast een .profiel-kolom bouwen met foto, AGENT.md-
+       tilen en ernaast een .profiel-kolom bouwen met foto, Profiel-
        beheer (lezen + opslaan met versielijst) en een agenda-knop die de
        beheerbare agenda van de agent opent (AGENDA.md op de server). */
     function agentPaneel(opts) {
@@ -522,7 +524,7 @@
       sectie.appendChild(grid);
       sectie.appendChild(ag);
 
-      /* ── AGENT.md beheer ── */
+      /* ── Profiel beheer ── */
       function zetVersielijst(versies) {
         bversie.innerHTML = '';
         var opt = document.createElement('option');
@@ -645,6 +647,40 @@
     agentPaneel({ sectie: 'sectie-bulgaars', agent: 'bulgaars', titel: 'Iva' });
     agentPaneel({ sectie: 'sectie-natuurgids', agent: 'natuurgids', titel: 'Natuurgids' });
     agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgids' });
+
+    /* ── Taglijst uit de agenda van de kapitein ── */
+    (function laadTags() {
+      var lijst = document.getElementById('tag-list');
+      if (!lijst) return;
+      fetch(API + '/api/agents/kapitein/agenda', { mode: 'cors' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var tekst = (d && d.tekst) || '';
+          if (!tekst.trim()) return;
+          var tags = [];
+          tekst.split('\n').forEach(function (regel) {
+            var l = regel.trim();
+            if (/^#{1,2}\s/.test(l)) {
+              l = l.replace(/^#{1,2}\s+/, '').trim();
+            } else if (/^-\s/.test(l)) {
+              l = l.replace(/^-\s+/, '').trim();
+            } else {
+              return;
+            }
+            if (l && tags.indexOf(l) === -1) tags.push(l);
+            if (tags.length >= 24) return;
+          });
+          if (!tags.length) return;
+          lijst.innerHTML = '';
+          tags.forEach(function (t) {
+            var span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = t;
+            lijst.appendChild(span);
+          });
+        })
+        .catch(function () { /* tags zijn niet kritisch */ });
+    })();
   })();
 </script>
 </body>
