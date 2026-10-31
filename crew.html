@@ -85,9 +85,9 @@
   .chat-bulg{border-color:rgba(240,128,112,.32);background:rgba(24,10,10,.55)}
   .chat-bulg h2{color:#f09a8c}
   .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
-  /* Profiel per chatbox: links de chat, rechts de foto met AGENT.md-
-     beheer en de agenda-knop. De agenda zelf opent als balk onder de box. */
-  .chat-grid{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:.8rem;align-items:start}
+  /* Profiel per chatbox: links de foto met AGENT.md-beheer en agenda-knop,
+     rechts de chat. De agenda zelf opent als balk onder de box. */
+  .chat-grid{display:grid;grid-template-columns:132px minmax(0,1fr);gap:.8rem;align-items:start}
   .chat-main{min-width:0}
   .profiel{display:flex;flex-direction:column;gap:.55rem}
   .profiel-foto{
@@ -491,8 +491,8 @@
       aside.appendChild(foto);
       aside.appendChild(beheer);
       aside.appendChild(agendaKnop);
-      grid.appendChild(main);
       grid.appendChild(aside);
+      grid.appendChild(main);
 
       /* Agenda-balk onder de chatbox, pas gevuld bij openen. */
       var ag = document.createElement('details');
