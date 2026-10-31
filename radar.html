@@ -105,6 +105,36 @@
     opacity:.7;
   }
   .back:hover{opacity:1}
+  /* category boxes */
+  .categories{
+    position:fixed;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;
+    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;
+  }
+  .cat{
+    pointer-events:auto;padding:1.2rem 1.4rem;border:1px solid rgba(0,255,136,.15);
+    background:rgba(0,20,10,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    overflow-y:auto;max-height:50vh;
+  }
+  .cat h3{
+    font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);
+    margin-bottom:.6rem;opacity:.9;text-shadow:0 0 6px var(--glow-green);
+  }
+  .cat p{font-size:.72rem;line-height:1.55;color:rgba(0,255,136,.75);margin:.25rem 0}
+  .cat b{color:var(--green);opacity:.9}
+  .cat .state{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:.4rem;vertical-align:middle}
+  .cat .state.ok{background:var(--green);box-shadow:0 0 6px var(--glow-green)}
+  .cat .state.warning{background:var(--amber);box-shadow:0 0 6px var(--glow-amber)}
+  .cat .state.critical{background:var(--red);box-shadow:0 0 6px var(--glow-red)}
+  .cat details{margin-top:.5rem}
+  .cat summary{cursor:pointer;font-size:.7rem;color:var(--green);opacity:.8;letter-spacing:.08em}
+  .cat summary::-webkit-details-marker{display:none}
+  .cat summary::after{content:"▾";margin-left:.4rem;font-size:.6rem;transition:transform .2s}
+  .cat details[open] summary::after{transform:rotate(180deg)}
+  .cat .outage{font-size:.68rem;color:rgba(0,255,136,.65);margin:.3rem 0;padding-left:.6rem;border-left:2px solid rgba(0,255,136,.2)}
+  @media(max-width:768px){
+    .categories{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr)}
+    .cat{max-height:25vh}
+  }
 </style>
 </head>
 <body>
@@ -120,6 +150,49 @@
   </div>
 </div>
 <div class="timestamp" id="timestamp">LAST SCAN: --</div>
+
+<!-- categories -->
+<div class="categories">
+  <!-- 1: Backoffice -->
+  <div class="cat">
+    <h3>📦 Backoffice</h3>
+    <p><span class="state ok"></span><b>Backup</b> — 6h geleden</p>
+    <p><b>Status:</b> success · 2.1 GB</p>
+    <details>
+      <summary>Future radar</summary>
+      <p class="outage">Kluis integratie gepland</p>
+      <p class="outage">Backup verificate in ontwikkeling</p>
+    </details>
+  </div>
+
+  <!-- 2: Stratox -->
+  <div class="cat">
+    <h3>🔷 Stratox</h3>
+    <p><span class="state ok"></span><b>Connectie</b> — actief</p>
+    <p><b>Latency:</b> 12ms</p>
+    <p><b>Uptime:</b> 99.8%</p>
+  </div>
+
+  <!-- 3: GitHub -->
+  <div class="cat">
+    <h3>🐙 GitHub</h3>
+    <p><span class="state ok"></span><b>API</b> — bereikbaar</p>
+    <details>
+      <summary>Outages</summary>
+      <p class="outage">6 hour site unreachable, hmm door menselijke fout zegt de kapitein</p>
+    </details>
+  </div>
+
+  <!-- 4: Omarchy plugin -->
+  <div class="cat">
+    <h3>🧩 Omarchy plugin</h3>
+    <p><span class="state warning"></span><b>mouse-in-the-corner</b></p>
+    <p><b>Status:</b> in afwachting van goedkeuring</p>
+    <p><b>Update:</b> needs to be approved?!</p>
+  </div>
+</div>
+
+<!-- detail panel -->
 <div class="panel" id="panel">
   <button class="close" onclick="closePanel()">✕</button>
   <h2 id="panel-name">--</h2>
