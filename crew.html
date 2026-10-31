@@ -88,6 +88,9 @@
   /* Profiel per chatbox: links de foto met AGENT.md-beheer en agenda-knop,
      rechts de chat. De agenda zelf opent als balk onder de box. */
   .chat-grid{display:grid;grid-template-columns:132px minmax(0,1fr);gap:.8rem;align-items:start}
+  .hierarchy-1{margin-left:1.2rem;border-left:2px solid rgba(159,198,216,.35);padding-left:.8rem}
+  .hierarchy-2{margin-left:2.4rem;border-left:2px solid rgba(127,202,145,.35);padding-left:.8rem}
+  .hierarchy-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8f8a7c;margin-left:.5rem;vertical-align:middle}
   .chat-main{min-width:0}
   .profiel{display:flex;flex-direction:column;gap:.55rem}
   .profiel-foto{
@@ -207,8 +210,8 @@
       <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
 
-    <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
-      <h2 id="bg-title">Iva</h2>
+    <section class="chat chat-bulg hierarchy-0" id="sectie-bulgaars" aria-labelledby="bg-title">
+      <h2 id="bg-title">Iva <span class="hierarchy-badge"></span></h2>
       <div class="chat-log" id="bg-log" aria-live="polite">
         <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
       </div>
@@ -220,8 +223,8 @@
       <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
     </section>
 
-    <section class="chat" id="sectie-natuurgids" aria-labelledby="chat-title">
-      <h2 id="chat-title">Natuurgids</h2>
+    <section class="chat hierarchy-1" id="sectie-natuurgids" aria-labelledby="chat-title">
+      <h2 id="chat-title">Natuurgids <span class="hierarchy-badge">onder kapitein</span></h2>
       <div class="chat-log" id="chat-log" aria-live="polite">
         <p class="msg msg-guide">Hoi, ik ben de natuurgids, lastige materie maar altijd in voor een babbeltje, speciliteit trekvogels, compagnon vogelgeluiden gent</p>
       </div>
@@ -233,8 +236,8 @@
       <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
     </section>
 
-    <section class="chat chat-birds" id="sectie-vogelgids" aria-labelledby="birds-title">
-      <h2 id="birds-title">Vogelgeluiden</h2>
+    <section class="chat chat-birds hierarchy-2" id="sectie-vogelgids" aria-labelledby="birds-title">
+      <h2 id="birds-title">Vogelgeluiden <span class="hierarchy-badge">onder natuurgids</span></h2>
       <div class="chat-log" id="birds-log" aria-live="polite">
         <p class="msg msg-bird">Tsief! Ik ben de vogelgids. Beschrijf het geluid of de plek, en ik zoek de vogel met zijn roep erbij.</p>
       </div>
