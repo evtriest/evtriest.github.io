@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="nl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -277,11 +277,11 @@
 
 <nav class="langbar" aria-label="Taal">
   <div class="langbar-inner">
-    <button class="lang-btn" type="button" data-lang="zh" aria-pressed="true"><span class="lf" aria-hidden="true">🇨🇳</span>中文</button>
+    <button class="lang-btn" type="button" data-lang="zh" aria-pressed="false"><span class="lf" aria-hidden="true">🇨🇳</span>中文</button>
     <button class="lang-btn" type="button" data-lang="bg" aria-pressed="false"><span class="lf" aria-hidden="true">🇧🇬</span>Български</button>
     <button class="lang-btn" type="button" data-lang="pl" aria-pressed="false"><span class="lf" aria-hidden="true">🇵🇱</span>Polski</button>
     <button class="lang-btn" type="button" data-lang="en" aria-pressed="false"><span class="lf" aria-hidden="true">🇬🇧</span>English</button>
-    <button class="lang-btn" type="button" data-lang="nl" aria-pressed="false"><span class="lf" aria-hidden="true">🇳🇱</span>Nederlands</button>
+    <button class="lang-btn" type="button" data-lang="nl" aria-pressed="true"><span class="lf" aria-hidden="true">🇳🇱</span>Nederlands</button>
     <button class="lang-btn" type="button" data-lang="de" aria-pressed="false"><span class="lf" aria-hidden="true">🇩🇪</span>Deutsch</button>
   </div>
 </nav>
@@ -740,7 +740,7 @@
       }
     };
 
-    var current = 'zh';
+    var current = 'nl';
     var API = location.hostname === 'evtriest.github.io'
       ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
       : '';
@@ -1031,7 +1031,7 @@
       });
     }
 
-    applyLang('zh');
+    applyLang('nl');
     loadPluginStatus();
   })();
 </script>
