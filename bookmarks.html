@@ -60,6 +60,13 @@
     flex:none;font:inherit;font-size:.72rem;font-weight:800;padding:.35em .55em;border-radius:999px;
     border:1px solid rgba(224,90,79,.45);color:#ffc9c1;background:rgba(224,90,79,.12);cursor:pointer;
   }
+  .sort-btn{
+    flex:none;font:inherit;font-size:.72rem;font-weight:800;padding:.35em .55em;border-radius:999px;
+    border:1px solid rgba(232,220,192,.28);color:var(--sand);background:rgba(232,220,192,.08);cursor:pointer;
+    line-height:1;
+  }
+  .sort-btn:hover{background:rgba(230,162,60,.18);border-color:rgba(255,200,97,.45)}
+  .sort-btn:disabled{opacity:.35;cursor:not-allowed}
   .del:hover{background:rgba(224,90,79,.22)}
   .empty{text-align:center;color:#8f8a7c;font-size:.92rem;margin-top:2rem}
   .back{margin:1.3rem 0 0;font-size:.82rem;text-align:center}
@@ -179,11 +186,17 @@
       if(b.desc){
         var d=document.createElement('div'); d.className='desc'; d.textContent=b.desc; body.appendChild(d);
       }
-      var del=document.createElement('button'); del.className='del'; del.textContent='Verwijder';
-      del.onclick=function(){ list.splice(i,1); if(list.length>30) list=list.slice(0,30); save(list); render(); };
+      var up=document.createElement('button'); up.className='sort-btn'; up.textContent='↑';
+      up.disabled = i === 0;
+      up.onclick=function(){ if(i>0){ var item=list.splice(i,1)[0]; list.splice(i-1,0,item); save(list); render(); } };
+      var down=document.createElement('button'); down.className='sort-btn'; down.textContent='↓';
+      down.disabled = i === list.length-1;
+      down.onclick=function(){ if(i<list.length-1){ var item=list.splice(i,1)[0]; list.splice(i+1,0,item); save(list); render(); } };
       var edit=document.createElement('button'); edit.className='del'; edit.textContent='Bewerk'; edit.style.marginRight='.4rem'; edit.style.borderColor='rgba(255,200,97,.45)'; edit.style.color='#ffd88a';
       edit.onclick=function(){ openEdit(i); };
-      card.appendChild(fav); card.appendChild(body); card.appendChild(edit); card.appendChild(del);
+      var del=document.createElement('button'); del.className='del'; del.textContent='Verwijder';
+      del.onclick=function(){ list.splice(i,1); if(list.length>30) list=list.slice(0,30); save(list); render(); };
+      card.appendChild(fav); card.appendChild(body); card.appendChild(up); card.appendChild(down); card.appendChild(edit); card.appendChild(del);
 
       card.addEventListener('dragstart',function(e){ e.dataTransfer.setData('text/plain',i); card.classList.add('dragging'); });
       card.addEventListener('dragend',function(){ card.classList.remove('dragging'); });
