@@ -189,6 +189,19 @@
   .haiku p{margin:0 0 .85rem;font-family:var(--serif);font-size:clamp(.92rem,2.3vw,1.02rem);line-height:1.55;color:var(--ink)}
   .haiku p:last-child{margin-bottom:0}
   .haiku-piece[hidden]{display:none}
+  /* per bemanningslid een knop voor een verse haiku van de lokale llama */
+  .haiku-new{
+    font:inherit;font-family:var(--sans);font-size:.62rem;font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;margin-top:.75rem;padding:.45em .95em;border-radius:999px;cursor:pointer;
+    border:1px solid color-mix(in srgb,var(--brass-bright) 45%,transparent);
+    background:color-mix(in srgb,var(--brass) 10%,transparent);color:var(--brass-bright);
+    transition:background .15s,border-color .15s;
+  }
+  .haiku-new:hover{background:color-mix(in srgb,var(--brass) 20%,transparent);border-color:color-mix(in srgb,var(--brass-bright) 70%,transparent)}
+  .haiku-new:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .haiku-new:disabled{opacity:.55;cursor:progress}
+  .haiku-status{margin:.5rem 0 0;font-size:.64rem;letter-spacing:.04em;color:var(--brass)}
+  .haiku-status[hidden]{display:none}
   .cards{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:10px;
     margin:2.4rem auto 0;max-width:640px;
@@ -370,6 +383,27 @@
   .chat-selector-item .icon{font-size:1.1rem;width:1.6rem;text-align:center}
   .chat-selector-item .label{flex:1}
   .chat-selector-item .arrow{margin-left:auto;font-size:.7rem;color:var(--brass);opacity:.7}
+  /* bemanningsacties: agenda van de kapitein boven de chat-kiezer */
+  .crew-actions{display:flex;flex-direction:column;align-items:center;gap:.55rem;margin:1.2rem auto 0;max-width:560px;padding:0 20px;text-align:center}
+  .crew-actions .chat-selector{margin:0}
+  .agenda-picker{position:relative;display:inline-flex;flex-direction:column;align-items:center;width:100%}
+  .agenda-btn{white-space:nowrap}
+  .agenda-picker.open .agenda-btn::after{transform:rotate(180deg)}
+  .agenda-panel{
+    width:100%;margin-top:.55rem;padding:.75rem .9rem;text-align:left;
+    border-radius:12px;border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);
+    background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(8px);
+    box-shadow:0 8px 24px rgba(0,0,0,.45);
+  }
+  .agenda-panel[hidden]{display:none}
+  .agenda-status{margin:0 0 .45rem;font-size:.66rem;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
+  .agenda-text{
+    margin:0;max-height:min(48vh,320px);overflow:auto;scrollbar-width:thin;
+    font:inherit;font-size:.8rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;
+    scrollbar-color:color-mix(in srgb,var(--brass-bright) 35%,transparent) transparent;
+  }
+  .agenda-link{display:inline-block;margin-top:.6rem;font-size:.7rem;color:var(--brass);text-decoration:none}
+  .agenda-link:hover{color:var(--brass-bright);text-decoration:underline}
   .cta-wrap{text-align:center}
   @media(prefers-reduced-motion:reduce){.cta{transition:none}}
   /* thema-kiezer, rechtsboven */
@@ -445,58 +479,71 @@
   </p>
   <section class="musings">
     <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
-      <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels" data-i18n="tabKokkels">Kokkels</button>
-      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids" data-i18n="tabGids">De gids</button>
-      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag" data-i18n="tabVlag">De vlag</button>
-      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars" data-i18n="tabBulgaars">Bulgaars</button>
-      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen" data-i18n="tabZorgen">Zorgen</button>
+      <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-natuurgids" data-i18n="tabNatuurgids">Natuurgids</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-kapitein" data-i18n="tabKapitein">Kapitein</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-iva" data-i18n="tabIva">Iva</button>
+      <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-marta" data-i18n="tabMarta">Marta</button>
     </div>
     <div class="haiku">
-      <div class="haiku-piece" id="haiku-kokkels">
-        <p data-i18n-html="hKokkels">
-          Kokkels in het nat<br>
-          de kijker zoekt langs de dijk<br>
-          het tij zegt: nog niet
+      <div class="haiku-piece" id="haiku-natuurgids" data-agent="natuurgids">
+        <p data-i18n-html="hNatuurgids">
+          Zeeleven en wier<br>
+          trekvogels langs de dijk<br>
+          de gids wijst de weg
         </p>
+        <button class="haiku-new" type="button" data-agent="natuurgids" data-i18n="haikuNew">Maak een nieuwe</button>
+        <p class="haiku-status" aria-live="polite" hidden></p>
       </div>
-      <div class="haiku-piece" id="haiku-gids" hidden>
-        <p data-i18n-html="hGids">
-          Bot praat in het rond<br>
-          venv, github, geen chocola<br>
-          de gids knikt maar wat
+      <div class="haiku-piece" id="haiku-kapitein" data-agent="kapitein" hidden>
+        <p data-i18n-html="hKapitein">
+          Kijker om de nek<br>
+          de kokkels houden zich stil<br>
+          het tij wacht op hem
         </p>
+        <button class="haiku-new" type="button" data-agent="kapitein" data-i18n="haikuNew">Maak een nieuwe</button>
+        <p class="haiku-status" aria-live="polite" hidden></p>
       </div>
-      <div class="haiku-piece" id="haiku-vlag" hidden>
-        <p data-i18n-html="hVlag">
-          Mijn vlag hangt nog hoog<br>
-          straks strijk ik hem voor het laatst<br>
-          betaald varen, ja
-        </p>
-      </div>
-      <div class="haiku-piece" id="haiku-bulgaars" hidden>
-        <p data-i18n-html="hBulgaars">
+      <div class="haiku-piece" id="haiku-iva" data-agent="bulgaars" hidden>
+        <p data-i18n-html="hIva">
           Джин блести в чаша<br>
-          аватар ме учи днес<br>
-          Хелдер учи с мен
+          питай за миди и прилив<br>
+          Ива отговаря
         </p>
+        <button class="haiku-new" type="button" data-agent="bulgaars" data-i18n="haikuNew">Maak een nieuwe</button>
+        <p class="haiku-status" aria-live="polite" hidden></p>
       </div>
-      <div class="haiku-piece" id="haiku-zorgen" hidden>
-        <p data-i18n-html="hZorgen">
-          Radar kwijt, gin op<br>
-          FreeBuff blijft toch gratis, hoop<br>
-          China houdt nog vol
+      <div class="haiku-piece" id="haiku-marta" data-agent="admin" hidden>
+        <p data-i18n-html="hMarta">
+          Backoffice op orde<br>
+          de facturen op een rij<br>
+          Marta zegt: gedaan
         </p>
+        <button class="haiku-new" type="button" data-agent="admin" data-i18n="haikuNew">Maak een nieuwe</button>
+        <p class="haiku-status" aria-live="polite" hidden></p>
       </div>
     </div>
   </section>
 </div>
 
-<div class="chat-selector" id="chatSelector">
-  <button class="chat-selector-btn" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleChatSelector()">
-    💬 Chat met de bemanning
-  </button>
-  <div class="chat-selector-menu" role="menu" id="chatSelectorMenu">
-    <!-- dynamically filled from /api/agents -->
+<div class="crew-actions">
+  <div class="agenda-picker" id="agendaPicker">
+    <button class="chat-selector-btn agenda-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="agendaPanel" onclick="toggleAgenda()">
+      📅 Agenda · Kapitein
+    </button>
+    <div class="agenda-panel" id="agendaPanel" role="region" aria-label="Agenda van de kapitein" hidden>
+      <p class="agenda-status" id="agendaStatus" aria-live="polite">Agenda laden…</p>
+      <p class="agenda-text" id="agendaText"></p>
+      <a class="agenda-link" href="crew.html#sectie-kapitein">Beheren op de bemanningspagina →</a>
+    </div>
+  </div>
+
+  <div class="chat-selector" id="chatSelector">
+    <button class="chat-selector-btn" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleChatSelector()">
+      💬 Chat met de bemanning
+    </button>
+    <div class="chat-selector-menu" role="menu" id="chatSelectorMenu">
+      <!-- dynamically filled from /api/agents -->
+    </div>
   </div>
 </div>
 
@@ -521,47 +568,47 @@
       </p>
       <section class="musings">
         <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
-          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-kokkels" data-i18n="tabKokkels">Kokkels</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-gids" data-i18n="tabGids">De gids</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-vlag" data-i18n="tabVlag">De vlag</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-bulgaars" data-i18n="tabBulgaars">Bulgaars</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-zorgen" data-i18n="tabZorgen">Zorgen</button>
+          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-natuurgids" data-i18n="tabNatuurgids">Natuurgids</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-kapitein" data-i18n="tabKapitein">Kapitein</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-iva" data-i18n="tabIva">Iva</button>
+          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-marta" data-i18n="tabMarta">Marta</button>
         </div>
         <div class="haiku">
-          <div class="haiku-piece" id="haiku-kokkels">
-            <p data-i18n-html="hKokkels">
-              Kokkels in het nat<br>
-              de kijker zoekt langs de dijk<br>
-              het tij zegt: nog niet
+          <div class="haiku-piece" id="haiku-natuurgids" data-agent="natuurgids">
+            <p data-i18n-html="hNatuurgids">
+              Zeeleven en wier<br>
+              trekvogels langs de dijk<br>
+              de gids wijst de weg
             </p>
+            <button class="haiku-new" type="button" data-agent="natuurgids" data-i18n="haikuNew">Maak een nieuwe</button>
+            <p class="haiku-status" aria-live="polite" hidden></p>
           </div>
-          <div class="haiku-piece" id="haiku-gids" hidden>
-            <p data-i18n-html="hGids">
-              Bot praat in het rond<br>
-              venv, github, geen chocola<br>
-              de gids knikt maar wat
+          <div class="haiku-piece" id="haiku-kapitein" data-agent="kapitein" hidden>
+            <p data-i18n-html="hKapitein">
+              Kijker om de nek<br>
+              de kokkels houden zich stil<br>
+              het tij wacht op hem
             </p>
+            <button class="haiku-new" type="button" data-agent="kapitein" data-i18n="haikuNew">Maak een nieuwe</button>
+            <p class="haiku-status" aria-live="polite" hidden></p>
           </div>
-          <div class="haiku-piece" id="haiku-vlag" hidden>
-            <p data-i18n-html="hVlag">
-              Mijn vlag hangt nog hoog<br>
-              straks strijk ik hem voor het laatst<br>
-              betaald varen, ja
-            </p>
-          </div>
-          <div class="haiku-piece" id="haiku-bulgaars" hidden>
-            <p data-i18n-html="hBulgaars">
+          <div class="haiku-piece" id="haiku-iva" data-agent="bulgaars" hidden>
+            <p data-i18n-html="hIva">
               Джин блести в чаша<br>
-              аватар ме учи днес<br>
-              Хелдер учи с мен
+              питай за миди и прилив<br>
+              Ива отговаря
             </p>
+            <button class="haiku-new" type="button" data-agent="bulgaars" data-i18n="haikuNew">Maak een nieuwe</button>
+            <p class="haiku-status" aria-live="polite" hidden></p>
           </div>
-          <div class="haiku-piece" id="haiku-zorgen" hidden>
-            <p data-i18n-html="hZorgen">
-              Radar kwijt, gin op<br>
-              FreeBuff blijft toch gratis, hoop<br>
-              China houdt nog vol
+          <div class="haiku-piece" id="haiku-marta" data-agent="admin" hidden>
+            <p data-i18n-html="hMarta">
+              Backoffice op orde<br>
+              de facturen op een rij<br>
+              Marta zegt: gedaan
             </p>
+            <button class="haiku-new" type="button" data-agent="admin" data-i18n="haikuNew">Maak een nieuwe</button>
+            <p class="haiku-status" aria-live="polite" hidden></p>
           </div>
         </div>
       </section>
@@ -682,13 +729,14 @@
         card1: `Buit`, card1s: `schelpen, zeewier en één krab met een mening`,
         card2: `Vloot`, card2s: `1 schip (geleend) · 0 kanonnen (belasting)`,
         card3: `Getij`, card3s: `elke 10 minuten vers, recht uit Rijkswaterstaat`,
-        tabKokkels: `Kokkels`, tabGids: `De gids`, tabVlag: `De vlag`,
-        tabBulgaars: `Bulgaars`, tabZorgen: `Zorgen`,
-        hKokkels: `Kokkels in het nat<br>de kijker zoekt langs de dijk<br>het tij zegt: nog niet`,
-        hGids: `Bot praat in het rond<br>venv, github, geen chocola<br>de gids knikt maar wat`,
-        hVlag: `Mijn vlag hangt nog hoog<br>straks strijk ik hem voor het laatst<br>betaald varen, ja`,
-        hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
-        hZorgen: `Radar kwijt, gin op<br>FreeBuff blijft toch gratis, hoop<br>China houdt nog vol`,
+        tabNatuurgids: `Natuurgids`, tabKapitein: `Kapitein`,
+        tabIva: `Iva`, tabMarta: `Marta`,
+        hNatuurgids: `Zeeleven en wier<br>trekvogels langs de dijk<br>de gids wijst de weg`,
+        hKapitein: `Kijker om de nek<br>de kokkels houden zich stil<br>het tij wacht op hem`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `Backoffice op orde<br>de facturen op een rij<br>Marta zegt: gedaan`,
+        haikuNew: `Maak een nieuwe`, haikuBusy: `De agent denkt na…`,
+        haikuSaved: `Nieuw · bewaard in deze browser`,
         radarKicker: `Radar`, radarNote: `Bezoekers`,
         radarLoading: `Radar warmt op…`,
         radarEmpty: `Nog geen bezoeken op de radar.`,
@@ -727,13 +775,14 @@
         card1: `Loot`, card1s: `shells, seaweed and one opinionated crab`,
         card2: `Fleet`, card2s: `1 ship (borrowed) · 0 cannons (tax)`,
         card3: `Tide`, card3s: `fresh every 10 minutes, straight from Rijkswaterstaat`,
-        tabKokkels: `Shells`, tabGids: `The guide`, tabVlag: `The flag`,
-        tabBulgaars: `Bulgarian`, tabZorgen: `Worries`,
-        hKokkels: `Cockles in the wet<br>the glass scans along the dike<br>the tide says: not yet`,
-        hGids: `Bot talks in circles<br>venv, github, no clue<br>the guide just nods`,
-        hVlag: `My flag still flies high<br>soon I strike it one last time<br>paid sailing, yes`,
-        hBulgaars: `Gin gleams in the glass<br>an avatar teaches me<br>Den Helder joins in`,
-        hZorgen: `Radar lost, gin gone<br>FreeBuff stays free, I hope<br>China holds on still`,
+        tabNatuurgids: `Natuurgids`, tabKapitein: `Captain`,
+        tabIva: `Iva`, tabMarta: `Marta`,
+        hNatuurgids: `Sea life and kelp<br>migrants along the dike<br>the guide points the way`,
+        hKapitein: `Binoculars on<br>the cockles stay silent now<br>the tide waits for him`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `Backoffice in shape<br>the invoices in a row<br>Marta says: done`,
+        haikuNew: `Write a new one`, haikuBusy: `The agent is thinking…`,
+        haikuSaved: `New · kept in this browser`,
         radarKicker: `Radar`, radarNote: `Visitors`,
         radarLoading: `Warming up the radar…`,
         radarEmpty: `No visits on the radar yet.`,
@@ -772,13 +821,14 @@
         card1: `Beute`, card1s: `Muscheln, Seetang und eine Krabbe mit Meinung`,
         card2: `Flotte`, card2s: `1 Schiff (geliehen) · 0 Kanonen (Steuer)`,
         card3: `Gezeit`, card3s: `alle 10 Minuten frisch, direkt von Rijkswaterstaat`,
-        tabKokkels: `Muscheln`, tabGids: `Der Guide`, tabVlag: `Die Flagge`,
-        tabBulgaars: `Bulgarisch`, tabZorgen: `Sorgen`,
-        hKokkels: `Muscheln im Nassen<br>das Glas sucht längs des Deichs<br>die Flut sagt: noch nicht`,
-        hGids: `Bot redet im Kreis<br>venv, github, keine Ahnung<br>der Guide nickt nur`,
-        hVlag: `Meine Flagge weht hoch<br>bald streiche ich sie zum letzten Mal<br>bezahlt segeln, ja`,
-        hBulgaars: `Gin glänzt im Glas<br>ein Avatar lehrt mich Bulgarisch<br>Den Helder lernt mit`,
-        hZorgen: `Radar weg, Gin leer<br>FreeBuff bleibt gratis, hoffentlich<br>China hält noch durch`,
+        tabNatuurgids: `Natuurgids`, tabKapitein: `Kapitän`,
+        tabIva: `Iva`, tabMarta: `Marta`,
+        hNatuurgids: `Meer und Algen satt<br>Zugvögel am Deich entlang<br>der Guide zeigt den Weg`,
+        hKapitein: `Das Glas vor dem Auge<br>die Muscheln bleiben still<br>die Flut wartet schon`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `Backoffice im Griff<br>die Rechnungen in Reih<br>Marta sagt: erledigt`,
+        haikuNew: `Neu schreiben`, haikuBusy: `Der Agent denkt nach…`,
+        haikuSaved: `Neu · in diesem Browser gespeichert`,
         radarKicker: `Radar`, radarNote: `Besuche`,
         radarLoading: `Radar wärmt auf…`,
         radarEmpty: `Noch keine Besuche auf dem Radar.`,
@@ -817,13 +867,14 @@
         card1: `Łup`, card1s: `muszle, wodorosty i jeden krab z opinią`,
         card2: `Flota`, card2s: `1 statek (pożyczony) · 0 dział (podatek)`,
         card3: `Pływ`, card3s: `świeży co 10 minut, prosto z Rijkswaterstaat`,
-        tabKokkels: `Muszle`, tabGids: `Przewodnik`, tabVlag: `Flaga`,
-        tabBulgaars: `Bułgarski`, tabZorgen: `Troski`,
-        hKokkels: `Muszle w mokrym<br>lornetka bada wał<br>pływ mówi: jeszcze nie`,
-        hGids: `Bot mówi w kółko<br>venv, github, ani słowa<br>przewodnik kiwa`,
-        hVlag: `Flaga jeszcze w górze<br>wkrótce opuszczę ją na zawsze<br>pływanie za opłatą, tak`,
-        hBulgaars: `Gin błyszczy w szkle<br>awatar uczy mnie bułgarskiego<br>Den Helder wtóruje`,
-        hZorgen: `Radar zginął, gin znikł<br>FreeBuff wciąż darmowy, mam nadzieję<br>Chiny trwają`,
+        tabNatuurgids: `Przewodnik`, tabKapitein: `Kapitan`,
+        tabIva: `Iva`, tabMarta: `Marta`,
+        hNatuurgids: `Morze, wodorosty<br>ptaki wędrowne przy grobli<br>przewodnik wskazuje`,
+        hKapitein: `Lornetka na szyi<br>sercówki milczą jak głaz<br>przypływ czeka już`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `Backoffice w ryzach<br>faktury równo w rzędzie<br>Marta mówi: gotowe`,
+        haikuNew: `Napisz nową`, haikuBusy: `Agent myśli…`,
+        haikuSaved: `Nowa · zapisana w tej przeglądarce`,
         radarKicker: `Radar`, radarNote: `Odwiedziny`,
         radarLoading: `Radar się rozgrzewa…`,
         radarEmpty: `Na radarze nie ma jeszcze odwiedzin.`,
@@ -862,13 +913,14 @@
         card1: `Плячка`, card1s: `миди, водорасли и един рак с мнение`,
         card2: `Флота`, card2s: `1 кораб (зает назаем) · 0 оръдия (данък)`,
         card3: `Прилив`, card3s: `пресен на всеки 10 минути, направо от Rijkswaterstaat`,
-        tabKokkels: `Миди`, tabGids: `Гидът`, tabVlag: `Флагът`,
-        tabBulgaars: `Български`, tabZorgen: `Тревоги`,
-        hKokkels: `Миди в мокрото<br>далекогледът търси<br>приливът: не още`,
-        hGids: `Бот говори в кръг<br>venv, github, никаква идея<br>гидът само кима`,
-        hVlag: `Флагът ми още вее<br>скоро ще го сваля за последно<br>платено плаване, да`,
-        hBulgaars: `Джин блести в чаша<br>аватар ме учи днес<br>Хелдер учи с мен`,
-        hZorgen: `Радарът го няма, джинът свърши<br>FreeBuff още е безплатен, надявам се<br>Китай издържа`,
+        tabNatuurgids: `Гидът`, tabKapitein: `Капитан`,
+        tabIva: `Ива`, tabMarta: `Марта`,
+        hNatuurgids: `Море и водорасли<br>прелетни птици по дигата<br>гидът сочи пътя`,
+        hKapitein: `Бинокъл на шия<br>мидите мълчат сега<br>приливът го чака`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `Бекофисът в ред<br>фактурите подредени<br>Марта казва: готово`,
+        haikuNew: `Напиши нова`, haikuBusy: `Агентът мисли…`,
+        haikuSaved: `Нова · запазена в този браузър`,
         radarKicker: `Радар`, radarNote: `Посещения`,
         radarLoading: `Радарът загрява…`,
         radarEmpty: `Още няма посещения на радара.`,
@@ -907,13 +959,14 @@
         card1: `收获`, card1s: `贝壳、海藻，还有一只有主见的螃蟹`,
         card2: `船队`, card2s: `1 艘船（借的）· 0 门炮（交税）`,
         card3: `潮汐`, card3s: `每 10 分钟更新，直接来自 Rijkswaterstaat`,
-        tabKokkels: `贝壳`, tabGids: `向导`, tabVlag: `旗帜`,
-        tabBulgaars: `保加利亚语`, tabZorgen: `担忧`,
-        hKokkels: `湿沙里的蛤蜊<br>望远镜扫过堤岸<br>潮水说：还不到`,
-        hGids: `机器人绕圈讲<br>venv、github，一头雾水<br>向导只是点头`,
-        hVlag: `我的旗还高挂<br>不久要最后一次降下<br>付费航行，是的`,
-        hBulgaars: `琴酒在杯中闪<br>头像教我保加利亚语<br>登海尔德也跟着学`,
-        hZorgen: `雷达丢了，酒也空了<br>FreeBuff 还免费，但愿如此<br>中国仍在坚持`,
+        tabNatuurgids: `向导`, tabKapitein: `船长`,
+        tabIva: `伊娃`, tabMarta: `玛尔塔`,
+        hNatuurgids: `海草与潮水<br>候鸟沿着堤岸飞<br>向导指方向`,
+        hKapitein: `望远镜在颈<br>蛤蜊此刻一声不吭<br>潮水等着他`,
+        hIva: `Джин блести в чаша<br>питай за миди и прилив<br>Ива отговаря`,
+        hMarta: `后台井井有条<br>发票排成一行<br>玛尔塔说：好了`,
+        haikuNew: `写一首新的`, haikuBusy: `代理正在思考…`,
+        haikuSaved: `新的 · 保存在本浏览器`,
         radarKicker: `雷达`, radarNote: `访客`,
         radarLoading: `雷达正在预热…`,
         radarEmpty: `雷达上还没有访客。`,
@@ -1211,6 +1264,7 @@
       renderLogbook();
       renderPlugin();
       loadHaiku();
+      toonBewaardeHaikus();
     }
 
     // taalkeuze
@@ -1228,6 +1282,112 @@
         pieces.forEach(function (piece) { piece.hidden = piece.id !== target; });
       });
     });
+
+    /* ---- haiku per bemanningslid ----
+       "Maak een nieuwe" vraagt de lokale llama (llama.cpp op de VPS) om een
+       verse haiku namens die agent: /api/chat met agent=<naam> laat de backend
+       de AGENT.md en SOUL.md van precies die agent gebruiken. Het resultaat
+       vervangt de oude haiku en wordt bewaard, zodat het bij een volgend
+       bezoek gewoon blijft staan. */
+    var HAIKU_KEY = 'eeps-haiku-';
+    var HAIKU_VRAAG = 'Schrijf een haiku over jezelf als bemanningslid van de Eeps Site. Antwoord in exact dit formaat, drie korte regels, verder niets:\nREGEL1\nREGEL2\nREGEL3';
+    var HAIKU_POGINGEN = 2;
+    var EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu;
+
+    function haikuP(piece) {
+      return piece.querySelector('p[data-i18n-html]') || piece.querySelector('p');
+    }
+
+    /* schoonHaiku: haal opsommingstekens, "REGEL1:", nummers, quotes en emoji
+       weg en houd hooguit drie regels over. */
+    function schoonHaiku(tekst) {
+      var uit = [];
+      String(tekst == null ? '' : tekst).replace(/\r/g, '').split('\n').forEach(function (regel) {
+        var r = regel.replace(EMOJI_RE, '').trim();
+        r = r.replace(/^(?:regel|line|rij)\s*\d+\s*[:.\-–]\s*/i, '');
+        r = r.replace(/^[-–—•*>\s]+/, '').replace(/^\d+[.)]\s*/, '').trim();
+        r = r.replace(/^["'“‘„]+|["'”’“]+$/g, '').trim();
+        r = r.replace(/\s{2,}/g, ' ');
+        if (r) uit.push(r);
+      });
+      return uit.slice(0, 3);
+    }
+
+    function toonHaiku(piece, regels) {
+      var p = haikuP(piece);
+      if (!p || !regels || !regels.length) return;
+      p.innerHTML = regels.map(esc).join('<br>');
+    }
+
+    function bewaarHaiku(agent, regels) {
+      try { localStorage.setItem(HAIKU_KEY + agent, JSON.stringify(regels)); } catch (e) { /* opslag uit */ }
+    }
+
+    function leesHaiku(agent) {
+      try {
+        var regels = JSON.parse(localStorage.getItem(HAIKU_KEY + agent) || 'null');
+        return regels && regels.length ? regels : null;
+      } catch (e) { return null; }
+    }
+
+    function toonBewaardeHaikus() {
+      Array.prototype.forEach.call(document.querySelectorAll('.haiku-piece'), function (piece) {
+        var agent = piece.getAttribute('data-agent');
+        var regels = agent ? leesHaiku(agent) : null;
+        if (regels) toonHaiku(piece, regels);
+      });
+    }
+
+    /* vraagHaiku: laat de lokale llama (via /api/chat met agent=<naam>, dus met
+       de AGENT.md en SOUL.md van die agent) een haiku schrijven. Levert het
+       antwoord geen drie regels op, dan vragen we het nog één keer. */
+    function vraagHaiku(agent, poging) {
+      return fetch(API + '/api/chat', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent: agent, messages: [{ role: 'user', content: HAIKU_VRAAG }] })
+      })
+        .then(function (resp) {
+          if (!resp.ok) throw new Error('chat ' + resp.status);
+          return resp.json();
+        })
+        .then(function (data) {
+          var regels = schoonHaiku(data && (data.reply || data.antwoord || data.answer || data.text));
+          if (regels.length >= 3 || poging >= HAIKU_POGINGEN) return regels;
+          return vraagHaiku(agent, poging + 1);
+        });
+    }
+
+    function maakNieuweHaiku(btn) {
+      var piece = btn.parentNode;
+      while (piece && piece.className && piece.className.indexOf('haiku-piece') === -1) piece = piece.parentNode;
+      if (!piece) return;
+      var agent = piece.getAttribute('data-agent');
+      var status = piece.querySelector('.haiku-status');
+      var p = haikuP(piece);
+      var oud = p ? p.innerHTML : '';
+      btn.disabled = true;
+      if (status) { status.hidden = false; status.textContent = t('haikuBusy'); }
+      vraagHaiku(agent, 1)
+        .then(function (regels) {
+          if (!regels || regels.length < 2) throw new Error('geen haiku');
+          toonHaiku(piece, regels);
+          bewaarHaiku(agent, regels);
+          if (status) status.textContent = t('haikuSaved');
+        })
+        .catch(function () {
+          if (p) p.innerHTML = oud;
+          if (status) status.textContent = t('haikuError');
+        })
+        .then(function () { btn.disabled = false; });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.haiku-new'), function (btn) {
+      btn.addEventListener('click', function () { maakNieuweHaiku(btn); });
+    });
+    toonBewaardeHaikus();
 
     // eigen bezoek melden (de site zelf logt zijn eigen pagina's al)
     if (list) {
@@ -1293,78 +1453,214 @@
 
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
 
-    function loadAgents(){
-  fetch('/api/agents')
-    .then(function(r){ return r.json().then(function(data){ return {ok:r.ok, data:data}; }); })
-    .then(function(result){
-      if(!result.ok || !result.data || !result.data.agents) return;
-      var grid = document.getElementById('agent-grid');
-      var agents = result.data && result.data.agents ? result.data.agents : [];
-      // Fallback for GitHub Pages (no backend)
-      if(!agents.length){
-        agents = [
-          {naam:'admin', bytes:1663, agenda:false, chat:true},
-          {naam:'bulgaars', bytes:2052, agenda:true, chat:true},
-          {naam:'kapitein', bytes:1785, agenda:true, chat:false},
-          {naam:'mouseinthecorner', bytes:557, agenda:false, chat:false},
-          {naam:'natuurgids', bytes:879, agenda:false, chat:true},
-          {naam:'vogelgids', bytes:1854, agenda:true, chat:true}
-        ];
+    /* ---- bemanning: één dynamische lijst, altijd uit de bron ----
+       Volgorde van bronnen: de live API op de VPS, dezelfde route op deze
+       origin (als de pagina ooit daar geserveerd wordt), en als laatste
+       crew.html zelf — elke sectie id="sectie-<naam>" met een <h2> is een
+       bemanningslid, en data-chat="false" betekent: aan boord zonder chat.
+       Een agent die je aan de API toevoegt staat er dus meteen bij, zonder
+       deze pagina aan te passen. */
+    var AGENTS_API = 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech';
+    var AGENT_LABELS = { bulgaars: 'Iva', vogelgids: 'Vogelgeluiden', natuurgids: 'Natuurgids', admin: 'Admin', kapitein: 'Kapitein' };
+    var AGENT_ICONS = { bulgaars: '🇧🇬', vogelgids: '🐦', natuurgids: '🌿', admin: '🛡️', kapitein: '⚓', mouseinthecorner: '🐈' };
+
+    function normaliseAgents(raw){
+      var list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.agents) ? raw.agents : []);
+      var out = [];
+      list.forEach(function(a){
+        if (typeof a === 'string') { out.push({ naam: a, chat: true, bytes: 1, agenda: false }); return; }
+        if (!a) return;
+        var naam = String(a.naam || a.name || '').trim();
+        if (!naam) return;
+        out.push({
+          naam: naam,
+          label: a.label ? String(a.label) : '',
+          bytes: Number(a.bytes) || 0,
+          agenda: !!a.agenda,
+          chat: a.chat !== false
+        });
+      });
+      return out;
+    }
+
+    function fetchAgentList(url){
+      return fetch(url, { cache: 'no-store', headers: { 'Accept': 'application/json' } })
+        .then(function(r){ if (!r.ok) throw new Error('agentlijst ' + r.status); return r.json(); })
+        .then(function(raw){
+          var list = normaliseAgents(raw);
+          if (!list.length) throw new Error('agentlijst leeg');
+          return list;
+        });
+    }
+
+    function agentsFromCrewPage(){
+      return fetch('crew.html', { cache: 'no-store' })
+        .then(function(r){ if (!r.ok) throw new Error('crew.html ' + r.status); return r.text(); })
+        .then(function(html){
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var out = [];
+          Array.prototype.forEach.call(doc.querySelectorAll('section[id^="sectie-"]'), function(sec){
+            var h2 = sec.querySelector('h2');
+            out.push({
+              naam: sec.id.slice('sectie-'.length),
+              label: h2 ? h2.textContent.trim() : '',
+              /* de sectie bestaat, dus dit bemanningslid is aan boord */
+              bytes: 1,
+              agenda: !!sec.querySelector('.agents-beheer, [data-agenda]'),
+              chat: sec.getAttribute('data-chat') !== 'false'
+            });
+          });
+          if (!out.length) throw new Error('geen crew-secties');
+          return out;
+        });
+    }
+
+    /* probeer de bronnen na elkaar; de eerste die antwoordt wint */
+    function firstAgentSource(sources){
+      var i = 0;
+      function next(){
+        if (i >= sources.length) return Promise.reject(new Error('geen agentlijst'));
+        var src = sources[i++];
+        return src().then(function(list){
+          if (!list || !list.length) throw new Error('leeg');
+          return list;
+        }).catch(next);
       }
-      if(grid){
+      return next();
+    }
+
+    function agentLabel(a){
+      return AGENT_LABELS[a.naam] || a.label || (a.naam.charAt(0).toUpperCase() + a.naam.slice(1));
+    }
+    function agentIcon(a){
+      return AGENT_ICONS[a.naam] || '🤖';
+    }
+
+    function renderAgents(agents){
+      var grid = document.getElementById('agent-grid');
+      if (grid){
         grid.innerHTML = '';
         agents.forEach(function(a){
           var card = document.createElement('div');
           card.className = 'aboard-card';
           var b = document.createElement('b');
-          b.textContent = a.naam;
+          b.textContent = agentLabel(a);
           var small = document.createElement('small');
-          small.textContent = a.agenda ? 'met agenda' : 'zonder agenda';
+          small.textContent = a.chat ? (a.agenda ? 'met agenda · chat' : 'chat') : (a.agenda ? 'met agenda' : 'zonder agenda');
           var state = document.createElement('span');
           state.className = 'state';
-          state.textContent = a.bytes > 0 ? 'actief' : 'inactief';
+          state.textContent = a.chat ? 'aan de praat' : (a.bytes > 0 ? 'aan boord' : 'inactief');
           card.appendChild(b);
           card.appendChild(small);
           card.appendChild(state);
           grid.appendChild(card);
         });
       }
-      // chat selector: only agents with chat
+      /* chat-kiezer: alleen wie chat heeft */
       var chatMenu = document.getElementById('chatSelectorMenu');
-      if(chatMenu){
-        chatMenu.innerHTML = '';
-        agents.forEach(function(a){
-          if(!a.chat) return;
-          var item = document.createElement('a');
-          item.className = 'chat-selector-item';
-          item.href = 'crew.html#sectie-' + encodeURIComponent(a.naam);
-          item.setAttribute('role', 'menuitem');
-          var icon = document.createElement('span');
-          icon.className = 'icon';
-          icon.textContent = a.naam === 'bulgaars' ? '🇧🇬' : a.naam === 'natuurgids' ? '🌿' : a.naam === 'vogelgids' ? '🐦' : a.naam === 'admin' ? '🛡️' : '🤖';
-          var label = document.createElement('span');
-          label.className = 'label';
-          label.textContent = a.naam === 'bulgaars' ? 'Iva' : a.naam === 'vogelgids' ? 'Vogelgeluiden' : a.naam.charAt(0).toUpperCase() + a.naam.slice(1);
-          var arrow = document.createElement('span');
-          arrow.className = 'arrow';
-          arrow.textContent = '→';
-          item.appendChild(icon);
-          item.appendChild(label);
-          item.appendChild(arrow);
-          chatMenu.appendChild(item);
-        });
-        if(!chatMenu.children.length){
-          var empty = document.createElement('span');
-          empty.className = 'chat-selector-item';
-          empty.style.color = '#a9a291';
-          empty.textContent = 'Geen chat beschikbaar';
-          chatMenu.appendChild(empty);
-        }
+      if (!chatMenu) return;
+      chatMenu.innerHTML = '';
+      var chatters = agents.filter(function(a){ return a.chat; });
+      chatters.forEach(function(a){
+        var item = document.createElement('a');
+        item.className = 'chat-selector-item';
+        item.href = 'crew.html#sectie-' + encodeURIComponent(a.naam);
+        item.setAttribute('role', 'menuitem');
+        var icon = document.createElement('span');
+        icon.className = 'icon';
+        icon.textContent = agentIcon(a);
+        var label = document.createElement('span');
+        label.className = 'label';
+        label.textContent = agentLabel(a);
+        var arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        arrow.textContent = '→';
+        item.appendChild(icon);
+        item.appendChild(label);
+        item.appendChild(arrow);
+        chatMenu.appendChild(item);
+      });
+      if (!chatters.length){
+        var empty = document.createElement('span');
+        empty.className = 'chat-selector-item';
+        empty.style.color = '#a9a291';
+        empty.textContent = 'Geen chat beschikbaar';
+        chatMenu.appendChild(empty);
       }
-    })
-    .catch(function(){ /* niet-kritisch */ });
-}
+    }
+
+    function loadAgents(){
+      firstAgentSource([
+        function(){ return fetchAgentList(AGENTS_API + '/api/agents'); },
+        function(){ return fetchAgentList('/api/agents'); },
+        agentsFromCrewPage
+      ]).then(renderAgents).catch(function(){ renderAgents([]); });
+    }
 loadAgents();
+
+    /* ---- agenda van de kapitein: knop boven de chat-kiezer ----
+       De agenda staat als AGENDA.md op de VPS (dezelfde bron als op
+       crew.html); hier alleen lezen, beheren gebeurt daar. */
+    var kapiteinAgendaGehad = false;
+    var kapiteinAgendaBezig = false;
+
+    function laadKapiteinAgenda(){
+      var status = document.getElementById('agendaStatus');
+      var tekst = document.getElementById('agendaText');
+      if (!status || !tekst) return;
+      if (kapiteinAgendaBezig) return;
+      kapiteinAgendaBezig = true;
+      status.textContent = 'Agenda laden…';
+      fetch(AGENTS_API + '/api/agents/kapitein/agenda', { cache: 'no-store', headers: { 'Accept': 'application/json' } })
+        .then(function(r){ if (!r.ok) throw new Error('agenda ' + r.status); return r.json(); })
+        .then(function(d){
+          var t = (d && d.tekst) || '';
+          tekst.textContent = t.trim();
+          status.textContent = t.trim()
+            ? ((d && d.nieuw) ? 'Startersagenda — nog niet vastgelegd.' : '')
+            : 'De agenda van de kapitein is nog leeg.';
+          kapiteinAgendaGehad = true;
+        })
+        .catch(function(){
+          tekst.textContent = '';
+          status.textContent = 'Kon de agenda niet laden.';
+          kapiteinAgendaGehad = false;
+        })
+        .then(function(){ kapiteinAgendaBezig = false; });
+    }
+
+    function toggleAgenda(){
+      var picker = document.getElementById('agendaPicker');
+      var panel = document.getElementById('agendaPanel');
+      if (!picker || !panel) return;
+      var open = !picker.classList.contains('open');
+      picker.classList.toggle('open', open);
+      panel.hidden = !open;
+      picker.querySelector('.agenda-btn').setAttribute('aria-expanded', String(open));
+      if (open && !kapiteinAgendaGehad) laadKapiteinAgenda();
+    }
+
+    document.addEventListener('click', function(e){
+      var picker = document.getElementById('agendaPicker');
+      if (!picker || picker.contains(e.target)) return;
+      var panel = document.getElementById('agendaPanel');
+      picker.classList.remove('open');
+      if (panel) panel.hidden = true;
+      var knop = picker.querySelector('.agenda-btn');
+      if (knop) knop.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('keydown', function(e){
+      if (e.key !== 'Escape') return;
+      var picker = document.getElementById('agendaPicker');
+      var panel = document.getElementById('agendaPanel');
+      if (!picker || !picker.classList.contains('open')) return;
+      picker.classList.remove('open');
+      if (panel) panel.hidden = true;
+      var knop = picker.querySelector('.agenda-btn');
+      if (knop) knop.setAttribute('aria-expanded', 'false');
+    });
+
 function toggleChatSelector(){
       const sel=document.getElementById('chatSelector');
       const isOpen=sel.classList.contains('open');
