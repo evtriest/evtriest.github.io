@@ -69,6 +69,14 @@
   .blip.critical{background:var(--red);color:var(--red);animation:blip-pulse 1s infinite}
   .blip.visible{opacity:1}
   @keyframes blip-pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
+  /* lege site-bollen: lichten pas op als het zoekwoord op die site staat */
+  .blip.site{
+    width:12px;height:12px;background:transparent;color:var(--green);
+    border:2px solid rgba(0,255,136,.45);box-shadow:none;
+  }
+  .blip.site:hover{border-color:var(--green)}
+  .blip.site.lit{background:var(--green);border-color:var(--green);box-shadow:0 0 16px var(--glow-green)}
+  .blip.site:focus-visible{outline:1px solid var(--green);outline-offset:4px}
   /* detail panel */
   .panel{
     position:fixed;right:-420px;top:0;width:min(400px,90vw);height:100vh;
@@ -131,6 +139,44 @@
   .cat summary::after{content:"▾";margin-left:.4rem;font-size:.6rem;transition:transform .2s}
   .cat details[open] summary::after{transform:rotate(180deg)}
   .cat .outage{font-size:.68rem;color:rgba(0,255,136,.65);margin:.3rem 0;padding-left:.6rem;border-left:2px solid rgba(0,255,136,.2)}
+  /* fuzzy zoekbalk boven de radar */
+  .scan-bar{
+    position:fixed;top:3.2rem;left:50%;transform:translateX(-50%);z-index:8;
+    width:min(520px,calc(100vw - 2rem));display:flex;flex-direction:column;gap:.35rem;
+  }
+  .scan-input-wrap{
+    display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;
+    border:1px solid rgba(0,255,136,.35);background:rgba(0,20,10,.82);
+    box-shadow:0 0 18px rgba(0,255,136,.12);backdrop-filter:blur(4px);
+  }
+  .scan-input-wrap::before{content:"\203A";color:var(--green);opacity:.8}
+  .scan-input{
+    flex:1;min-width:0;background:0;border:0;outline:none;color:var(--green);
+    font:inherit;font-size:.88rem;letter-spacing:.06em;
+  }
+  .scan-input::placeholder{color:rgba(0,255,136,.38);letter-spacing:.08em}
+  .scan-input-wrap:focus-within{border-color:rgba(0,255,136,.7);box-shadow:0 0 22px var(--glow-green)}
+  .scan-count{font-size:.68rem;letter-spacing:.12em;color:rgba(0,255,136,.7);white-space:nowrap}
+  .scan-results{
+    border:1px solid rgba(0,255,136,.25);background:rgba(4,12,8,.94);
+    max-height:min(40vh,260px);overflow-y:auto;scrollbar-width:thin;
+  }
+  .scan-results[hidden]{display:none}
+  .scan-hit{
+    display:flex;align-items:baseline;gap:.8rem;width:100%;padding:.45rem .8rem;
+    background:0;border:0;border-bottom:1px solid rgba(0,255,136,.08);
+    color:rgba(0,255,136,.85);font:inherit;font-size:.78rem;text-align:left;cursor:pointer;
+  }
+  .scan-hit:last-child{border-bottom:0}
+  .scan-hit:hover,.scan-hit.is-active{background:rgba(0,255,136,.12);color:var(--green)}
+  .scan-hit-name{flex:1;letter-spacing:.06em}
+  .scan-hit-value{font-size:.7rem;color:rgba(0,255,136,.55)}
+  .scan-empty{margin:0;padding:.5rem .8rem;font-size:.72rem;letter-spacing:.1em;color:rgba(255,170,0,.85)}
+  .blip.dim{opacity:0 !important;pointer-events:none}
+  .blip.hit{animation:hit-pulse 1.3s ease-in-out infinite}
+  @keyframes hit-pulse{0%,100%{box-shadow:0 0 8px currentColor}50%{box-shadow:0 0 22px 3px currentColor}}
+  .cat{transition:opacity .2s ease}
+  .cat.dim{opacity:.22}
   @media(max-width:768px){
     .categories{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr)}
     .cat{max-height:25vh}
@@ -139,6 +185,7 @@
 </head>
 <body>
 <a class="back" href="/">← Landing</a>
+<a class="back" href="natuur.html" style="left:7.9rem">🌿 Natuur</a>
 <div class="radar-container">
   <div class="radar" id="radar">
     <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="ring r4"></div>
@@ -150,6 +197,14 @@
   </div>
 </div>
 <div class="timestamp" id="timestamp">LAST SCAN: --</div>
+
+<div class="scan-bar">
+  <label class="scan-input-wrap" for="scan-input">
+    <input class="scan-input" id="scan-input" type="search" placeholder="zoek: cpu, net, backup, github…" autocomplete="off" spellcheck="false" aria-label="Zoek fuzzy in radar-metrics en categorieën" aria-controls="scan-results" aria-autocomplete="list">
+    <span class="scan-count" id="scan-count" aria-live="polite">--/--</span>
+  </label>
+  <div class="scan-results" id="scan-results" role="listbox" aria-label="Zoekresultaten" hidden></div>
+</div>
 
 <!-- categories -->
 <div class="categories">
@@ -165,10 +220,13 @@
     </details>
   </div>
 
-  <!-- 2: Stratox -->
+  <!-- 2: Stratoxbox VPS -->
   <div class="cat">
-    <h3>🔷 Stratox</h3>
+    <h3>🔷 Stratoxbox VPS</h3>
     <p><span class="state ok"></span><b>Connectie</b> — actief</p>
+    <p><b>CPU:</b> 0% · load 0.0</p>
+    <p><b>RAM:</b> 1.5 / 7.8 GB</p>
+    <p><b>Schijf:</b> 3.4 / 19.5 GB</p>
     <p><b>Latency:</b> 12ms</p>
     <p><b>Uptime:</b> 99.8%</p>
   </div>
@@ -228,6 +286,16 @@ const radar = document.getElementById('radar');
 const panel = document.getElementById('panel');
 const blips = [];
 let scanTime = null;
+let currentItem = null;
+
+var SITE_POS = [[50, 22], [50, 78]];
+var WILDPULK_URL = 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/';
+var WILDPULK_TEXT = "Wildpluk langs de kust — Den Helder WILDPULK langs de kust CPU 1% · 0.0 RAM 1.5 / 7.8 GB DISK 3.4 / 19.5 GB --:-- 📱 App ⬇️ Android-app (APK) Plukagenda Recente waarnemingen Recente waarnemingen rond Den Helder Waarnemingen Eep Soorten in de buurt Den Helder · Waddenkust Getij · Marsdiep +54 cm NAP · stijgend NAP NU 20:44 HW 23:59 · +79 LW 06:50 · −57 HW 12:50 · +34 18:00 00:00 06:00 12:00 Hoogwater 23:59 (+79 cm) · Laagwater 06:50 (−57 cm) Rijkswaterstaat · bijgewerkt 20:44 Kalender met seizoenen 💡 Ideeënbus ▶ 0:00 / 1:27:18 Op xeno-canto Blyth's Reed Warbler (Acrocephalus dumetorum) — Tiivo 2023 — XC965247 — FlackoWeasel — Allikõnnu, Põhja-Pärnumaa, Pärnu maakond, Estland — CC BY-NC-SA 4.0 — xeno-canto.org/965247 Wildpluk van de dag 📍 Recente waarnemingen rond Den Helder Laatste 60 dagen, binnen 50 km van Den Helder, via GBIF — alleen waarnemingen met media. Klik een stip voor de foto. ⏳ Kaart laden… 🗺️ Draag bij aan OpenStreetMap Ontbreekt er iets of staat een plek verkeerd? Kaartdata © OpenStreetMap -bijdragers. Soorten in de buurt op de kaart Waarnemingen op een map van Den Helder per soort 🔄 Alles 🐦 Vogels 🦌 Zoogdieren 🐝 Insecten 🦋 Vlinders 🪰 Libellen & Amfibieën 🌾 Eetbare kustplanten 🥬 Kool-familie 🍥 Zeewier 🦀 Kreeftachtigen 🍄 Paddestoelen 🧫 Korstmossen & Mossen 🐚 Schelpen 🐟 Vis ➕ Meer laden Kies een groep om te laden… Plukagenda Wat is er per seizoen te plukken? Winter dec–feb Oesters beoordelen in de r-maanden Nov–mrt · water checken Wijting vanaf de kade Dec–mrt · koud water Oesterzwam op dode elzen Nov–mrt · hele winter Judasoor op dood hout Okt–mrt · na regen Voorjaar mrt–mei Kokkels rapen bij laag water Apr–okt · laag water Oesters beoordelen in de r-maanden Nov–mrt · water checken Horing vangen aan de havenmond Apr–jun · vaarzen Wijting vanaf de kade Dec–mrt · koud water Oesterzwam op dode elzen Nov–mrt · hele winter Judasoor op dood hout Okt–mrt · na regen Zomer jun–aug Kokkels rapen bij laag water Apr–okt · laag water Horing vangen aan de havenmond Apr–jun · vaarzen Herfst sep–nov Kokkels rapen bij laag water Apr–okt · laag water Oesters beoordelen in de r-maanden Nov–mrt · water checken Snoekbaars bij de zeedijk Sep–nov · najaars trek Cantharellen in het duingebied Sep–nov · na regen Oesterzwam op dode elzen Nov–mrt · hele winter Judasoor op dood hout Okt–mrt · na regen Recente waarnemingen · Den Helder Live uit waarneming.nl — de laatste 7 dagen binnen de 5 km ronde Omgeving van Den Helder. Kies een soortgroep en klik een waarneming voor details. 🐦 Vogels 🦌 Zoogdieren 🦋 Vlinders 🐝 Insecten 🪰 Libellen 🐸 Amfibieën 🌿 Planten 🍄 Paddenstoelen 60 120 300 🔄 Laden Druk op Laden voor recente waarnemingen… ⏳ 5 nieuwste waarnemingen laden… Waarnemingen Eep Alle eigen observaties van waarneming.nl/users/1094924 , gepubliceerd naar GBIF . Open data — zonder key. Klik een observatie voor de precisielink op waarneming.nl. 🔄 Vernieuwen 📍 Op de kaart ⏳ Ophalen… © Eep · Wildpluk langs de kust · Den Helder Waarnemingen via GBIF · foto: Borkum/Waddenmeer, CC BY-SA 4.0 (Wikimedia Commons) Kaartdata © OpenStreetMap -bijdragers · 🗺️ Draag bij aan OpenStreetMap 🍃 Wildpluk langs de kust v1.14.0 · 2026-10-28 · Den Helder · CHANGELOG Hotspot onbekend Soort geen 📷 foto 🔊 geluid ✕ 🌿 Vraag het de gids 🌿 Wildpluk-gids AI op deze server · kan fouten maken ✕ Hoi! Vraag me over plukken, soorten of plekken langs de kust. Ik ben een kleine AI — controleer eetbare soorten altijd zelf. Stuur 💡 Ideeënbus Een idee of opmerking over de site? Laat het hier achter — iedereen kan lezen, plaatsen en weer weghalen. ✕ ⏳ Laden… 0/500 Plaatsen";
+var SITES = [
+  { kind: 'site', name: '📄 Landing page', url: 'https://evtriest.github.io/', text: '', source: 'live' },
+  { kind: 'site', name: '🌿 Wildpluk-site', url: WILDPULK_URL, text: WILDPULK_TEXT, source: 'snapshot' }
+];
+var siteBlips = [];
 
 function polarToCart(angleDeg, radiusPct){
   const rad = (angleDeg - 90) * Math.PI / 180;
@@ -235,24 +303,69 @@ function polarToCart(angleDeg, radiusPct){
   return { x: 50 + 50 * r * Math.cos(rad), y: 50 + 50 * r * Math.sin(rad) };
 }
 
-function createBlip(item, delay){
-  // automatic blips in upper-left quadrant only
-  const angle = 270 + Math.random() * 90; // 270-360°
-  const radius = 15 + Math.random() * 40; // 15-55%
-  const pos = polarToCart(angle, radius);
-  const el = document.createElement('div');
-  el.className = 'blip ' + item.status;
-  el.style.left = pos.x + '%';
-  el.style.top = pos.y + '%';
-  el.title = item.name;
-  el.dataset.id = item.id;
-  el.addEventListener('click', () => openPanel(item));
+var CATEGORY_POS = [[32, 32], [68, 32], [32, 68], [68, 68]];
+
+function categoryData(){
+  return Array.prototype.slice.call(document.querySelectorAll('.cat')).map(function (box) {
+    var state = box.querySelector('.state');
+    var status = 'ok';
+    if (state && state.classList.contains('warning')) status = 'warning';
+    if (state && state.classList.contains('critical')) status = 'critical';
+    var title = box.querySelector('h3');
+    return {
+      kind: 'category',
+      name: title ? title.textContent.trim() : 'Categorie',
+      status: status,
+      lines: Array.prototype.slice.call(box.querySelectorAll('p:not(.outage)')).map(function (row) {
+        return row.textContent.trim();
+      }),
+      notes: Array.prototype.slice.call(box.querySelectorAll('.outage')).map(function (row) {
+        return row.textContent.trim();
+      }),
+      text: box.textContent || '',
+      box: box
+    };
+  });
+}
+
+function createCategoryBlip(cat, index){
+  var pos = CATEGORY_POS[index % CATEGORY_POS.length];
+  var el = document.createElement('div');
+  el.className = 'blip ' + cat.status;
+  el.style.left = pos[0] + '%';
+  el.style.top = pos[1] + '%';
+  el.title = cat.name;
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', cat.name + ' — open details');
+  el.addEventListener('click', function () { openCategoryPanel(cat); });
+  el.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openCategoryPanel(cat); }
+  });
   radar.appendChild(el);
-  blips.push({ el, delay, shown: false });
+  blips.push({ el: el, delay: index * 700, shown: false, item: cat });
+}
+
+function createSiteBlip(site, index){
+  var pos = SITE_POS[index % SITE_POS.length];
+  var el = document.createElement('div');
+  el.className = 'blip site';
+  el.style.left = pos[0] + '%';
+  el.style.top = pos[1] + '%';
+  el.title = site.name;
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', site.name + ' — leeg tot een zoekwoord op de site staat');
+  el.addEventListener('click', function () { openSitePanel(site); });
+  el.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openSitePanel(site); }
+  });
+  radar.appendChild(el);
+  siteBlips.push({ el: el, delay: 2900 + index * 800, shown: false, item: site, matched: false, score: 0 });
 }
 
 function scheduleBlips(){
-  blips.forEach(b => {
+  blips.concat(siteBlips).forEach(b => {
     setTimeout(() => {
       b.el.classList.add('visible');
       b.shown = true;
@@ -261,6 +374,7 @@ function scheduleBlips(){
 }
 
 function openPanel(item){
+  currentItem = item;
   document.getElementById('panel-name').textContent = item.name;
   const statusEl = document.getElementById('panel-status');
   statusEl.className = 'status ' + item.status;
@@ -279,8 +393,104 @@ function openPanel(item){
   panel.classList.add('open');
 }
 function closePanel(){ panel.classList.remove('open'); }
+
+function openCategoryPanel(cat){
+  currentItem = cat;
+  document.getElementById('panel-name').textContent = cat.name;
+  var statusEl = document.getElementById('panel-status');
+  statusEl.className = 'status ' + cat.status;
+  statusEl.textContent = cat.status;
+  var metrics = document.getElementById('panel-metrics');
+  metrics.innerHTML = '';
+  cat.lines.concat(cat.notes).forEach(function (line) {
+    var row = document.createElement('div');
+    row.className = 'metric';
+    var marker = document.createElement('b');
+    marker.textContent = '·';
+    var span = document.createElement('span');
+    span.textContent = line;
+    row.appendChild(marker);
+    row.appendChild(span);
+    metrics.appendChild(row);
+  });
+  panel.classList.add('open');
+}
+/* site-helpers:start */
+function siteScore(query, text){
+  var q = normalise(query);
+  if (!q || !text) return 0;
+  if (q.indexOf(' ') !== -1){
+    return normalise(text).indexOf(q) !== -1 ? 700 : 0;
+  }
+  var words = normalise(text).split(/[^a-z0-9]+/);
+  var best = 0;
+  for (var i = 0; i < words.length; i++){
+    var w = words[i];
+    if (!w) continue;
+    if (w === q) return 1000;
+    if (w.indexOf(q) === 0) best = Math.max(best, 900);
+    else if (w.indexOf(q) > 0) best = Math.max(best, 700);
+  }
+  return best;
+}
+/* site-helpers:end */
+
+function extractPageText(html, dropWildplukLink){
+  var doc = new DOMParser().parseFromString(html, 'text/html');
+  Array.prototype.slice.call(doc.querySelectorAll('script,style,noscript,template')).forEach(function (node) {
+    node.remove();
+  });
+  if (dropWildplukLink){
+    Array.prototype.slice.call(doc.querySelectorAll('a[href*="instabox"]')).forEach(function (node) {
+      node.remove();
+    });
+  }
+  return (doc.body ? doc.body.textContent : '').replace(/\s+/g, ' ').trim();
+}
+
+function loadLandingText(){
+  var site = SITES[0];
+  if (!site || typeof fetch !== 'function') return;
+  fetch('index.html', { cache: 'no-store' })
+    .then(function (res) { return res.ok ? res.text() : ''; })
+    .then(function (html) {
+      if (!html) return;
+      site.text = extractPageText(html, true);
+      if (scanInput && scanInput.value.trim()) applySearch();
+    })
+    .catch(function () { /* landingspagina niet bereikbaar */ });
+}
+
+function openSitePanel(site){
+  currentItem = site;
+  document.getElementById('panel-name').textContent = site.name;
+  var entry = siteBlips.filter(function (b) { return b.item === site; })[0];
+  var lit = !!(entry && entry.matched);
+  var statusEl = document.getElementById('panel-status');
+  statusEl.className = 'status ' + (lit ? 'ok' : 'warning');
+  statusEl.textContent = lit ? 'signaal' : 'geen signaal';
+  var metrics = document.getElementById('panel-metrics');
+  metrics.innerHTML = '';
+  var words = site.text ? site.text.split(/\s+/).filter(function (w) { return w.length > 1; }).length : 0;
+  [['URL', site.url],
+   ['Bron', site.source === 'live' ? 'live pagina' : 'momentopname'],
+   ['Woorden', words ? String(words) : 'nog niet geladen'],
+   ['Zoekterm', scanInput.value.trim() || '—']].forEach(function (pair) {
+    var row = document.createElement('div');
+    row.className = 'metric';
+    var label = document.createElement('b');
+    label.textContent = pair[0];
+    var value = document.createElement('span');
+    value.textContent = pair[1];
+    row.appendChild(label);
+    row.appendChild(value);
+    metrics.appendChild(row);
+  });
+  panel.classList.add('open');
+}
+
 document.addEventListener('click', e => {
-  if (!panel.contains(e.target) && !e.target.closest('.blip')) closePanel();
+  if (!panel.contains(e.target) && !e.target.closest('.blip') && !e.target.closest('.scan-bar')) closePanel();
 });
 
 function init(){
@@ -289,15 +499,197 @@ function init(){
   scanTime = now.toISOString().replace('T',' ').slice(0,19) + ' UTC';
   document.getElementById('timestamp').textContent = 'LAST SCAN: ' + scanTime;
 
-  // place blips with staggered delays based on sweep angle (0-4s)
-  MOCK_DATA.forEach((item, i) => {
-    const delay = (i / MOCK_DATA.length) * 4000 + Math.random() * 600;
-    createBlip(item, delay);
+  // one contact per category box, each in its own quadrant
+  categoryData().forEach(function (cat, i) {
+    createCategoryBlip(cat, i);
+  });
+  SITES.forEach(function (site, i) {
+    createSiteBlip(site, i);
   });
   scheduleBlips();
 }
 
-window.addEventListener('DOMContentLoaded', init);
+/* ---- fuzzy zoek: metrics, detail-velden en categorieën ---- */
+/* fuzzy-helpers:start */
+function normalise(s){
+  return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function editDistance(a, b){
+  var prev = [], i, j;
+  for (j = 0; j <= b.length; j++) prev[j] = j;
+  for (i = 1; i <= a.length; i++){
+    var cur = [i];
+    for (j = 1; j <= b.length; j++){
+      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[b.length];
+}
+function fuzzyScore(query, text){
+  var q = normalise(query).trim();
+  var t = normalise(text);
+  if (!q || !t) return 0;
+  var idx = t.indexOf(q);
+  if (idx === 0) return 1000;
+  if (idx > 0) return 800 - Math.min(idx * 4, 200);
+  // korte zoektermen alleen op echte deelwoorden laten matchen, anders wordt het ruis
+  if (q.length < 4) return 0;
+  var ti = 0, run = 0, score = 0;
+  for (var k = 0; k < q.length; k++){
+    var found = t.indexOf(q.charAt(k), ti);
+    if (found === -1){ score = 0; break; }
+    var boundary = found === 0 || !/[a-z0-9]/.test(t.charAt(found - 1));
+    score += 12 + (boundary ? 18 : 0) + Math.min(run, 4) * 6;
+    run = found === ti ? run + 1 : 1;
+    ti = found + 1;
+  }
+  if (score > 0) return score + 60 - Math.min(t.length, 40);
+  var words = t.split(/[^a-z0-9]+/).filter(function (w) { return w.length > 2; });
+  var maxDist = q.length >= 6 ? 2 : 1;
+  var best = 0;
+  for (var w = 0; w < words.length; w++){
+    if (Math.abs(words[w].length - q.length) > maxDist) continue;
+    var d = editDistance(q, words[w]);
+    if (d === maxDist && d > 1 && words[w].charAt(0) !== q.charAt(0)) continue;
+    if (d <= maxDist) best = Math.max(best, 320 - d * 80);
+  }
+  return best;
+}
+/* fuzzy-helpers:end */
+
+var scanInput = document.getElementById('scan-input');
+var scanResults = document.getElementById('scan-results');
+var scanCount = document.getElementById('scan-count');
+var activeHit = -1;
+
+function metricScore(query, item){
+  var best = fuzzyScore(query, item.name) * 2;
+  [item.status, item.unit].concat(Object.keys(item.details)).forEach(function (s) {
+    var sc = fuzzyScore(query, s);
+    if (sc > best) best = sc;
+  });
+  return best;
+}
+function categoryScore(query, cat){
+  var best = fuzzyScore(query, cat.name) * 2;
+  (cat.text || '').split(/[^A-Za-z0-9-]+/).forEach(function (w) {
+    if (w.length < 3) return;
+    var sc = fuzzyScore(query, w);
+    if (sc > best) best = sc;
+  });
+  return best;
+}
+function collectHits(query){
+  var hits = blips.map(function (b) { return { kind: 'category', cat: b.item, el: b.el }; });
+  MOCK_DATA.forEach(function (item) { hits.push({ kind: 'metric', item: item }); });
+  hits.forEach(function (hit) {
+    hit.score = query ? (hit.kind === 'category' ? categoryScore(query, hit.cat) : metricScore(query, hit.item)) : 0;
+    hit.matched = !query || hit.score > 0;
+  });
+  return hits;
+}
+function hitRef(hit){ return hit.kind === 'category' ? hit.cat : (hit.kind === 'site' ? hit.site : hit.item); }
+function setActiveHit(i){
+  var hits = scanResults.querySelectorAll('.scan-hit');
+  if (!hits.length){ activeHit = -1; return; }
+  activeHit = (i + hits.length) % hits.length;
+  for (var k = 0; k < hits.length; k++){
+    hits[k].classList.toggle('is-active', k === activeHit);
+    hits[k].setAttribute('aria-selected', String(k === activeHit));
+  }
+}
+function applySearch(){
+  var q = scanInput.value.trim();
+  var hits = collectHits(q);
+
+  hits.filter(function (hit) { return hit.kind === 'category'; }).forEach(function (hit) {
+    hit.el.classList.toggle('hit', !!q && hit.matched);
+    hit.el.classList.toggle('dim', !!q && !hit.matched);
+    if (!q) hit.el.classList.remove('hit', 'dim');
+  });
+
+  siteBlips.forEach(function (sb) {
+    sb.score = q ? siteScore(q, sb.item.text) : 0;
+    sb.matched = sb.score > 0;
+    sb.el.classList.toggle('lit', sb.matched);
+  });
+
+  var matched = q ? hits.filter(function (hit) { return hit.matched; }) : [];
+  if (q) siteBlips.forEach(function (sb) {
+    if (sb.matched) matched.push({ kind: 'site', site: sb.item, score: sb.score });
+  });
+  matched.sort(function (a, b) { return b.score - a.score; });
+  scanCount.textContent = q ? matched.length + ' TREFFERS' : blips.length + ' CONTACTEN';
+
+  scanResults.innerHTML = '';
+  if (!q){ scanResults.hidden = true; activeHit = -1; return; }
+  if (!matched.length){
+    var none = document.createElement('p');
+    none.className = 'scan-empty';
+    none.textContent = 'GEEN CONTACT';
+    scanResults.appendChild(none);
+    scanResults.hidden = false;
+    activeHit = -1;
+    if (currentItem) closePanel();
+    return;
+  }
+  matched.slice(0, 6).forEach(function (hit) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'scan-hit';
+    btn.setAttribute('role', 'option');
+    var name = document.createElement('span');
+    name.className = 'scan-hit-name';
+    var val = document.createElement('span');
+    val.className = 'scan-hit-value';
+    if (hit.kind === 'category'){
+      name.textContent = hit.cat.name;
+      val.textContent = 'categorie';
+      btn.addEventListener('click', function () { openCategoryPanel(hit.cat); });
+    } else if (hit.kind === 'site'){
+      name.textContent = hit.site.name;
+      val.textContent = 'site';
+      btn.addEventListener('click', function () { openSitePanel(hit.site); });
+    } else {
+      name.textContent = hit.item.name;
+      val.textContent = hit.item.value + ' ' + hit.item.unit;
+      btn.addEventListener('click', function () { openPanel(hit.item); });
+    }
+    btn.appendChild(name);
+    btn.appendChild(val);
+    scanResults.appendChild(btn);
+  });
+  scanResults.hidden = false;
+  setActiveHit(0);
+
+  if (currentItem){
+    var current = hits.filter(function (hit) { return hitRef(hit) === currentItem; })[0];
+    var currentSite = siteBlips.filter(function (sb) { return sb.item === currentItem; })[0];
+    var stillMatched = current ? current.matched : (currentSite ? currentSite.matched : false);
+    if (!stillMatched) closePanel();
+  }
+}
+function initScanSearch(){
+  if (!scanInput) return;
+  scanCount.textContent = blips.length + ' CONTACTEN';
+  scanInput.addEventListener('input', applySearch);
+  scanInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape'){
+      scanInput.value = '';
+      applySearch();
+      return;
+    }
+    if (e.key === 'ArrowDown'){ e.preventDefault(); setActiveHit(activeHit + 1); return; }
+    if (e.key === 'ArrowUp'){ e.preventDefault(); setActiveHit(activeHit - 1); return; }
+    if (e.key !== 'Enter') return;
+    var hits = scanResults.querySelectorAll('.scan-hit');
+    var pick = hits[activeHit >= 0 ? activeHit : 0];
+    if (pick){ e.preventDefault(); pick.click(); }
+  });
+  loadLandingText();
+}
+window.addEventListener('DOMContentLoaded', function () { init(); initScanSearch(); });
 </script>
 </body>
 </html>

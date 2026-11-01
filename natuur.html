@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!-- BOUWERS: dit is een statische pagina met een ingebakken momentopname.
+     Voordat je live API's, polling of een loop over endpoints toevoegt:
+     waarschuw Eep eerst uitdrukkelijk over het verwachte API-gebruik en
+     netwerkverkeer (welk endpoint, welke frequentie, hoeveel requests per
+     bezoeker) en wacht op akkoord. -->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Natuur · Eeps Site</title>
+<meta name="description" content="Soorten rond Den Helder en het Marsdiep, in categorieën: zeeleven, vogels, planten en insecten.">
+<meta name="theme-color" content="#081018">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --ink:#f4f1e8;--ink-2:#e7e2d4;--muted:#c9c3b4;--faint:#a9a291;
+    --sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;
+    --sea:#081018;--panel:#0a121a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);
+    background:var(--sea) url("tide-bg.jpg") center/cover no-repeat fixed;
+    display:flex;flex-direction:column;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.14) 0%,rgba(4,10,16,.45) 55%,rgba(4,10,16,.82) 100%),
+      linear-gradient(to bottom,rgba(4,10,16,.45),rgba(4,10,16,.08) 40%,rgba(4,10,16,.78));
+  }
+  a{color:var(--brass-bright)}
+  .topbar{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:14px 16px 0}
+  .topbar a{
+    font-size:.78rem;letter-spacing:.06em;padding:.5em .95em;border-radius:999px;
+    border:1px solid rgba(232,220,192,.28);background:rgba(10,18,26,.55);
+    color:var(--sand);text-decoration:none;transition:background .15s,border-color .15s,color .15s;
+  }
+  .topbar a:hover{border-color:rgba(255,200,97,.7);background:rgba(230,162,60,.16)}
+  .topbar a[aria-current="page"]{border-color:rgba(255,200,97,.85);background:rgba(230,162,60,.24);color:var(--brass-bright)}
+  main{position:relative;z-index:1;width:min(1080px,100%);margin:0 auto;padding:2rem 18px 3rem;flex:1}
+  .kicker{margin:0 0 .35rem;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass)}
+  h1{margin:0 0 .6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.05}
+  .lede{margin:0;max-width:46rem;font-size:.95rem;line-height:1.65;color:var(--ink-2)}
+  .source{margin:.7rem 0 0;font-size:.72rem;color:var(--faint);letter-spacing:.02em}
+  .searchbar{
+    position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+    margin:1.6rem 0 .55rem;padding:.55rem .65rem;border-radius:12px;
+    border:1px solid rgba(232,220,192,.2);background:rgba(8,16,24,.92);backdrop-filter:blur(8px);
+  }
+  .searchbar input{
+    flex:1;min-width:170px;font:inherit;font-size:.95rem;padding:.55em .8em;border-radius:8px;
+    border:1px solid rgba(232,220,192,.25);background:rgba(4,10,16,.82);color:var(--ink);
+  }
+  .searchbar input::placeholder{color:var(--faint)}
+  .searchbar input:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}
+  .count{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);white-space:nowrap}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.3rem}
+  .chip{
+    font:inherit;font-size:.75rem;letter-spacing:.03em;padding:.42em .9em;border-radius:999px;cursor:pointer;
+    border:1px solid rgba(232,220,192,.24);background:rgba(232,220,192,.06);color:var(--ink-2);
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .chip:hover{border-color:rgba(255,200,97,.65);background:rgba(230,162,60,.14)}
+  .chip[aria-pressed="true"]{border-color:rgba(255,200,97,.8);background:rgba(230,162,60,.24);color:var(--brass-bright)}
+  .chip b{font-weight:700;margin-left:.35em;opacity:.8}
+  .cat{
+    margin:0 0 1rem;padding:1rem 1.15rem 1.15rem;border-radius:14px;
+    background:rgba(10,18,26,.66);border:1px solid rgba(232,220,192,.16);backdrop-filter:blur(5px);
+  }
+  .cat[hidden]{display:none}
+  .cat-head{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+  .cat-head h2{margin:0;font-family:var(--serif);font-size:1.3rem}
+  .cat-head .n{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
+  .cat-note{margin:.3rem 0 .85rem;font-size:.76rem;color:var(--faint)}
+  .species{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:.15rem 1rem}
+  .sp{display:flex;align-items:baseline;gap:.45rem;padding:.32rem 0;border-bottom:1px solid rgba(232,220,192,.08);font-size:.85rem}
+  .sp-name{flex:1;color:var(--ink-2)}
+  .sp-name a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(232,220,192,.2)}
+  .sp-name a:hover{color:var(--brass-bright);border-bottom-color:rgba(255,200,97,.7)}
+  .sp-sci{font-family:var(--serif);font-style:italic;font-size:.76rem;color:var(--faint)}
+  .sp-count{font-size:.7rem;font-variant-numeric:tabular-nums;color:var(--brass);white-space:nowrap}
+  .more{
+    margin-top:.75rem;font:inherit;font-size:.74rem;letter-spacing:.05em;padding:.45em .95em;border-radius:999px;cursor:pointer;
+    border:1px solid rgba(255,200,97,.45);background:rgba(230,162,60,.12);color:var(--brass-bright);
+  }
+  .more:hover{background:rgba(230,162,60,.22)}
+  .empty{margin:2rem 0;text-align:center;color:var(--faint);font-size:.9rem}
+  .empty[hidden]{display:none}
+  .notice{
+    margin:1.4rem 0 0;padding:1rem 1.15rem 1.1rem;border-radius:14px;
+    border:1px solid rgba(255,200,97,.45);
+    background:linear-gradient(180deg,rgba(230,162,60,.16),rgba(10,18,26,.7));
+  }
+  .notice-kicker{margin:0 0 .3rem;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-bright)}
+  .notice h2{margin:0 0 .5rem;font-family:var(--serif);font-size:1.22rem;color:var(--ink)}
+  .notice p{margin:0 0 .55rem;font-size:.86rem;line-height:1.62;color:var(--ink-2)}
+  .notice p:last-child{margin-bottom:0}
+  .notice .stamp{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  .notice strong{color:var(--brass-bright)}
+  .notice-list{margin:.15rem 0 .85rem;padding-left:1.2rem;font-size:.86rem;line-height:1.62;color:var(--ink-2)}
+  .notice-list li{margin:.3rem 0}
+  .notice-list li::marker{color:var(--brass)}
+  .notice-list strong{color:var(--brass-bright)}
+  .builders{
+    margin:1.1rem 0 0;padding:.7rem .95rem;border-radius:12px;
+    border:1px dashed rgba(232,220,192,.28);background:rgba(4,10,16,.45);
+  }
+  .builders summary{cursor:pointer;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);list-style:none}
+  .builders summary::-webkit-details-marker{display:none}
+  .builders summary::after{content:"▾";margin-left:.5rem;font-size:.7rem}
+  .builders[open] summary::after{content:"▴"}
+  .builders p{margin:.6rem 0 0;font-size:.8rem;line-height:1.65;color:var(--muted)}
+  .builders strong{color:var(--ink)}
+  footer{position:relative;z-index:1;padding:1.4rem 18px 2rem;text-align:center;font-size:.72rem;color:var(--faint);border-top:1px solid rgba(232,220,192,.14)}
+  footer a{color:var(--sand)}
+  @media(max-width:520px){
+    body{background-attachment:scroll}
+    .searchbar{position:static}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Site">
+  <a href="index.html">← Landing</a>
+  <a href="radar.html">📡 Radar</a>
+  <a href="natuur.html" aria-current="page">🌿 Natuur</a>
+</nav>
+
+<main>
+  <p class="kicker">Den Helder · Marsdiep · Waddenkust</p>
+  <h1>natuur in categorieën</h1>
+  <p class="lede">De soorten rond Den Helder, gegroepeerd zoals je ze tegenkomt: het zeeleven voorop, daarachter de vogels die je vanaf de dijk ziet, en het groen en klein spul van duin en kwelder. Typ een naam, of houd het vaag — de zoekfunctie vangt ook bijna-goede spelling.</p>
+  <p class="source" id="source">Bron: wildpluk-site · GBIF-waarnemingen · momentopname</p>
+
+  <section class="notice" aria-labelledby="spotter-title">
+    <p class="notice-kicker">In de maak</p>
+    <h2 id="spotter-title">🕊️ Bird spotter — alleen op vogels zoeken</h2>
+    <p>Deze pagina is het voorportaal. Er wordt gewerkt aan een aparte spotter die zich volledig op vogels richt: één zoekveld, meteen resultaat, en daarachter <strong>'live' waarnemingen</strong> in plaats van de momentopname die hier nu staat.</p>
+    <ul class="notice-list">
+      <li>een <strong>unieke lijst</strong> van alle vogels die de <strong>laatste 30 dagen</strong> zijn gespot;</li>
+      <li>kies een soort, en je krijgt de <strong>laatste waarneming</strong> van die soort, met de <strong>link naar die waarneming</strong>;</li>
+      <li>de <strong>gps-locatie waar de foto is genomen</strong>, geprojecteerd op de <strong>kaart van Nederland</strong>.</li>
+    </ul>
+    <p>Zeeleven, planten en insecten blijven ernaast bestaan; de spotter wordt de plek waar je een vogel intikt en ziet wat er nú vliegt.</p>
+    <p class="stamp">Nog niet online · live data volgt</p>
+  </section>
+
+  <details class="builders">
+    <summary>Voor wie aan deze site bouwt</summary>
+    <p><strong>Verzoek van Eep:</strong> waarschuw mij <strong>uitdrukkelijk</strong> zodra dit veel API-gebruik of netwerkverkeer gaat kosten — vóór je het aanzet of uitrolt. Noem welk endpoint je wilt gebruiken, hoe vaak je het aanroept en hoeveel requests dat per bezoeker oplevert, en wacht op akkoord. Een lijst één keer per dag verversen is iets anders dan elke seconde pollen.</p>
+  </details>
+
+  <div class="searchbar">
+    <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Zoek een soort</label>
+    <input id="q" type="search" placeholder="zoek: meeuw, kokkel, zeekat, bijna-goede spelling…" autocomplete="off" spellcheck="false" aria-controls="cats">
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filter op categorie"></div>
+
+  <div id="cats"></div>
+  <p class="empty" id="empty" hidden>Geen soorten gevonden. Probeer een andere spelling of een korter woord.</p>
+</main>
+
+<footer>
+  Soorten en aantallen uit de wildpluk-site (GBIF, <span id="foot-count"></span> soorten) · <a href="index.html">terug naar de landing</a>
+</footer>
+
+<script>
+  var SPECIES = [{"n":"Zilvermeeuw","s":"Larus argentatus","c":188150,"k":"2481139","g":"vogels"},{"n":"Kleine Mantelmeeuw","s":"Larus fuscus","c":180306,"k":"2481174","g":"vogels"},{"n":"Scholekster","s":"Haematopus ostralegus","c":93820,"k":"7788295","g":"vogels"},{"n":"Bot","s":"Platichthys flesus","c":37426,"k":"2409330","g":"zeeleven"},{"n":"Europese schol","s":"Pleuronectes platessa","c":28338,"k":"7700106","g":"zeeleven"},{"n":"Haring","s":"Clupea harengus","c":24234,"k":"8351946","g":"zeeleven"},{"n":"Lepelaar","s":"Platalea leucorodia","c":23268,"k":"2480801","g":"vogels"},{"n":"Wulp","s":"Numenius arquata","c":19931,"k":"2481792","g":"vogels"},{"n":"Kokmeeuw","s":"Chroicocephalus ridibundus","c":19506,"k":"6065824","g":"vogels"},{"n":"Tureluur","s":"Tringa totanus","c":18242,"k":"2481714","g":"vogels"},{"n":"Bergeend","s":"Tadorna tadorna","c":17872,"k":"2498009","g":"vogels"},{"n":"Eidereend","s":"Somateria mollissima","c":17167,"k":"2498352","g":"vogels"},{"n":"Fint","s":"Alosa fallax","c":16065,"k":"2412623","g":"zeeleven"},{"n":"Steenloper","s":"Arenaria interpres","c":15935,"k":"2481776","g":"vogels"},{"n":"Torenvalk","s":"Falco tinnunculus","c":14820,"k":"9616058","g":"vogels"},{"n":"Grauwe Gans","s":"Anser anser","c":14754,"k":"2498036","g":"vogels"},{"n":"Bruine Kiekendief","s":"Circus aeruginosus","c":14540,"k":"2480482","g":"vogels"},{"n":"Australaziatische kleine zilverreiger","s":"Egretta garzetta","c":14530,"k":"2480876","g":"vogels"},{"n":"Aalscholver","s":"Phalacrocorax carbo","c":14397,"k":"2481890","g":"vogels"},{"n":"Kluut","s":"Recurvirostra avosetta","c":14257,"k":"2480259","g":"vogels"},{"n":"gewone krab","s":"Carcinus maenas","c":14141,"k":"5178595","g":"zeeleven"},{"n":"Buizerd","s":"Buteo buteo","c":13668,"k":"2480537","g":"vogels"},{"n":"kauw","s":"Coloeus monedula","c":13482,"k":"6100954","g":"vogels"},{"n":"Merel","s":"Turdus merula","c":13434,"k":"2490719","g":"vogels"},{"n":"geep","s":"Belone belone","c":12927,"k":"2369178","g":"zeeleven"},{"n":"Rotgans","s":"Branta bernicla","c":12807,"k":"5232446","g":"vogels"},{"n":"Tjiftjaf","s":"Phylloscopus collybita","c":12700,"k":"2493091","g":"vogels"},{"n":"Graspieper","s":"Anthus pratensis","c":12682,"k":"2490266","g":"vogels"},{"n":"Kievit","s":"Vanellus vanellus","c":12674,"k":"2480242","g":"vogels"},{"n":"Wilde Eend","s":"Anas platyrhynchos","c":12647,"k":"9761484","g":"vogels"},{"n":"Fuut","s":"Podiceps cristatus","c":12255,"k":"2482054","g":"vogels"},{"n":"slobeend","s":"Spatula clypeata","c":12129,"k":"8332393","g":"vogels"},{"n":"Lompje","s":"Ciliata mustela","c":12079,"k":"2415526","g":"zeeleven"},{"n":"Kraai","s":"Corvus corone","c":11353,"k":"9409796","g":"vogels"},{"n":"Spreeuw","s":"Sturnus vulgaris","c":11147,"k":"9809229","g":"vogels"},{"n":"Roodborst","s":"Erithacus rubecula","c":11085,"k":"2492462","g":"vogels"},{"n":"Botskop","s":"Myoxocephalus scorpius","c":11043,"k":"2333785","g":"zeeleven"},{"n":"smient","s":"Mareca penelope","c":11024,"k":"8000602","g":"vogels"},{"n":"grote zilverreiger","s":"Ardea alba","c":10954,"k":"9752617","g":"vogels"},{"n":"Rosse Grutto","s":"Limosa lapponica","c":10840,"k":"2481681","g":"vogels"},{"n":"Ekster","s":"Pica pica","c":10802,"k":"5229490","g":"vogels"},{"n":"Kuifeend","s":"Aythya fuligula","c":10524,"k":"2498261","g":"vogels"},{"n":"Diklippige harder","s":"Chelon labrosus","c":10521,"k":"2400863","g":"zeeleven"},{"n":"Schar","s":"Limanda limanda","c":10273,"k":"5213960","g":"zeeleven"},{"n":"Visdiefje","s":"Sterna hirundo","c":10137,"k":"9367409","g":"vogels"},{"n":"Blauwborst","s":"Luscinia svecica","c":10040,"k":"4408732","g":"vogels"},{"n":"Huismus","s":"Passer domesticus","c":9858,"k":"5231190","g":"vogels"},{"n":"Meerkoet","s":"Fulica atra","c":9778,"k":"2474377","g":"vogels"},{"n":"Koolmees","s":"Parus major","c":9504,"k":"9705453","g":"vogels"},{"n":"Houtduif","s":"Columba palumbus","c":9465,"k":"2495455","g":"vogels"},{"n":"Grutto","s":"Limosa limosa","c":9455,"k":"2481685","g":"vogels"},{"n":"Pijlstaart","s":"Anas acuta","c":9421,"k":"2498112","g":"vogels"},{"n":"Kneu","s":"Linaria cannabina","c":9349,"k":"8104397","g":"vogels"},{"n":"Winterkoning","s":"Troglodytes troglodytes","c":9245,"k":"5231438","g":"vogels"},{"n":"Vink","s":"Fringilla coelebs","c":9113,"k":"2494422","g":"vogels"},{"n":"Krakeend","s":"Mareca strepera","c":9100,"k":"9362027","g":"vogels"},{"n":"Aal","s":"Anguilla anguilla","c":8901,"k":"5212973","g":"zeeleven"},{"n":"Wintertaling","s":"Anas crecca","c":8893,"k":"8214667","g":"vogels"},{"n":"Blauwe Reiger","s":"Ardea cinerea","c":8843,"k":"9797180","g":"vogels"},{"n":"Roodborsttapuit","s":"Saxicola rubicola","c":8693,"k":"4408759","g":"vogels"},{"n":"Stormmeeuw","s":"Larus canus","c":8656,"k":"7982160","g":"vogels"},{"n":"Wijting","s":"Merlangius merlangus","c":8061,"k":"2415788","g":"zeeleven"},{"n":"Tafeleend","s":"Aythya ferina","c":8058,"k":"2498255","g":"vogels"},{"n":"groenling","s":"Chloris chloris","c":7959,"k":"5845582","g":"vogels"},{"n":"Bastaardnachtegaal","s":"Prunella modularis","c":7687,"k":"5231763","g":"vogels"},{"n":"Rietgors","s":"Emberiza schoeniclus","c":7673,"k":"2491557","g":"vogels"},{"n":"grote stern","s":"Thalasseus sandvicensis","c":7620,"k":"2481240","g":"vogels"},{"n":"Watersnip","s":"Gallinago gallinago","c":7322,"k":"2481819","g":"vogels"},{"n":"Fitis","s":"Phylloscopus trochilus","c":7319,"k":"2493052","g":"vogels"},{"n":"Witte Kwikstaart","s":"Motacilla alba","c":7241,"k":"9687165","g":"vogels"},{"n":"Nijlgans","s":"Alopochen aegyptiaca","c":7213,"k":"2498252","g":"vogels"},{"n":"Grasmus","s":"Sylvia communis","c":7171,"k":"2492943","g":"vogels"},{"n":"Pimpelmees","s":"Cyanistes caeruleus","c":7158,"k":"2487879","g":"vogels"},{"n":"Atlantische horsmakreel","s":"Trachurus trachurus","c":7136,"k":"5210473","g":"zeeleven"},{"n":"Noordzeegarnaal","s":"Crangon crangon","c":7065,"k":"2222188","g":"zeeleven"},{"n":"Europese zeebaars","s":"Dicentrarchus labrax","c":7012,"k":"2394622","g":"zeeleven"},{"n":"Magge","s":"Zoarces viviparus","c":6979,"k":"2381013","g":"zeeleven"},{"n":"Zanglijster","s":"Turdus philomelos","c":6808,"k":"7901064","g":"vogels"},{"n":"Atlantische kabeljauw","s":"Gadus morhua","c":6614,"k":"8084280","g":"zeeleven"},{"n":"Tapuit","s":"Oenanthe oenanthe","c":6524,"k":"5231240","g":"vogels"},{"n":"Putter","s":"Carduelis carduelis","c":6509,"k":"2494686","g":"vogels"},{"n":"Rietzanger","s":"Acrocephalus schoenobaenus","c":6356,"k":"2493129","g":"vogels"},{"n":"Grote Bonte Specht","s":"Dendrocopos major","c":6252,"k":"2477968","g":"vogels"},{"n":"Bontbekplevier","s":"Charadrius hiaticula","c":6227,"k":"9566659","g":"vogels"},{"n":"Baardmannetje","s":"Panurus biarmicus","c":6176,"k":"2493367","g":"vogels"},{"n":"Fazant","s":"Phasianus colchicus","c":5748,"k":"9752149","g":"vogels"},{"n":"Waterhoen","s":"Gallinula chloropus","c":5551,"k":"5228199","g":"vogels"},{"n":"Tong","s":"Solea solea","c":5324,"k":"5214139","g":"zeeleven"},{"n":"Dodaars","s":"Tachybaptus ruficollis","c":5290,"k":"2482048","g":"vogels"},{"n":"Dwergvleermuis","s":"Pipistrellus pipistrellus","c":5283,"k":"5218465","g":"overig"},{"n":"Turkse Tortel","s":"Streptopelia decaocto","c":5246,"k":"2495696","g":"vogels"},{"n":"Zeekoet","s":"Uria aalge","c":4856,"k":"2481342","g":"vogels"},{"n":"Sprot","s":"Sprattus sprattus","c":4762,"k":"2413452","g":"zeeleven"},{"n":"Brilduiker","s":"Bucephala clangula","c":4733,"k":"2498326","g":"vogels"},{"n":"Pollak","s":"Pollachius pollachius","c":4539,"k":"2415872","g":"zeeleven"},{"n":"Icarusblauwtje","s":"Polyommatus icarus","c":4497,"k":"5140214","g":"insecten"},{"n":"Sperwer","s":"Accipiter nisus","c":4494,"k":"2480637","g":"vogels"},{"n":"Zwartkop","s":"Sylvia atricapilla","c":4366,"k":"2492956","g":"vogels"},{"n":"Gierzwaluw","s":"Apus apus","c":4363,"k":"5228676","g":"vogels"},{"n":"Atalanta","s":"Vanessa atalanta","c":4332,"k":"1898286","g":"insecten"},{"n":"Gewone zeehond","s":"Phoca vitulina","c":4305,"k":"2434793","g":"zeeleven"},{"n":"Bruin zandoogje","s":"Maniola jurtina","c":4247,"k":"5135513","g":"insecten"},{"n":"Atlantische forel","s":"Salmo trutta","c":4219,"k":"8215487","g":"zeeleven"},{"n":"Hooibeestje","s":"Coenonympha pamphilus","c":4103,"k":"1911461","g":"insecten"},{"n":"Veldleeuwerik","s":"Alauda arvensis","c":4097,"k":"8077224","g":"vogels"},{"n":"Geoorde Fuut","s":"Podiceps nigricollis","c":4022,"k":"2482065","g":"vogels"},{"n":"Nachtegaal","s":"Luscinia megarhynchos","c":4020,"k":"7660710","g":"vogels"},{"n":"Bonte Strandloper","s":"Calidris alpina","c":3959,"k":"2481759","g":"vogels"},{"n":"Koekoek","s":"Cuculus canorus","c":3831,"k":"5231918","g":"vogels"},{"n":"Ijsvogel","s":"Alcedo atthis","c":3826,"k":"2475532","g":"vogels"},{"n":"Zwarte Zeekoet","s":"Cepphus grylle","c":3795,"k":"2481312","g":"vogels"},{"n":"Koperwiek","s":"Turdus iliacus","c":3743,"k":"2490781","g":"vogels"},{"n":"Boerenzwaluw","s":"Hirundo rustica","c":3674,"k":"9515886","g":"vogels"},{"n":"Holeduif","s":"Columba oenas","c":3660,"k":"2495471","g":"vogels"},{"n":"Kleine vuurvlinder","s":"Lycaena phlaeas","c":3631,"k":"1929697","g":"insecten"},{"n":"Kemphaan","s":"Calidris pugnax","c":3627,"k":"8250742","g":"vogels"},{"n":"Gewone zwemkrab","s":"Liocarcinus holsatus","c":3543,"k":"2225596","g":"zeeleven"},{"n":"Atlantische grijze zeehond","s":"Halichoerus grypus","c":3505,"k":"2434806","g":"zeeleven"},{"n":"Brandgans","s":"Branta leucopsis","c":3449,"k":"5232464","g":"vogels"},{"n":"Knobbelzwaan","s":"Cygnus olor","c":3426,"k":"2498343","g":"vogels"},{"n":"Staartmees","s":"Aegithalos caudatus","c":3390,"k":"2495000","g":"vogels"},{"n":"Grote koornaarvis","s":"Atherina presbyter","c":3378,"k":"2411945","g":"zeeleven"},{"n":"Bloemkoolkwal","s":"Rhizostoma pulmo","c":3284,"k":"5185453","g":"zeeleven"},{"n":"Goudhaan","s":"Regulus regulus","c":3213,"k":"2484596","g":"vogels"},{"n":"Goudplevier","s":"Pluvialis apricaria","c":3176,"k":"2480332","g":"vogels"},{"n":"Europese Haas","s":"Lepus europaeus","c":3165,"k":"7952072","g":"overig"},{"n":"Waterral","s":"Rallus aquaticus","c":3113,"k":"2474831","g":"vogels"},{"n":"Duinroos","s":"Rosa spinosissima","c":3006,"k":"3002333","g":"planten"},{"n":"Middelste Zaagbek","s":"Mergus serrator","c":2979,"k":"2498375","g":"vogels"},{"n":"Zilverplevier","s":"Pluvialis squatarola","c":2943,"k":"2480327","g":"vogels"},{"n":"Zwarte Roodstaart","s":"Phoenicurus ochruros","c":2926,"k":"5739315","g":"vogels"},{"n":"Gaai","s":"Garrulus glandarius","c":2917,"k":"5229493","g":"vogels"},{"n":"Tuinfluiter","s":"Sylvia borin","c":2849,"k":"2492942","g":"vogels"},{"n":"Paarse Strandloper","s":"Calidris maritima","c":2824,"k":"2481743","g":"vogels"},{"n":"Oeverloper","s":"Actitis hypoleucos","c":2809,"k":"2481800","g":"vogels"},{"n":"Slechtvalk","s":"Falco peregrinus","c":2808,"k":"2481047","g":"vogels"},{"n":"Bruinvis","s":"Phocoena phocoena","c":2740,"k":"2440669","g":"zeeleven"},{"n":"Boomkruiper","s":"Certhia brachydactyla","c":2733,"k":"7806848","g":"vogels"},{"n":"Grote Mantelmeeuw","s":"Larus marinus","c":2686,"k":"2481172","g":"vogels"},{"n":"Bergvink","s":"Fringilla montifringilla","c":2626,"k":"2494441","g":"vogels"},{"n":"Groenpootruiter","s":"Tringa nebularia","c":2597,"k":"2481726","g":"vogels"},{"n":"Drieteenstrandloper","s":"Calidris alba","c":2503,"k":"2481748","g":"vogels"},{"n":"Spiering","s":"Osmerus eperlanus","c":2478,"k":"2410854","g":"zeeleven"},{"n":"Klein koolwitje","s":"Pieris rapae","c":2398,"k":"1920496","g":"insecten"},{"n":"Kramsvogel","s":"Turdus pilaris","c":2373,"k":"2490737","g":"vogels"},{"n":"Huismoeder","s":"Noctua pronuba","c":2322,"k":"1789695","g":"insecten"},{"n":"Heivlinder","s":"Hipparchia semele","c":2289,"k":"8176911","g":"insecten"},{"n":"Blauwe Kiekendief","s":"Circus cyaneus","c":2234,"k":"2480487","g":"vogels"},{"n":"Steenbolk","s":"Trisopterus luscus","c":2204,"k":"2415916","g":"zeeleven"},{"n":"Gamma-uil","s":"Autographa gamma","c":2155,"k":"1792418","g":"insecten"},{"n":"Kolgans","s":"Anser albifrons","c":2145,"k":"2498017","g":"vogels"},{"n":"Canadese Gans","s":"Branta canadensis","c":2119,"k":"5232437","g":"vogels"},{"n":"Riet","s":"Phragmites australis","c":2114,"k":"5290149","g":"planten"},{"n":"Regenwulp","s":"Numenius phaeopus","c":2095,"k":"2481784","g":"vogels"},{"n":"Noordzeekrab","s":"Cancer pagurus","c":2080,"k":"2222085","g":"zeeleven"},{"n":"Griet","s":"Scophthalmus rhombus","c":2077,"k":"2409403","g":"zeeleven"},{"n":"Distelvlinder","s":"Vanessa cardui","c":2043,"k":"4299368","g":"insecten"},{"n":"Zwartmoeskervel","s":"Smyrnium olusatrum","c":2032,"k":"3034782","g":"planten"},{"n":"Kleine vos","s":"Aglais urticae","c":1922,"k":"1894840","g":"insecten"},{"n":"Grauwe Franjepoot","s":"Phalaropus lobatus","c":1889,"k":"5739290","g":"vogels"},{"n":"Dagpauwoog","s":"Aglais io","c":1816,"k":"4535827","g":"insecten"},{"n":"Kleine Kokmeeuw","s":"Chroicocephalus philadelphia","c":1816,"k":"6065818","g":"vogels"},{"n":"Kleine Karekiet","s":"Acrocephalus scirpaceus","c":1808,"k":"2493118","g":"vogels"},{"n":"Flamingo","s":"Phoenicopterus roseus","c":1806,"k":"4352332","g":"vogels"},{"n":"geoorde zeekwal","s":"Aurelia aurita","c":1768,"k":"2264442","g":"zeeleven"},{"n":"Zwarte Ibis","s":"Plegadis falcinellus","c":1759,"k":"2480773","g":"vogels"},{"n":"Zwartsprietdikkopje","s":"Thymelicus lineola","c":1731,"k":"8133678","g":"insecten"},{"n":"Zandzegge","s":"Carex arenaria","c":1729,"k":"2721897","g":"planten"},{"n":"Zwarte Ruiter","s":"Tringa erythropus","c":1718,"k":"2481725","g":"vogels"},{"n":"Witgatje","s":"Tringa ochropus","c":1716,"k":"2481728","g":"vogels"},{"n":"Patrijs","s":"Perdix perdix","c":1714,"k":"2473958","g":"vogels"},{"n":"Gekraagde Roodstaart","s":"Phoenicurus phoenicurus","c":1683,"k":"5739317","g":"vogels"},{"n":"Grote zeenaald","s":"Syngnathus acus","c":1682,"k":"2332927","g":"zeeleven"},{"n":"Boomleeuwerik","s":"Lullula arborea","c":1681,"k":"2490604","g":"vogels"},{"n":"Gele Kwikstaart","s":"Motacilla flava","c":1678,"k":"9701857","g":"vogels"},{"n":"Kruipwilg","s":"Salix repens","c":1653,"k":"9148812","g":"planten"},{"n":"Maskergors","s":"Emberiza spodocephala","c":1644,"k":"2491522","g":"vogels"},{"n":"Grote beer","s":"Arctia caja","c":1634,"k":"5115874","g":"insecten"},{"n":"Bont zandoogje","s":"Pararge aegeria","c":1604,"k":"8049830","g":"insecten"},{"n":"Brede orchis","s":"Dactylorhiza majalis","c":1590,"k":"2810155","g":"planten"},{"n":"Zandblauwtje","s":"Jasione montana","c":1589,"k":"8366345","g":"planten"},{"n":"Watermunt","s":"Mentha aquatica","c":1560,"k":"2927208","g":"planten"},{"n":"Vuurgoudhaan","s":"Regulus ignicapilla","c":1544,"k":"6093527","g":"vogels"},{"n":"blauwe mossel","s":"Mytilus edulis","c":1529,"k":"8288896","g":"zeeleven"},{"n":"Duinparelmoervlinder","s":"Fabriciana niobe","c":1528,"k":"8078362","g":"insecten"},{"n":"Jakobsvlinder","s":"Tyria jacobaeae","c":1522,"k":"5115777","g":"insecten"},{"n":"Geel walstro","s":"Galium verum","c":1515,"k":"9063248","g":"planten"},{"n":"kompaskwal","s":"Chrysaora hysoscella","c":1504,"k":"5185425","g":"zeeleven"},{"n":"Wilde kamperfoelie","s":"Lonicera periclymenum","c":1487,"k":"5334277","g":"planten"},{"n":"Groot koolwitje","s":"Pieris brassicae","c":1481,"k":"1920506","g":"insecten"},{"n":"driedoornige stekelbaars","s":"Gasterosteus aculeatus","c":1448,"k":"4286327","g":"zeeleven"},{"n":"Duinriet","s":"Calamagrostis epigejos","c":1427,"k":"6431455","g":"planten"},{"n":"Jakobskruiskruid en Duinkruiskruid","s":"Jacobaea vulgaris","c":1423,"k":"5388602","g":"planten"},{"n":"Casarca","s":"Tadorna ferruginea","c":1422,"k":"2498015","g":"vogels"},{"n":"Helm","s":"Calamagrostis arenaria","c":1417,"k":"4126489","g":"planten"},{"n":"Oeverzwaluw","s":"Riparia riparia","c":1389,"k":"2489160","g":"vogels"},{"n":"Zeeraket","s":"Cakile maritima","c":1388,"k":"3048831","g":"planten"},{"n":"Smalle weegbree","s":"Plantago lanceolata","c":1380,"k":"8208358","g":"overig"},{"n":"Duindoorn","s":"Hippophae rhamnoides","c":1379,"k":"3039285","g":"planten"},{"n":"Kuifaalscholver","s":"Phalacrocorax aristotelis","c":1371,"k":"2481861","g":"vogels"}];
+  var GROUPS = [{"id":"zeeleven","label":"Zeeleven","icon":"🌊","note":"vissen, schelpen, kreeften, kwallen en zeezoogdieren uit het Marsdiep","count":36},{"id":"vogels","label":"Vogels","icon":"🐦","note":"meeuwen, steltlopers, eenden, roofvogels en zangvogels","count":128},{"id":"planten","label":"Planten & wieren","icon":"🌿","note":"duinplanten, kwelders en grassen langs de kust","count":15},{"id":"insecten","label":"Insecten","icon":"🦋","note":"vlinders, motten en ander klein grut","count":18},{"id":"overig","label":"Overig","icon":"✳️","note":"zoogdieren en planten die buiten de andere groepen vallen","count":3}];
+  var LIMIT = 12;
+  var state = { q: '', filter: 'all', open: {} };
+
+  function normalise(s){
+    return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  function editDistance(a, b){
+    var prev = [], i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++){
+      var cur = [i];
+      for (j = 1; j <= b.length; j++){
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+  function fuzzyScore(query, text){
+    var q = normalise(query).trim();
+    var t = normalise(text);
+    if (!q || !t) return 0;
+    var idx = t.indexOf(q);
+    if (idx === 0) return 1000;
+    if (idx > 0) return 800 - Math.min(idx * 4, 200);
+    if (q.length < 4) return 0;
+    var ti = 0, run = 0, score = 0;
+    for (var k = 0; k < q.length; k++){
+      var found = t.indexOf(q.charAt(k), ti);
+      if (found === -1){ score = 0; break; }
+      var boundary = found === 0 || !/[a-z0-9]/.test(t.charAt(found - 1));
+      score += 12 + (boundary ? 18 : 0) + Math.min(run, 4) * 6;
+      run = found === ti ? run + 1 : 1;
+      ti = found + 1;
+    }
+    if (score > 0) return score + 60 - Math.min(t.length, 40);
+    var words = t.split(/[^a-z0-9]+/).filter(function (w) { return w.length > 2; });
+    var maxDist = q.length >= 6 ? 2 : 1;
+    var best = 0;
+    for (var w = 0; w < words.length; w++){
+      if (Math.abs(words[w].length - q.length) > maxDist) continue;
+      var d = editDistance(q, words[w]);
+      if (d === maxDist && d > 1 && words[w].charAt(0) !== q.charAt(0)) continue;
+      if (d <= maxDist) best = Math.max(best, 320 - d * 80);
+    }
+    return best;
+  }
+  function score(sp, group){
+    return Math.max(fuzzyScore(state.q, sp.n) * 2, fuzzyScore(state.q, sp.s), fuzzyScore(state.q, group.label));
+  }
+  function fmt(n){
+    try { return new Intl.NumberFormat('nl-NL').format(n); } catch (e) { return String(n); }
+  }
+  function speciesRow(sp){
+    var li = document.createElement('li');
+    li.className = 'sp';
+    var name = document.createElement('span');
+    name.className = 'sp-name';
+    if (sp.k){
+      var a = document.createElement('a');
+      a.href = 'https://www.gbif.org/species/' + encodeURIComponent(sp.k);
+      a.target = '_blank';
+      a.rel = 'noreferrer';
+      a.textContent = sp.n;
+      name.appendChild(a);
+    } else {
+      name.textContent = sp.n;
+    }
+    var sci = document.createElement('span');
+    sci.className = 'sp-sci';
+    sci.textContent = sp.s || '';
+    var count = document.createElement('span');
+    count.className = 'sp-count';
+    count.textContent = sp.c ? fmt(sp.c) : '—';
+    count.title = sp.c ? sp.c + ' waarnemingen' : 'geen telling';
+    li.appendChild(name);
+    li.appendChild(sci);
+    li.appendChild(count);
+    return li;
+  }
+  function renderChips(){
+    var box = document.getElementById('chips');
+    box.textContent = '';
+    var all = { id: 'all', label: 'Alles', count: SPECIES.length };
+    [all].concat(GROUPS).forEach(function (g) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.setAttribute('aria-pressed', String(state.filter === g.id));
+      b.textContent = (g.icon ? g.icon + ' ' : '') + g.label;
+      var n = document.createElement('b');
+      n.textContent = g.count;
+      b.appendChild(n);
+      b.addEventListener('click', function () {
+        state.filter = g.id;
+        render();
+      });
+      box.appendChild(b);
+    });
+  }
+  function render(){
+    var q = state.q.trim();
+    var box = document.getElementById('cats');
+    box.textContent = '';
+    var total = 0;
+    GROUPS.forEach(function (g) {
+      var list = SPECIES.filter(function (sp) { return sp.g === g.id; })
+        .map(function (sp) { return { sp: sp, sc: q ? score(sp, g) : 1 }; })
+        .filter(function (x) { return !q || x.sc > 0; })
+        .sort(function (a, b) { return q ? b.sc - a.sc : b.sp.c - a.sp.c; });
+      total += list.length;
+      var visible = state.filter === 'all' || state.filter === g.id;
+      if (!visible || (!list.length && q)) return;
+
+      var card = document.createElement('article');
+      card.className = 'cat';
+      var head = document.createElement('div');
+      head.className = 'cat-head';
+      var h2 = document.createElement('h2');
+      h2.textContent = g.icon + ' ' + g.label;
+      var n = document.createElement('span');
+      n.className = 'n';
+      n.textContent = (q ? list.length + ' van ' : '') + g.count + ' soorten';
+      head.appendChild(h2);
+      head.appendChild(n);
+      card.appendChild(head);
+
+      var note = document.createElement('p');
+      note.className = 'cat-note';
+      note.textContent = g.note;
+      card.appendChild(note);
+
+      var ul = document.createElement('ul');
+      ul.className = 'species';
+      var expanded = !!state.open[g.id] || !!q;
+      var show = expanded ? list : list.slice(0, LIMIT);
+      show.forEach(function (x) { ul.appendChild(speciesRow(x.sp)); });
+      card.appendChild(ul);
+
+      if (!q && list.length > LIMIT){
+        var more = document.createElement('button');
+        more.type = 'button';
+        more.className = 'more';
+        more.textContent = expanded ? 'toon minder' : 'toon alle ' + list.length;
+        more.addEventListener('click', function () {
+          state.open[g.id] = !expanded;
+          render();
+        });
+        card.appendChild(more);
+      }
+      box.appendChild(card);
+    });
+
+    document.getElementById('count').textContent = q
+      ? total + ' van ' + SPECIES.length + ' soorten'
+      : SPECIES.length + ' soorten in ' + GROUPS.length + ' categorieën';
+    document.getElementById('empty').hidden = total > 0;
+    renderChips();
+  }
+  document.getElementById('q').addEventListener('input', function (e) {
+    state.q = e.target.value;
+    render();
+  });
+  document.getElementById('foot-count').textContent = SPECIES.length;
+  var stamp = document.getElementById('source');
+  if (stamp) stamp.textContent = 'Bron: wildpluk-site · GBIF-waarnemingen · ' + SPECIES.length + ' soorten · momentopname';
+  render();
+</script>
+</body>
+</html>
