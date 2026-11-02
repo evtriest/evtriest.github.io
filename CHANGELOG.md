@@ -1,7 +1,12 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.19.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.19.1` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.19.1 — 2026-11-02 — Ticker valt terug op de nieuwste vogel
+
+- **`landing/index.html`**: de waarnemingen-feed van waarneming.nl stuurt geen `has_sound` mee (0 van de 500 vogels), dus de ticker bleef leeg op dat punt. Hij pakt nu de nieuwste vogel met geluid als die er is en anders de **nieuwste vogel**, met een eigen label (`laatste vogelgeluid` / `laatste vogel`) in alle zes talen. `/api/mediamap` was geen alternatief: die geeft nu 502 (GBIF via de sandbox-proxy).
+- **`website/app.py`**: `__version__` → `1.19.1` (geen functionele backend-wijziging).
 
 ## 🟩 1.19.0 — 2026-11-02 — Ticker bovenaan en Iva als zwevend paneel
 

@@ -793,6 +793,7 @@
         visitsNoMatch: `Geen bezoeken die passen.`,
         tickerUpdate: `Laatste update`, tickerOutage: `Outage`,
         tickerNoOutage: `geen openstaande outage`, tickerOpen: `open`, tickerClosed: `gesloten`,
+        tickerBird: `laatste vogel`, tickerSound: `laatste vogelgeluid`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
         pluginDenied: `afgewezen`, pluginLink: `mouse-in-the-corner`,
@@ -844,6 +845,7 @@
         visitsNoMatch: `No visits match.`,
         tickerUpdate: `Latest update`, tickerOutage: `Outage`,
         tickerNoOutage: `no open outage`, tickerOpen: `open`, tickerClosed: `closed`,
+        tickerBird: `latest bird`, tickerSound: `latest bird sound`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
         pluginDenied: `rejected`, pluginLink: `mouse-in-the-corner`,
@@ -895,6 +897,7 @@
         visitsNoMatch: `Keine passenden Besuche.`,
         tickerUpdate: `Letzte Änderung`, tickerOutage: `Störung`,
         tickerNoOutage: `keine offene Störung`, tickerOpen: `offen`, tickerClosed: `geschlossen`,
+        tickerBird: `letzter Vogel`, tickerSound: `letzter Vogelgesang`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
         pluginDenied: `abgelehnt`, pluginLink: `mouse-in-the-corner`,
@@ -946,6 +949,7 @@
         visitsNoMatch: `Brak pasujących wizyt.`,
         tickerUpdate: `Ostatnia zmiana`, tickerOutage: `Awaria`,
         tickerNoOutage: `brak otwartej awarii`, tickerOpen: `otwarta`, tickerClosed: `zamknięta`,
+        tickerBird: `ostatni ptak`, tickerSound: `ostatni ptasi głos`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
         pluginDenied: `odrzucony`, pluginLink: `mouse-in-the-corner`,
@@ -997,6 +1001,7 @@
         visitsNoMatch: `Няма съвпадащи посещения.`,
         tickerUpdate: `Последна промяна`, tickerOutage: `Авария`,
         tickerNoOutage: `няма открита авария`, tickerOpen: `отворена`, tickerClosed: `затворена`,
+        tickerBird: `последна птица`, tickerSound: `последен птичи глас`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
         pluginDenied: `отхвърлен`, pluginLink: `mouse-in-the-corner`,
@@ -1048,6 +1053,7 @@
         visitsNoMatch: `没有匹配的访客。`,
         tickerUpdate: `最新更新`, tickerOutage: `故障`,
         tickerNoOutage: `没有未解决的故障`, tickerOpen: `进行中`, tickerClosed: `已关闭`,
+        tickerBird: `最近的鸟`, tickerSound: `最近的鸟鸣`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
         pluginDenied: `已拒绝`, pluginLink: `mouse-in-the-corner`,
@@ -1590,13 +1596,17 @@
         .then(function (r) { return r.ok ? r.json() : {}; })
         .then(function (d) {
           var rijen = (d && d.results) || [];
+          if (!rijen.length) return;
           var geluid = null;
           for (var i = 0; i < rijen.length; i++) {
             if (rijen[i] && rijen[i].sound) { geluid = rijen[i]; break; }
           }
-          if (!geluid) return;
-          voeg('🐦', geluid.name + (geluid.time ? ' · ' + geluid.time : '') +
-               (geluid.location ? ' · ' + geluid.location : ''), geluid.link);
+          /* de feed van waarneming.nl markeert geen geluid, dus val terug op
+             de nieuwste vogel — met een eigen label, zodat niets liegt */
+          var vogel = geluid || rijen[0];
+          voeg(t(geluid ? 'tickerSound' : 'tickerBird'),
+               vogel.name + (vogel.time ? ' · ' + vogel.time : '') +
+               (vogel.location ? ' · ' + vogel.location : ''), vogel.link);
         })
         .catch(function () {});
 
