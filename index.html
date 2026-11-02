@@ -99,9 +99,20 @@
     z-index:0;
     pointer-events:none;
   }
-  main{position:relative;z-index:1;flex:1;display:flex;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
+  main{position:relative;z-index:1;flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
   .langbar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
   .langbar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:880px}
+  /* paginanavigatie bovenaan: dezelfde pill-stijl als de taalkeuze */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   .lang-btn{
     font:inherit;font-size:.88rem;padding:.55em .95em;border-radius:999px;cursor:pointer;
     display:inline-flex;align-items:center;gap:.5em;color:var(--ink);
@@ -161,12 +172,7 @@
   .crew-link{margin:.95rem 0 0;font-size:.82rem;letter-spacing:.04em}
   .crew-link a{color:var(--sand);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--sand) 35%,transparent);padding-bottom:1px}
   .crew-link a:hover{color:var(--brass-bright);border-bottom-color:color-mix(in srgb,var(--brass-bright) 70%,transparent)}
-  .intro-row{
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.6rem;
-    align-items:start;margin:1.15rem auto 0;text-align:left;
-  }
-  .intro-row .lede{margin:0}
-  .intro-row .musings{margin:0;max-width:none}
+  .musings-row{margin:1.8rem auto 0;max-width:560px;padding:0 20px}
   .musings{
     margin:2.4rem auto 0;max-width:34rem;padding:1.15rem 1.4rem 1.25rem;text-align:left;
     background:color-mix(in srgb,var(--panel) 58%,transparent);border:1px solid color-mix(in srgb,var(--sand) 16%,transparent);border-radius:14px;
@@ -234,13 +240,15 @@
   .visits-wrap{margin:.5rem 0 0;border:1px solid color-mix(in srgb,var(--sand) 16%,transparent);border-radius:10px;background:color-mix(in srgb,var(--sea) 45%,transparent);overflow:hidden}
   .visits-wrap summary{cursor:pointer;padding:.5rem .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);list-style:none;display:flex;align-items:center;justify-content:space-between}
   .visits-wrap summary::-webkit-details-marker{display:none}
+  .visits-label{flex:1 1 auto}
+  .visits-count{font-variant-numeric:tabular-nums;letter-spacing:.06em;color:var(--faint);padding-right:.6rem}
   .visits-wrap summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--brass);border-bottom:2px solid var(--brass);transform:rotate(45deg);transition:transform .2s ease}
   .visits-wrap[open] summary::after{transform:rotate(-135deg)}
   .visits-wrap .visits{max-height:50vh;overflow-y:auto;margin:0;padding:.3rem .5rem .6rem;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--brass-bright) 35%,transparent) transparent}
   .visits-wrap .visits::-webkit-scrollbar{width:6px}
   .visits-wrap .visits::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--brass-bright) 35%,transparent);border-radius:3px}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:var(--faint-2);letter-spacing:.02em}
-  .chat{margin:1.8rem auto 0;max-width:560px;text-align:left;padding:1rem 1.1rem 1.1rem;background:color-mix(in srgb,var(--panel) 66%,transparent);border:1px solid color-mix(in srgb,var(--sand) 18%,transparent);border-radius:14px;backdrop-filter:blur(6px)}
+  .chat{margin:1.8rem auto 0;max-width:560px;align-self:flex-start;text-align:left;padding:1rem 1.1rem 1.1rem;background:color-mix(in srgb,var(--panel) 66%,transparent);border:1px solid color-mix(in srgb,var(--sand) 18%,transparent);border-radius:14px;backdrop-filter:blur(6px)}
   .chat h2{margin:0 0 .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
   .chat-log{display:flex;flex-direction:column;gap:.55rem;max-height:46vh;overflow-y:auto;padding-right:.2rem}
   .msg{margin:0;max-width:88%;padding:.55rem .78rem;border-radius:10px;font-size:.86rem;line-height:1.5}
@@ -321,7 +329,18 @@
   }
   .thanks .sym{font-size:1rem;line-height:1;margin-right:.28rem;vertical-align:-1px}
   .thanks small{font-size:.66rem;color:var(--faint);margin-left:.2rem;letter-spacing:.02em}
-  .sponsors{margin:.75rem 0 0;font-size:.66rem;color:var(--faint-2);letter-spacing:.05em}
+  .sponsor-hunt{display:flex;flex-direction:column;align-items:center;gap:.45rem;margin:.9rem auto 0}
+  .sponsors{
+    font:inherit;font-size:.72rem;font-weight:700;letter-spacing:.05em;cursor:pointer;
+    padding:.5em 1.05em;border-radius:999px;
+    color:var(--brass);border:1px solid color-mix(in srgb,var(--brass) 45%,transparent);
+    background:color-mix(in srgb,var(--brass) 10%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .sponsors:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 70%,transparent);background:color-mix(in srgb,var(--brass) 20%,transparent)}
+  .sponsors:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .sponsor-note{margin:0;max-width:32rem;font-size:.7rem;line-height:1.55;color:var(--faint)}
+  .sponsor-note[hidden]{display:none}
   .logbook{
     margin:1.4rem auto 0;max-width:44rem;padding-top:1rem;text-align:left;
     border-top:1px solid color-mix(in srgb,var(--sand) 12%,transparent);
@@ -381,50 +400,12 @@
   .panel>summary:hover h2{color:var(--brass-bright)}
   .panel h2{transition:color .15s ease}
   .radar>summary,.aboard>summary{max-width:880px;margin:0 auto}
-  @media(max-width:640px){
-    .intro-row{grid-template-columns:1fr;gap:1.2rem;text-align:center}
-    .intro-row .lede{margin:0 auto}
-    .intro-row .musings{margin:0 auto;max-width:34rem;text-align:left}
-  }
   @media(max-width:520px){
     body{background-attachment:scroll}
     .flag{width:48px;height:48px}
     .cards{margin-top:1.8rem}
     .visit{grid-template-columns:1fr}
   }
-  .chat-selector{position:relative;display:inline-flex;margin:1.2rem auto 0;max-width:560px}
-  .chat-selector-btn{font:inherit;font-size:.82rem;font-weight:700;letter-spacing:.06em;padding:.65em 1.2em;border-radius:999px;border:1px solid color-mix(in srgb,var(--brass-bright) 50%,transparent);background:color-mix(in srgb,var(--brass) 12%,transparent);color:var(--brass-bright);cursor:pointer;display:inline-flex;align-items:center;gap:.5em;transition:background .15s,border-color .15s}
-  .chat-selector-btn:hover{background:color-mix(in srgb,var(--brass) 22%,transparent);border-color:color-mix(in srgb,var(--brass-bright) 70%,transparent)}
-  .chat-selector-btn::after{content:"▾";font-size:.7em;margin-left:.2em;transition:transform .2s}
-  .chat-selector.open .chat-selector-btn::after{transform:rotate(180deg)}
-  .chat-selector-menu{position:absolute;top:calc(100% + 6px);left:0;right:auto;min-width:220px;background:color-mix(in srgb,var(--panel) 95%,transparent);border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);border-radius:12px;padding:.4rem 0;display:none;z-index:50;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
-  .chat-selector.open .chat-selector-menu{display:block}
-  .chat-selector-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .9rem;font-size:.82rem;color:var(--ink-2);cursor:pointer;transition:background .12s;text-decoration:none;border:0;background:0;width:100%;text-align:left;font:inherit}
-  .chat-selector-item:hover{background:color-mix(in srgb,var(--brass) 14%,transparent)}
-  .chat-selector-item .icon{font-size:1.1rem;width:1.6rem;text-align:center}
-  .chat-selector-item .label{flex:1}
-  .chat-selector-item .arrow{margin-left:auto;font-size:.7rem;color:var(--brass);opacity:.7}
-  /* bemanningsacties: agenda van de kapitein boven de chat-kiezer */
-  .crew-actions{display:flex;flex-direction:column;align-items:center;gap:.55rem;margin:1.2rem auto 0;max-width:560px;padding:0 20px;text-align:center}
-  .crew-actions .chat-selector{margin:0}
-  .agenda-picker{position:relative;display:inline-flex;flex-direction:column;align-items:center;width:100%}
-  .agenda-btn{white-space:nowrap}
-  .agenda-picker.open .agenda-btn::after{transform:rotate(180deg)}
-  .agenda-panel{
-    width:100%;margin-top:.55rem;padding:.75rem .9rem;text-align:left;
-    border-radius:12px;border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);
-    background:color-mix(in srgb,var(--panel) 93%,transparent);backdrop-filter:blur(8px);
-    box-shadow:0 8px 24px rgba(0,0,0,.45);
-  }
-  .agenda-panel[hidden]{display:none}
-  .agenda-status{margin:0 0 .45rem;font-size:.66rem;letter-spacing:.06em;color:var(--faint);text-transform:uppercase}
-  .agenda-text{
-    margin:0;max-height:min(48vh,320px);overflow:auto;scrollbar-width:thin;
-    font:inherit;font-size:.8rem;line-height:1.62;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;
-    scrollbar-color:color-mix(in srgb,var(--brass-bright) 35%,transparent) transparent;
-  }
-  .agenda-link{display:inline-block;margin-top:.6rem;font-size:.7rem;color:var(--brass);text-decoration:none}
-  .agenda-link:hover{color:var(--brass-bright);text-decoration:underline}
   .cta-wrap{text-align:center}
   @media(prefers-reduced-motion:reduce){.cta{transition:none}}
   /* thema-kiezer, rechtsboven */
@@ -473,6 +454,17 @@
 </head>
 <body>
 
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
+
 <nav class="langbar" aria-label="Taal">
   <div class="langbar-inner">
     <button class="lang-btn" type="button" data-lang="nl" aria-pressed="true"><span class="lf" aria-hidden="true">🇳🇱</span>Nederlands</button>
@@ -492,12 +484,82 @@
   <div class="theme-menu" id="themeMenu" role="menu" aria-label="Thema's"></div>
 </div>
 
-<div class="intro-row">
-  <p class="lede" data-i18n-html="lede">
-    Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
-    de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
-    vinden is, waar, en of het water mee- of tegenzit.
-  </p>
+<main>
+  <!-- Iva-chat: linksboven, naast de hero -->
+  <section class="chat" id="sectie-bulgaars" aria-labelledby="bg-title">
+    <h2 id="bg-title">Iva</h2>
+    <div class="chat-log" id="bg-log" aria-live="polite">
+      <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
+    </div>
+    <form class="chat-form" id="bg-form">
+      <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
+      <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+      <button type="submit" id="bg-send">Stuur</button>
+    </form>
+    <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
+  </section>
+
+  <section class="hero">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
+    <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
+    <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
+    <p class="uptime"><span data-i18n="uptimeLabel">Uptime</span> · <span id="uptime-status">…</span></p>
+    <details class="outages">
+      <summary><span data-i18n="outagesLabel">Outages</span></summary>
+      <ul id="outages-list">
+        <li>6 hour site unreachable, hmm door menselijke fout zegt de kapitein</li>
+      </ul>
+    </details>
+    <h1><span class="the">Eeps</span>Site</h1>
+    <p class="lede" data-i18n-html="lede">
+      Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
+      de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
+      vinden is, waar, en of het water mee- of tegenzit.
+    </p>
+    <div class="cta-wrap">
+      <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
+      <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
+    </div>
+  </section>
+
+</main>
+
+    <div class="cta-wrap">
+      <p class="crew-link"><a href="crew.html" data-i18n="crewLink">Naar de Crew</a></p>
+      <p class="crew-link"><a href="https://evtriest.github.io/bookmarks.html">📚 Bookmarks</a></p>
+    </div>
+
+    <div class="cards">
+      <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
+      <div class="card"><b data-i18n="card2">Vloot</b><span data-i18n="card2s">1 schip (geleend) · 0 kanonnen (belasting)</span></div>
+      <div class="card"><b data-i18n="card3">Getij</b><span data-i18n="card3s">elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
+    </div>
+
+    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
+      <a href="https://evtriest.github.io/radar.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
+        📡 Radar
+      </a>
+    </p>
+
+<!-- bezoekers: scrollbox met de laatste bezoeken van de site -->
+<div class="radar-inner" style="max-width:560px;margin:1.3rem auto 0;padding:0 20px">
+  <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
+  <details class="visits-wrap">
+    <summary><span class="visits-label" data-i18n="visitsSummary">Toon bezoeken</span><span class="visits-count" id="visits-count"></span></summary>
+    <ul class="visits" id="visits">
+      <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
+    </ul>
+  </details>
+  <p class="radar-meta" id="visits-meta"></p>
+</div>
+    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
+      <a href="https://evtriest.github.io/natuur.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
+        🌿 Natuur
+      </a>
+    </p>
+
+<!-- haiku-vierkant: onder de paginalinks, één blok voor alle vier de bemanningsleden -->
+<div class="musings-row">
   <section class="musings">
     <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
       <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-natuurgids" data-i18n="tabNatuurgids">Natuurgids</button>
@@ -545,135 +607,6 @@
     </div>
   </section>
 </div>
-
-<div class="crew-actions">
-  <div class="agenda-picker" id="agendaPicker">
-    <button class="chat-selector-btn agenda-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="agendaPanel" onclick="toggleAgenda()">
-      📅 Agenda · Kapitein
-    </button>
-    <div class="agenda-panel" id="agendaPanel" role="region" aria-label="Agenda van de kapitein" hidden>
-      <p class="agenda-status" id="agendaStatus" aria-live="polite">Agenda laden…</p>
-      <p class="agenda-text" id="agendaText"></p>
-      <a class="agenda-link" href="crew.html#sectie-kapitein">Beheren op de bemanningspagina →</a>
-    </div>
-  </div>
-
-  <div class="chat-selector" id="chatSelector">
-    <button class="chat-selector-btn" type="button" aria-haspopup="true" aria-expanded="false" onclick="toggleChatSelector()">
-      💬 Chat met de bemanning
-    </button>
-    <div class="chat-selector-menu" role="menu" id="chatSelectorMenu">
-      <!-- dynamically filled from /api/agents -->
-    </div>
-  </div>
-</div>
-
-<main>
-  <section class="hero">
-    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
-    <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
-    <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
-    <p class="uptime"><span data-i18n="uptimeLabel">Uptime</span> · <span id="uptime-status">…</span></p>
-    <details class="outages">
-      <summary><span data-i18n="outagesLabel">Outages</span></summary>
-      <ul id="outages-list">
-        <li>6 hour site unreachable, hmm door menselijke fout zegt de kapitein</li>
-      </ul>
-    </details>
-    <h1><span class="the">Eeps</span>Site</h1>
-    <div class="intro-row">
-      <p class="lede" data-i18n-html="lede">
-        Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
-        de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
-        vinden is, waar, en of het water mee- of tegenzit.
-      </p>
-      <section class="musings">
-        <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
-          <button class="haiku-tab" type="button" aria-pressed="true" aria-controls="haiku-natuurgids" data-i18n="tabNatuurgids">Natuurgids</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-kapitein" data-i18n="tabKapitein">Kapitein</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-iva" data-i18n="tabIva">Iva</button>
-          <button class="haiku-tab" type="button" aria-pressed="false" aria-controls="haiku-marta" data-i18n="tabMarta">Marta</button>
-        </div>
-        <div class="haiku">
-          <div class="haiku-piece" id="haiku-natuurgids" data-agent="natuurgids">
-            <p data-i18n-html="hNatuurgids">
-              Zeeleven en wier<br>
-              trekvogels langs de dijk<br>
-              de gids wijst de weg
-            </p>
-            <button class="haiku-new" type="button" data-agent="natuurgids" data-i18n="haikuNew">Maak een nieuwe</button>
-            <p class="haiku-status" aria-live="polite" hidden></p>
-          </div>
-          <div class="haiku-piece" id="haiku-kapitein" data-agent="kapitein" hidden>
-            <p data-i18n-html="hKapitein">
-              Kijker om de nek<br>
-              de kokkels houden zich stil<br>
-              het tij wacht op hem
-            </p>
-            <button class="haiku-new" type="button" data-agent="kapitein" data-i18n="haikuNew">Maak een nieuwe</button>
-            <p class="haiku-status" aria-live="polite" hidden></p>
-          </div>
-          <div class="haiku-piece" id="haiku-iva" data-agent="bulgaars" hidden>
-            <p data-i18n-html="hIva">
-              Джин блести в чаша<br>
-              питай за миди и прилив<br>
-              Ива отговаря
-            </p>
-            <button class="haiku-new" type="button" data-agent="bulgaars" data-i18n="haikuNew">Maak een nieuwe</button>
-            <p class="haiku-status" aria-live="polite" hidden></p>
-          </div>
-          <div class="haiku-piece" id="haiku-marta" data-agent="admin" hidden>
-            <p data-i18n-html="hMarta">
-              Backoffice op orde<br>
-              de facturen op een rij<br>
-              Marta zegt: gedaan
-            </p>
-            <button class="haiku-new" type="button" data-agent="admin" data-i18n="haikuNew">Maak een nieuwe</button>
-            <p class="haiku-status" aria-live="polite" hidden></p>
-          </div>
-        </div>
-      </section>
-
-  </section>
-
-  <section class="chat" id="sectie-bulgaars" aria-labelledby="bg-title">
-    <h2 id="bg-title">Iva</h2>
-    <div class="chat-log" id="bg-log" aria-live="polite">
-      <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
-    </div>
-    <form class="chat-form" id="bg-form">
-      <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
-      <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
-      <button type="submit" id="bg-send">Stuur</button>
-    </form>
-    <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
-  </section>
-
-</main>
-
-    <div class="cta-wrap">
-      <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
-      <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
-      <p class="crew-link"><a href="crew.html" data-i18n="crewLink">Naar de Crew</a></p>
-      <p class="crew-link"><a href="https://evtriest.github.io/bookmarks.html">📚 Bookmarks</a></p>
-    </div>
-
-    <div class="cards">
-      <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
-      <div class="card"><b data-i18n="card2">Vloot</b><span data-i18n="card2s">1 schip (geleend) · 0 kanonnen (belasting)</span></div>
-      <div class="card"><b data-i18n="card3">Getij</b><span data-i18n="card3s">elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
-    </div>
-
-    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
-      <a href="https://evtriest.github.io/radar.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
-        📡 Radar
-      </a>
-    </p>
-    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
-      <a href="https://evtriest.github.io/natuur.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
-        🌿 Natuur
-      </a>
-    </p>
 
 <details class="aboard panel">
   <summary>
@@ -724,7 +657,10 @@
   <p class="thanks">
     <span data-i18n="thanks">Dank aan</span><span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">✈️</span>Telegram</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
   </p>
-  <p class="sponsors" data-i18n="sponsors">Zoek nog sponsors voor de boot.</p>
+  <div class="sponsor-hunt">
+    <button class="sponsors" type="button" id="sponsorBtn" aria-expanded="false" aria-controls="sponsorNote" data-i18n="sponsors">Zoek nog sponsors voor de boot.</button>
+    <p class="sponsor-note" id="sponsorNote" role="status" hidden data-i18n="sponsorNote">Nog geen wallet — sponsoren kan nog niet.</p>
+  </div>
   <section class="updates" aria-labelledby="updates-title">
     <p class="updates-title" id="updates-title">Laatste updates</p>
     <ol class="updates-list">
@@ -790,6 +726,7 @@
         foot2: `© 2026 Eep · getij: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · achtergrond: Omarchy-thema “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logboek</a>`,
         thanks: `Dank aan`,
         sponsors: `Zoek nog sponsors voor de boot.`,
+        sponsorNote: `Nog geen wallet — sponsoren kan nog niet.`,
         logbookTitle: `Logboek`, logbookLoading: `git log ophalen…`,
         logbookError: `logboek even niet bereikbaar`
       },
@@ -836,6 +773,7 @@
         foot2: `© 2026 Eep · tide: Rijkswaterstaat Waterinfo (station Den Helder, Marsdiep) · background: Omarchy theme “ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">logbook</a>`,
         thanks: `Thanks to`,
         sponsors: `Still looking for sponsors for the boat.`,
+        sponsorNote: `No wallet yet — sponsoring is not possible yet.`,
         logbookTitle: `Logbook`, logbookLoading: `fetching git log…`,
         logbookError: `logbook unavailable right now`
       },
@@ -882,6 +820,7 @@
         foot2: `© 2026 Eep · Gezeit: Rijkswaterstaat Waterinfo (Station Den Helder, Marsdiep) · Hintergrund: Omarchy-Theme „ship at sea“ · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">Logbuch</a>`,
         thanks: `Dank an`,
         sponsors: `Noch Sponsoren für das Boot gesucht.`,
+        sponsorNote: `Noch keine Wallet — Spenden sind noch nicht möglich.`,
         logbookTitle: `Logbuch`, logbookLoading: `git log wird geladen…`,
         logbookError: `Logbuch gerade nicht erreichbar`
       },
@@ -928,6 +867,7 @@
         foot2: `© 2026 Eep · pływ: Rijkswaterstaat Waterinfo (stacja Den Helder, Marsdiep) · tło: motyw Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">dziennik</a>`,
         thanks: `Dziękujemy`,
         sponsors: `Nadal szukamy sponsorów dla łodzi.`,
+        sponsorNote: `Nie ma jeszcze portfela — sponsoring nie jest jeszcze możliwy.`,
         logbookTitle: `Dziennik`, logbookLoading: `pobieram git log…`,
         logbookError: `dziennik chwilowo niedostępny`
       },
@@ -974,6 +914,7 @@
         foot2: `© 2026 Eep · прилив: Rijkswaterstaat Waterinfo (станция Ден Хелдер, Марсдип) · фон: тема Omarchy „ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">дневник</a>`,
         thanks: `Благодарности на`,
         sponsors: `Още търсим спонсори за лодката.`,
+        sponsorNote: `Още няма портфейл — спонсорството още не е възможно.`,
         logbookTitle: `Дневник`, logbookLoading: `зареждане на git log…`,
         logbookError: `дневникът е недостъпен в момента`
       },
@@ -1020,6 +961,7 @@
         foot2: `© 2026 Eep · 潮汐：Rijkswaterstaat Waterinfo（登海尔德站，马斯迪普）· 背景：Omarchy 主题“ship at sea” · <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/CHANGELOG.md">航海日志</a>`,
         thanks: `感谢`,
         sponsors: `仍在为这艘船寻找赞助商。`,
+        sponsorNote: `还没有钱包 — 暂时无法赞助。`,
         logbookTitle: `日志`, logbookLoading: `正在获取 git log…`,
         logbookError: `日志暂时无法读取`
       }
@@ -1249,16 +1191,20 @@
 
     function renderVisits() {
       if (!list) return;
+      var countEl = document.getElementById('visits-count');
       if (!visitData) {
         list.innerHTML = '<li class="visit visit-note">' + esc(t('radarLoading')) + '</li>';
+        if (countEl) countEl.textContent = '';
         return;
       }
       var items = visitData.items || [];
       if (!items.length) {
         list.innerHTML = '<li class="visit visit-note">' + esc(t('radarEmpty')) + '</li>';
         if (meta) meta.textContent = '';
+        if (countEl) countEl.textContent = '0';
         return;
       }
+      if (countEl) countEl.textContent = items.length + ' / ' + visitData.count;
       list.innerHTML = items.map(function (v) {
         var seen = v.visits_from_ip > 1
           ? t('seen', { n: v.visits_from_ip, time: when(v.first_seen_ip) })
@@ -1588,37 +1534,6 @@
           grid.appendChild(card);
         });
       }
-      /* chat-kiezer: alleen wie chat heeft */
-      var chatMenu = document.getElementById('chatSelectorMenu');
-      if (!chatMenu) return;
-      chatMenu.innerHTML = '';
-      var chatters = agents.filter(function(a){ return a.chat; });
-      chatters.forEach(function(a){
-        var item = document.createElement('a');
-        item.className = 'chat-selector-item';
-        item.href = 'crew.html#sectie-' + encodeURIComponent(a.naam);
-        item.setAttribute('role', 'menuitem');
-        var icon = document.createElement('span');
-        icon.className = 'icon';
-        icon.textContent = agentIcon(a);
-        var label = document.createElement('span');
-        label.className = 'label';
-        label.textContent = agentLabel(a);
-        var arrow = document.createElement('span');
-        arrow.className = 'arrow';
-        arrow.textContent = '→';
-        item.appendChild(icon);
-        item.appendChild(label);
-        item.appendChild(arrow);
-        chatMenu.appendChild(item);
-      });
-      if (!chatters.length){
-        var empty = document.createElement('span');
-        empty.className = 'chat-selector-item';
-        empty.style.color = '#a9a291';
-        empty.textContent = 'Geen chat beschikbaar';
-        chatMenu.appendChild(empty);
-      }
     }
 
     function loadAgents(){
@@ -1630,82 +1545,17 @@
     }
 loadAgents();
 
-    /* ---- agenda van de kapitein: knop boven de chat-kiezer ----
-       De agenda staat als AGENDA.md op de VPS (dezelfde bron als op
-       crew.html); hier alleen lezen, beheren gebeurt daar. */
-    var kapiteinAgendaGehad = false;
-    var kapiteinAgendaBezig = false;
-
-    function laadKapiteinAgenda(){
-      var status = document.getElementById('agendaStatus');
-      var tekst = document.getElementById('agendaText');
-      if (!status || !tekst) return;
-      if (kapiteinAgendaBezig) return;
-      kapiteinAgendaBezig = true;
-      status.textContent = 'Agenda laden…';
-      fetch(AGENTS_API + '/api/agents/kapitein/agenda', { cache: 'no-store', headers: { 'Accept': 'application/json' } })
-        .then(function(r){ if (!r.ok) throw new Error('agenda ' + r.status); return r.json(); })
-        .then(function(d){
-          var t = (d && d.tekst) || '';
-          tekst.textContent = t.trim();
-          status.textContent = t.trim()
-            ? ((d && d.nieuw) ? 'Startersagenda — nog niet vastgelegd.' : '')
-            : 'De agenda van de kapitein is nog leeg.';
-          kapiteinAgendaGehad = true;
-        })
-        .catch(function(){
-          tekst.textContent = '';
-          status.textContent = 'Kon de agenda niet laden.';
-          kapiteinAgendaGehad = false;
-        })
-        .then(function(){ kapiteinAgendaBezig = false; });
-    }
-
-    function toggleAgenda(){
-      var picker = document.getElementById('agendaPicker');
-      var panel = document.getElementById('agendaPanel');
-      if (!picker || !panel) return;
-      var open = !picker.classList.contains('open');
-      picker.classList.toggle('open', open);
-      panel.hidden = !open;
-      picker.querySelector('.agenda-btn').setAttribute('aria-expanded', String(open));
-      if (open && !kapiteinAgendaGehad) laadKapiteinAgenda();
-    }
-
-    document.addEventListener('click', function(e){
-      var picker = document.getElementById('agendaPicker');
-      if (!picker || picker.contains(e.target)) return;
-      var panel = document.getElementById('agendaPanel');
-      picker.classList.remove('open');
-      if (panel) panel.hidden = true;
-      var knop = picker.querySelector('.agenda-btn');
-      if (knop) knop.setAttribute('aria-expanded', 'false');
-    });
-
-    document.addEventListener('keydown', function(e){
-      if (e.key !== 'Escape') return;
-      var picker = document.getElementById('agendaPicker');
-      var panel = document.getElementById('agendaPanel');
-      if (!picker || !picker.classList.contains('open')) return;
-      picker.classList.remove('open');
-      if (panel) panel.hidden = true;
-      var knop = picker.querySelector('.agenda-btn');
-      if (knop) knop.setAttribute('aria-expanded', 'false');
-    });
-
-function toggleChatSelector(){
-      const sel=document.getElementById('chatSelector');
-      const isOpen=sel.classList.contains('open');
-      sel.classList.toggle('open', !isOpen);
-      sel.querySelector('.chat-selector-btn').setAttribute('aria-expanded', !isOpen);
-    }
-    document.addEventListener('click', function(e){
-      const sel=document.getElementById('chatSelector');
-      if(sel && !sel.contains(e.target)){
-        sel.classList.remove('open');
-        sel.querySelector('.chat-selector-btn').setAttribute('aria-expanded', 'false');
-      }
-    });
+    /* ---- sponsors: knop, en eerlijk zeggen dat er nog geen wallet is ---- */
+    (function () {
+      var knop = document.getElementById('sponsorBtn');
+      var note = document.getElementById('sponsorNote');
+      if (!knop || !note) return;
+      knop.addEventListener('click', function () {
+        var open = note.hidden;
+        note.hidden = !open;
+        knop.setAttribute('aria-expanded', String(open));
+      });
+    })();
 
     /* ---- thema-kiezer ---- */
     var THEMES = [

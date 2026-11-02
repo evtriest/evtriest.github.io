@@ -1,0 +1,69 @@
+{
+  "generated": "2026-11-02",
+  "count": 5,
+  "projects": [
+    {
+      "id": "crew",
+      "path": "Crew",
+      "type": "docs/spec",
+      "status": "actief",
+      "summary": "Spec voor een crew van chat-agents (Sophie/agenda, Bulgaarse avatar, lock, watch, natuurgids) met boarding-profielen; nog geen code",
+      "updated": "2026-11-02",
+      "docs": [
+        "README.md",
+        "AGENTS.md"
+      ],
+      "git": null
+    },
+    {
+      "id": "omarchy",
+      "path": "Omarchy",
+      "type": "code (plugin)",
+      "status": "actief",
+      "summary": "*mouse-in-the-corner*: klikbare mousetrap in de hoek van het venster voor Omarchy 4. **Eigen git-repo**",
+      "updated": "2026-11-01",
+      "docs": [
+        "README.md",
+        "AGENTS.md"
+      ],
+      "git": "https://github.com/evtriest/mouse-in-the-corner.git"
+    },
+    {
+      "id": "public-nav-nl",
+      "path": "public-nav-nl",
+      "type": "code (website)",
+      "status": "actief",
+      "summary": "\"Vagination\" — Nederlandse waterweg-navigatietools",
+      "updated": "2026-10-19",
+      "docs": [
+        "AGENTS.md"
+      ],
+      "git": null
+    },
+    {
+      "id": "vps-instabox",
+      "path": "VPS_instabox",
+      "type": "code/ops",
+      "status": "actief",
+      "summary": "instabox-VPS: getijdenachtergrond Den Helder, wildpluk-site, piraten-landing `/landing`, Crew-pagina en de radar; spiegel op `evtriest.github.io`",
+      "updated": "2026-11-02",
+      "docs": [
+        "README.md",
+        "AGENTS.md"
+      ],
+      "git": null
+    },
+    {
+      "id": "waddensite",
+      "path": "waddensite",
+      "type": "code (website)",
+      "status": "actief",
+      "summary": "`waddendata.nl` statische site",
+      "updated": "2026-10-26",
+      "docs": [
+        "AGENTS.md"
+      ],
+      "git": null
+    }
+  ]
+}
