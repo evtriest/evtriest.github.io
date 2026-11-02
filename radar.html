@@ -213,7 +213,8 @@
   .visit-list{list-style:none;margin:0;padding:0 .3rem .45rem;max-height:min(45vh,340px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,255,136,.35) transparent}
   .visit-list::-webkit-scrollbar{width:6px}
   .visit-list::-webkit-scrollbar-thumb{background:rgba(0,255,136,.3);border-radius:3px}
-  .visit-row{display:grid;grid-template-columns:4.7rem minmax(0,1fr);gap:.4rem;padding:.35rem .4rem;border-top:1px solid rgba(0,255,136,.1)}
+  .visit-row{display:grid;grid-template-columns:4.7rem minmax(0,1fr);gap:.4rem;padding:.35rem .4rem;border-top:1px solid rgba(0,255,136,.1);transition:background .25s ease}
+  .visit-row.visit-hit{background:rgba(0,255,136,.18)}
   .visit-time{color:rgba(0,255,136,.65);font-size:.64rem;letter-spacing:.05em;white-space:nowrap;font-variant-numeric:tabular-nums}
   .visit-body b{color:var(--green);font-weight:400}
   .visit-body small{display:block;color:rgba(0,255,136,.45);font-size:.62rem;line-height:1.45;overflow-wrap:anywhere}
@@ -644,11 +645,27 @@ function categoryScore(query, cat){
   });
   return best;
 }
+/* bezoekers in de zoekindex: typ een IP, browser of pagina */
+var visitState = { items: [], error: '' };
+
+function visitScore(query, v){
+  var best = fuzzyScore(query, v.ip || '') * 2;
+  [v.page, v.browser, v.os, v.referrer, v.lang, v.device].forEach(function (s) {
+    var sc = fuzzyScore(query, s || '');
+    if (sc > best) best = sc;
+  });
+  return best;
+}
+
 function collectHits(query){
   var hits = blips.map(function (b) { return { kind: 'category', cat: b.item, el: b.el }; });
   MOCK_DATA.forEach(function (item) { hits.push({ kind: 'metric', item: item }); });
+  (visitState.items || []).forEach(function (v) { hits.push({ kind: 'visit', visit: v }); });
   hits.forEach(function (hit) {
-    hit.score = query ? (hit.kind === 'category' ? categoryScore(query, hit.cat) : metricScore(query, hit.item)) : 0;
+    if (!query) hit.score = 0;
+    else if (hit.kind === 'category') hit.score = categoryScore(query, hit.cat);
+    else if (hit.kind === 'visit') hit.score = visitScore(query, hit.visit);
+    else hit.score = metricScore(query, hit.item);
     hit.matched = !query || hit.score > 0;
   });
   return hits;
@@ -715,6 +732,10 @@ function applySearch(){
       name.textContent = hit.site.name;
       val.textContent = 'site';
       btn.addEventListener('click', function () { openSitePanel(hit.site); });
+    } else if (hit.kind === 'visit'){
+      name.textContent = (hit.visit.ip || '?') + ' · ' + (hit.visit.browser || 'onbekend');
+      val.textContent = 'bezoek';
+      btn.addEventListener('click', function () { toonBezoek(hit.visit); });
     } else {
       name.textContent = hit.item.name;
       val.textContent = hit.item.value + ' ' + hit.item.unit;
@@ -1008,6 +1029,39 @@ function visitTime(iso){
   return p(d.getDate()) + '-' + p(d.getMonth() + 1) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
 }
 
+/* haalt de bezoekers op voor de zoekindex (zonder de box te openen) */
+async function loadVisitIndex(){
+  try {
+    var res = await fetch(OUTAGE_API + '/api/bezoek?limit=50', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    visitState.items = (data && data.items) || [];
+    visitState.error = '';
+  } catch (err) {
+    visitState.error = err.message;
+  }
+  if (scanInput && scanInput.value.trim()) applySearch();
+}
+
+/* klik op een bezoek-treffer: box open, regel in beeld en even oplichten */
+function toonBezoek(v){
+  var box = document.getElementById('visits-box');
+  var lijst = document.getElementById('visit-list');
+  if (box) box.open = true;
+  loadVisits();
+  setTimeout(function () {
+    var rijen = lijst ? lijst.querySelectorAll('.visit-row') : [];
+    for (var i = 0; i < rijen.length; i++){
+      if (rijen[i].getAttribute('data-ip') === String(v.ip)){
+        rijen[i].scrollIntoView({ block: 'nearest' });
+        rijen[i].classList.add('visit-hit');
+        setTimeout(function (el) { return function () { el.classList.remove('visit-hit'); }; }(rijen[i]), 1800);
+        break;
+      }
+    }
+  }, 250);
+}
+
 async function loadVisits(){
   var lijst = document.getElementById('visit-list');
   var teller = document.getElementById('visits-count');
@@ -1026,7 +1080,7 @@ async function loadVisits(){
       var herkomst = v.visits_from_ip > 1
         ? v.visits_from_ip + '× vanaf dit IP'
         : 'eerste bezoek';
-      return '<li class="visit-row">' +
+      return '<li class="visit-row" data-ip="' + visitEsc(v.ip) + '">' +
         '<span class="visit-time">' + visitEsc(visitTime(v.time)) + '</span>' +
         '<span class="visit-body"><b>' + visitEsc(v.ip) + '</b> · ' + visitEsc(v.browser) + ' ' +
         visitEsc(v.os) +
@@ -1046,6 +1100,7 @@ window.addEventListener('DOMContentLoaded', function () {
   loadOutages();
   wireOutages();
   loadVisits();
+  loadVisitIndex();
   var visitsBox = document.getElementById('visits-box');
   if (visitsBox){
     visitsBox.addEventListener('toggle', function () {

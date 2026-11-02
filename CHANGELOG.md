@@ -1,7 +1,17 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.20.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.21.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.21.0 — 2026-11-02 — Bezoekers in de ticker en in de radarzoek
+
+- **`landing/index.html` — ticker**: nieuw item **bezoekers** uit `/api/bezoek?limit=50`: het aantal bezoeken van vandaag plus het totaal (`{today} vandaag · {total} totaal`). Vandaag wordt geteld uit de tijdstempels van de opgehaalde regels, dus zonder extra serverwerk. Zes talen kregen `tickerVisits` en `visitsToday`.
+- **`landing/radar.html` — zoekbalk**: de bezoekers zitten nu in de zoekindex. Typ een IP, browser, pagina of herkomst en de treffer verschijnt tussen de andere resultaten als `ip · browser — bezoek`; klikken opent de bezoekersbox, scrolt naar die regel en licht hem ~1,8 s op. De index komt uit `/api/bezoek?limit=50` (fuzzy score, IP weegt dubbel) en wordt bij openklappen en bij het laden ververst.
+
+## 🟩 1.20.1 — 2026-11-02 — Conceptpagina: zoekbalk als de radar, tags weg
+
+- **`landing/site-concept.html` — zoekbalk**: dezelfde vorm als op de radarpagina — gecentreerd, `min(520px, 100%)` breed, `›`-prefix, monospace invoer met glow bij focus en de teller rechts. De gekleurde band met onderrand is weg, zodat de balk boven de lijst zweeft zoals op de radar; op smalle schermen vult hij de breedte.
+- **Tags bovenaan weg**: de labels `site-concept` / `EepsHub` en het padlabel `concept-site/ · md-bestanden van ~/Projects` zijn uit de vensterbalk verdwenen. Alleen de vensterdots en de knop **← Landing** blijven over.
 
 ## 🟩 1.20.0 — 2026-11-02 — Ticker met getij en laatste commit
 
