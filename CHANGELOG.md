@@ -1,7 +1,11 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.23.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.23.1` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.23.1 — 2026-11-02 — Themakiezer en taalknop zakken onder de ticker
+
+- **`landing/index.html`**: de themakiezer staat op `top:44px` (mobiel `38px`) en de taalknop op `top:90px` (mobiel `82px`) in plaats van `14px`/`60px`. Daarmee liggen ze onder de tickerbalk (30px hoog, mobiel 26px) in plaats van erop.
 
 ## 🟩 1.23.0 — 2026-11-02 — Taalmenu, rode ticker bij storing, outage afgesloten
 
