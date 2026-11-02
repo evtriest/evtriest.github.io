@@ -1,7 +1,13 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.19.1` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.20.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.20.0 — 2026-11-02 — Ticker met getij en laatste commit
+
+- **`landing/index.html` — ticker**: twee items erbij. **Getij** uit `/api/tides` (`{level} cm · {trend} · HW {tijd} ({hoogte})`, bron Rijkswaterstaat) en de **laatste commit** uit de publieke GitHub-API (`sha7 · bericht`, gelinkt aan de commit). Beide in alle zes talen (`tickerTide`, `tickerCommit`).
+- **Mobiel**: op schermen tot 520px is de ticker 26px hoog met kleinere letters, minder ruimte tussen de items en een compactere tag; het Iva-paneel had die media-query al.
+- **`website/app.py`**: `/api/tides` stuurt nu CORS-headers mee, zodat de ticker ook op GitHub Pages het getij kan tonen. `__version__` → `1.20.0`.
 
 ## 🟩 1.19.1 — 2026-11-02 — Ticker valt terug op de nieuwste vogel
 

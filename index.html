@@ -125,6 +125,11 @@
   .ticker-item a{color:inherit;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--brass) 40%,transparent)}
   .ticker-item a:hover{color:var(--ink);border-bottom-color:var(--brass-bright)}
   .ticker-sep{color:color-mix(in srgb,var(--sand) 32%,transparent)}
+  @media(max-width:520px){
+    .ticker{height:26px;font-size:.66rem}
+    .ticker-tag{padding:0 .5rem;font-size:.54rem;letter-spacing:.12em}
+    .ticker-track{gap:1.1rem}
+  }
   @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(prefers-reduced-motion:reduce){
     .ticker-track{animation:none;position:static}
@@ -794,6 +799,7 @@
         tickerUpdate: `Laatste update`, tickerOutage: `Outage`,
         tickerNoOutage: `geen openstaande outage`, tickerOpen: `open`, tickerClosed: `gesloten`,
         tickerBird: `laatste vogel`, tickerSound: `laatste vogelgeluid`,
+        tickerTide: `getij`, tickerCommit: `laatste commit`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
         pluginDenied: `afgewezen`, pluginLink: `mouse-in-the-corner`,
@@ -846,6 +852,7 @@
         tickerUpdate: `Latest update`, tickerOutage: `Outage`,
         tickerNoOutage: `no open outage`, tickerOpen: `open`, tickerClosed: `closed`,
         tickerBird: `latest bird`, tickerSound: `latest bird sound`,
+        tickerTide: `tide`, tickerCommit: `latest commit`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
         pluginDenied: `rejected`, pluginLink: `mouse-in-the-corner`,
@@ -898,6 +905,7 @@
         tickerUpdate: `Letzte Änderung`, tickerOutage: `Störung`,
         tickerNoOutage: `keine offene Störung`, tickerOpen: `offen`, tickerClosed: `geschlossen`,
         tickerBird: `letzter Vogel`, tickerSound: `letzter Vogelgesang`,
+        tickerTide: `Gezeit`, tickerCommit: `letzter Commit`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
         pluginDenied: `abgelehnt`, pluginLink: `mouse-in-the-corner`,
@@ -950,6 +958,7 @@
         tickerUpdate: `Ostatnia zmiana`, tickerOutage: `Awaria`,
         tickerNoOutage: `brak otwartej awarii`, tickerOpen: `otwarta`, tickerClosed: `zamknięta`,
         tickerBird: `ostatni ptak`, tickerSound: `ostatni ptasi głos`,
+        tickerTide: `pływ`, tickerCommit: `ostatni commit`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
         pluginDenied: `odrzucony`, pluginLink: `mouse-in-the-corner`,
@@ -1002,6 +1011,7 @@
         tickerUpdate: `Последна промяна`, tickerOutage: `Авария`,
         tickerNoOutage: `няма открита авария`, tickerOpen: `отворена`, tickerClosed: `затворена`,
         tickerBird: `последна птица`, tickerSound: `последен птичи глас`,
+        tickerTide: `прилив`, tickerCommit: `последен commit`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
         pluginDenied: `отхвърлен`, pluginLink: `mouse-in-the-corner`,
@@ -1054,6 +1064,7 @@
         tickerUpdate: `最新更新`, tickerOutage: `故障`,
         tickerNoOutage: `没有未解决的故障`, tickerOpen: `进行中`, tickerClosed: `已关闭`,
         tickerBird: `最近的鸟`, tickerSound: `最近的鸟鸣`,
+        tickerTide: `潮汐`, tickerCommit: `最新提交`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
         pluginDenied: `已拒绝`, pluginLink: `mouse-in-the-corner`,
@@ -1621,7 +1632,31 @@
         })
         .catch(function () {});
 
-      Promise.all([update, vogel, outage]).then(teken);
+      var commit = fetch('https://api.github.com/repos/evtriest/evtriest.github.io/commits?per_page=1')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (d) {
+          var c = (Array.isArray(d) ? d : [])[0];
+          if (!c || !c.commit) return;
+          var sha = String(c.sha || '').slice(0, 7);
+          var boodschap = String(c.commit.message || '').split('\n')[0];
+          voeg(t('tickerCommit'), sha + ' · ' + boodschap, c.html_url);
+        })
+        .catch(function () {});
+
+      var getij = fetch(API + '/api/tides', { mode: 'cors', cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (d) {
+          if (!d || d.level == null) return;
+          var tekst = String(d.level).replace('−', '-') + ' cm' +
+                      (d.trend ? ' · ' + d.trend : '');
+          if (d.hw && d.hw.time) {
+            tekst += ' · HW ' + d.hw.time + (d.hw.height ? ' (' + d.hw.height + ')' : '');
+          }
+          voeg(t('tickerTide'), tekst);
+        })
+        .catch(function () {});
+
+      Promise.all([update, vogel, outage, commit, getij]).then(teken);
     })();
 
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
