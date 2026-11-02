@@ -11,6 +11,8 @@
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box}
+    --ink-2:#e7e2d4;
+
   html,body{height:100%}
   body{
     margin:0;color:var(--ink);font-family:var(--sans);background:var(--sea);
@@ -23,6 +25,17 @@
       linear-gradient(to bottom,rgba(4,10,16,.42),rgba(4,10,16,.06) 40%,rgba(4,10,16,.76));
     z-index:0;pointer-events:none;
   }
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   main{position:relative;z-index:1;flex:1;padding:min(7vh,52px) 20px 32px}
   .hero{text-align:center;max-width:880px;width:100%;margin:0 auto}
   .flag{width:58px;height:58px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,.55);display:block;margin:0 auto 18px}
@@ -95,9 +108,19 @@
 </style>
 </head>
 <body>
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
 <main>
   <section class="hero">
-    <img class="flag" src="/static/piracy/pirate-flag.svg" width="58" height="58" alt="Solovlag">
+    <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
     <p class="kicker">Eeps Site · bookmarks</p>
     <h1><span class="the">Kaartenkast</span>Bookmarks</h1>
     <p class="lede">De belangrijkste links voor dit project, verzameld op één plek. Sleep om te sorteren, klik op de knop om te bewerken of te verwijderen.</p>

@@ -18,6 +18,8 @@
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box}
+    --ink-2:#e7e2d4;
+
   html,body{height:100%}
   body{
     margin:0;
@@ -38,6 +40,17 @@
     z-index:0;
     pointer-events:none;
   }
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   main{position:relative;z-index:1;flex:1;padding:min(7vh,52px) 20px 32px}
   .hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;max-width:1200px;width:100%;margin:0 auto;text-align:left}
   .hero .flag{grid-column:1/-1;justify-self:center}
@@ -216,6 +229,16 @@
 </style>
 </head>
 <body>
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-box">
     <h2>🔒 Beveiligd</h2>

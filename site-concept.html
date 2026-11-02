@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concepten · EepsHub</title>
+<meta name="description" content="EepsHub concept-beheer — de md-bestanden uit concept-site lezen, bewerken, toevoegen en verwijderen.">
+<meta name="theme-color" content="#07121a">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --bg:#07121a;--panel:#0a1822;--chrome:#0d1d28;--line:#1b303d;
+    --text:#e6e1d3;--muted:#7f95a2;--dim:#4e6572;
+    --accent:#e6a23c;--accent-2:#ffc861;--on-accent:#140d04;
+    --ok:#38b06b;--danger:#e05a4f;
+  }
+  *{box-sizing:border-box}
+    --ink:#f4f1e8;--ink-2:#e7e2d4;--sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;--panel:#0a1822;
+
+  html,body{height:100%}
+  body{
+    margin:0;display:flex;flex-direction:column;height:100dvh;overflow:hidden;
+    background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,select,input,textarea{font:inherit;color:inherit}
+  a{color:var(--accent-2)}
+  :focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+
+  /* ── vensterbalk ── */
+  .window-bar{
+    flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;
+    background:var(--chrome);border-bottom:1px solid var(--line);
+  }
+  .dots{display:flex;gap:7px;flex:none}
+  .dot{width:11px;height:11px;border-radius:50%;display:block}
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .fill{flex:1;min-width:0}
+  .terug{
+    flex:none;display:inline-flex;align-items:center;gap:.4em;text-decoration:none;
+    font-family:var(--mono);font-size:.72rem;color:var(--muted);
+    border:1px solid var(--line);border-radius:6px;padding:.36em .65em;background:var(--panel);
+    transition:color .15s,border-color .15s;
+  }
+  .terug:hover{color:var(--accent-2);border-color:var(--accent)}
+
+  /* ── tokenbalk ── */
+  .tokenbar{
+    flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:9px 14px;background:var(--panel);border-bottom:1px solid var(--line);
+    font-size:.78rem;color:var(--muted);
+  }
+  .tokenbar input{
+    flex:1;min-width:200px;max-width:340px;background:var(--chrome);
+    border:1px solid var(--line);border-radius:6px;padding:.42em .6em;font-size:.8rem;
+  }
+  .tokenbar .status{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+  .tokenbar .status.ok{color:var(--ok)}
+  .tokenbar .status.fout{color:var(--danger)}
+
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+
+  /* ── werkbalk ── */
+  .toolbar{
+    flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);
+  }
+  .knop{
+    display:inline-flex;align-items:center;gap:.45em;border:1px solid var(--line);
+    border-radius:6px;background:var(--chrome);padding:.42em .8em;font-size:.8rem;
+    cursor:pointer;transition:border-color .15s,color .15s;
+  }
+  .knop:hover{border-color:var(--accent);color:var(--accent-2)}
+  .knop.primair{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+  .knop.primair:hover{color:var(--on-accent);filter:brightness(1.08)}
+  .knop.gevaar:hover{border-color:var(--danger);color:var(--danger)}
+  .knop:disabled{opacity:.45;cursor:not-allowed}
+  .teller{margin-left:auto;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+  .teller b{color:var(--accent-2);font-weight:700}
+
+  /* ── zoekbalk: precies de vorm van de radarpagina ── */
+  .scan-bar{
+    flex:none;display:flex;flex-direction:column;align-items:center;gap:.35rem;
+    padding:.6rem 14px .35rem;
+  }
+  .scan-input-wrap{
+    width:min(520px,100%);display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;
+    border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);
+    box-shadow:0 0 18px rgba(230,162,60,.12);backdrop-filter:blur(4px);
+  }
+  .scan-input-wrap::before{content:"\203A";color:var(--accent);opacity:.8}
+  .scan-input{
+    flex:1;min-width:0;background:0;border:0;outline:none;color:var(--text);
+    font-family:var(--mono);font-size:.88rem;letter-spacing:.06em;
+  }
+  .scan-input::placeholder{color:color-mix(in srgb,var(--accent) 38%,transparent);letter-spacing:.08em}
+  .scan-input-wrap:focus-within{
+    border-color:color-mix(in srgb,var(--accent-2) 70%,transparent);
+    box-shadow:0 0 22px rgba(255,200,97,.25);
+  }
+  .scan-count{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;
+    color:color-mix(in srgb,var(--accent) 70%,transparent);white-space:nowrap;
+  }
+  @media(max-width:760px){
+    .scan-bar{align-items:stretch}
+  }
+
+  /* ── melding ── */
+  .melding{
+    flex:none;margin:0;padding:9px 14px;background:rgba(230,162,60,.1);
+    border-bottom:1px solid var(--line);color:#f3dcb4;font-size:.82rem;line-height:1.45;
+  }
+  .melding[hidden]{display:none}
+  .melding.fout{background:rgba(224,90,79,.12);color:#f6c9c4}
+
+  /* ── hoofdindeling ── */
+  .werk{flex:1;min-height:0;display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr)}
+  .lijst{
+    min-height:0;overflow-y:auto;border-right:1px solid var(--line);
+    background:var(--chrome);padding:.4rem 0;scrollbar-width:thin;
+  }
+  .lijst-kop{
+    margin:.2rem .9rem .5rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .map{
+    margin:.1rem 0 .2rem;padding:.35rem .9rem;font-family:var(--mono);font-size:.68rem;
+    letter-spacing:.06em;color:var(--accent);border-top:1px solid var(--line);
+  }
+  .bestand{
+    display:block;width:100%;text-align:left;border:0;background:0;cursor:pointer;
+    padding:.4rem .9rem .4rem 1.1rem;font:inherit;font-family:var(--mono);font-size:.76rem;
+    color:var(--muted);line-height:1.4;
+  }
+  .bestand:hover{background:rgba(230,162,60,.1);color:var(--text)}
+  .bestand[aria-current="true"]{background:rgba(230,162,60,.16);color:var(--accent-2)}
+  .bestand small{display:block;color:var(--dim);font-size:.66rem;letter-spacing:.02em}
+  .leeg{padding:.8rem .9rem;font-size:.78rem;color:var(--dim)}
+
+  .editor{min-width:0;min-height:0;display:flex;flex-direction:column;}
+  .editor-kop{
+    flex:none;display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem;
+    padding:.6rem .9rem;border-bottom:1px solid var(--line);background:var(--panel);
+    font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  }
+  .editor-kop b{color:var(--accent-2);font-weight:600}
+  .editor-kop .meta{margin-left:auto;color:var(--dim);font-size:.68rem}
+  textarea{
+    flex:1;min-height:0;width:100%;resize:none;border:0;outline:none;
+    padding:1rem 1.1rem 2rem;background:var(--bg);color:var(--text);
+    font-family:var(--mono);font-size:.84rem;line-height:1.65;tab-size:2;
+  }
+  textarea:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  textarea[readonly]{color:var(--muted)}
+  @media(max-width:760px){
+    .werk{grid-template-columns:1fr;grid-template-rows:minmax(120px,34vh) minmax(0,1fr)}
+    .lijst{border-right:0;border-bottom:1px solid var(--line)}
+    .teller{margin-left:0}
+  }
+</style>
+</head>
+<body>
+
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
+<div class="window-bar">
+  <span class="dots" aria-hidden="true"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></span>
+  <span class="fill"></span>
+  <a class="terug" href="index.html">← Landing</a>
+</div>
+
+<div class="scan-bar" role="search">
+  <label class="scan-input-wrap" for="zoek">
+    <input class="scan-input" id="zoek" type="search" placeholder="zoek: gitaar, agents, concept, readme…" autocomplete="off" spellcheck="false" aria-label="Zoek in de conceptbestanden op pad">
+    <span class="scan-count" id="scanCount" aria-live="polite">0/0</span>
+  </label>
+</div>
+
+<div class="tokenbar">
+  <label for="token">Beheertoken</label>
+  <input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="agents_token.txt / AGENTS_TOKEN">
+  <button class="knop" type="button" id="tokenBewaar">Bewaar in deze tab</button>
+  <span class="status" id="tokenStatus">nog niet ingesteld</span>
+</div>
+
+<div class="toolbar">
+  <button class="knop" type="button" id="herlaad">↻ Vernieuwen</button>
+  <button class="knop" type="button" id="nieuw">+ Nieuw bestand</button>
+  <button class="knop primair" type="button" id="opslaan" disabled>Opslaan</button>
+  <button class="knop gevaar" type="button" id="verwijder" disabled>Verwijderen</button>
+  <span class="teller" id="teller"><b>0</b> bestanden</span>
+</div>
+
+<p class="melding" id="melding" hidden></p>
+
+<div class="werk">
+  <nav class="lijst" id="lijst" aria-label="Conceptbestanden">
+    <p class="lijst-kop">Bestanden</p>
+  </nav>
+
+  <section class="editor">
+    <div class="editor-kop">
+      <b id="huidigPad" style="font-weight:600">geen bestand gekozen</b>
+      <span class="meta" id="huidigMeta">kies links een bestand</span>
+    </div>
+    <textarea id="tekst" spellcheck="false" readonly aria-label="Inhoud van het concept"></textarea>
+  </section>
+</div>
+
+<script>
+(function () {
+  var TOKEN_KEY = 'eeps-concept-token';
+  var API = '';
+
+  var state = { bestanden: [], pad: '', origineel: '', nieuw: false, zoek: '' };
+
+  function $(id) { return document.getElementById(id); }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c];
+    });
+  }
+
+  function token() {
+    try { return sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function bewaarToken(t) {
+    try {
+      if (t) sessionStorage.setItem(TOKEN_KEY, t);
+      else sessionStorage.removeItem(TOKEN_KEY);
+    } catch (e) { /* opslag uit */ }
+    toonTokenStatus(t);
+  }
+
+  function toonTokenStatus(t) {
+    var el = $('tokenStatus');
+    el.className = 'status' + (t ? ' ok' : '');
+    el.textContent = t ? 'token ingesteld (deze tab)' : 'nog niet ingesteld';
+    $('token').value = '';
+  }
+
+  function melding(tekst, fout) {
+    var m = $('melding');
+    m.textContent = tekst;
+    m.className = 'melding' + (fout ? ' fout' : '');
+    m.hidden = !tekst;
+  }
+
+  function headers(json) {
+    var h = { 'X-AGENTS-Token': token() };
+    if (json) h['Content-Type'] = 'application/json';
+    return h;
+  }
+
+  /* ── lijst ───────────────────────────────────────────────────────── */
+  function laadLijst() {
+    if (!token()) {
+      melding('Vul eerst het beheertoken in — zonder token geeft de server niets vrij.', true);
+      return;
+    }
+    fetch(API + '/api/concept', { cache: 'no-store', headers: headers(false) })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, status: r.status, d: d };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          if (res.status === 401) { bewaarToken(''); }
+          throw new Error(res.d.error || ('laden mislukt (' + res.status + ')'));
+        }
+        state.bestanden = res.d.bestanden || [];
+        melding('');
+        tekenLijst();
+      })
+      .catch(function (e) { melding(e.message, true); });
+  }
+
+  function zichtbaar() {
+    var q = state.zoek.toLowerCase();
+    return state.bestanden.filter(function (b) {
+      return !q || b.pad.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function mensBytes(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1).replace('.', ',') + ' kB';
+    return (n / 1048576).toFixed(1).replace('.', ',') + ' MB';
+  }
+
+  function tekenLijst() {
+    var lijst = $('lijst');
+    var items = zichtbaar();
+    $('teller').innerHTML = '<b>' + state.bestanden.length + '</b> bestanden';
+    $('scanCount').textContent = items.length + '/' + state.bestanden.length;
+
+    lijst.innerHTML = '<p class="lijst-kop">Bestanden</p>';
+    if (!items.length) {
+      var leeg = document.createElement('p');
+      leeg.className = 'leeg';
+      leeg.textContent = state.bestanden.length
+        ? 'Geen bestand met dit pad.'
+        : 'Nog geen concepten in concept-site/.';
+      lijst.appendChild(leeg);
+      return;
+    }
+
+    var laatsteMap = null;
+    items.forEach(function (b) {
+      var delen = b.pad.split('/');
+      var naam = delen.pop();
+      var map = delen.join('/') || '.';
+      if (map !== laatsteMap) {
+        var kop = document.createElement('p');
+        kop.className = 'map';
+        kop.textContent = map + '/';
+        lijst.appendChild(kop);
+        laatsteMap = map;
+      }
+      var knop = document.createElement('button');
+      knop.type = 'button';
+      knop.className = 'bestand';
+      knop.setAttribute('aria-current', String(b.pad === state.pad));
+      var titel = document.createElement('span');
+      titel.textContent = naam;
+      var meta = document.createElement('small');
+      meta.textContent = mensBytes(b.bytes) + ' · ' + b.gewijzigd;
+      knop.appendChild(titel);
+      knop.appendChild(meta);
+      knop.addEventListener('click', function () { openBestand(b.pad); });
+      lijst.appendChild(knop);
+    });
+  }
+
+  /* ── openen ──────────────────────────────────────────────────────── */
+  function openBestand(pad) {
+    if (state.pad && isGewijzigd() &&
+        !window.confirm('Niet-opgeslagen wijzigingen weggooien en een ander bestand openen?')) {
+      return;
+    }
+    if (!token()) { melding('Vul eerst het beheertoken in.', true); return; }
+    fetch(API + '/api/concept/bestand?pad=' + encodeURIComponent(pad),
+          { cache: 'no-store', headers: headers(false) })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, status: r.status, d: d };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.d.error || ('openen mislukt (' + res.status + ')'));
+        state.pad = res.d.pad;
+        state.origineel = res.d.tekst;
+        state.nieuw = false;
+        $('tekst').value = res.d.tekst;
+        $('tekst').readOnly = false;
+        $('huidigPad').textContent = res.d.pad;
+        $('huidigMeta').textContent = mensBytes(res.d.bytes) + ' · ' + res.d.gewijzigd;
+        $('verwijder').disabled = false;
+        melding('');
+        telWijzigingen();
+        tekenLijst();
+      })
+      .catch(function (e) { melding(e.message, true); });
+  }
+
+  /* ── opslaan / nieuw / verwijderen ───────────────────────────────── */
+  function isGewijzigd() {
+    if (state.nieuw) return $('tekst').value.trim() !== '';
+    return state.pad && $('tekst').value !== state.origineel;
+  }
+
+  function telWijzigingen() {
+    $('opslaan').disabled = !isGewijzigd();
+  }
+
+  function bewaar(alsNieuw) {
+    if (!token()) { melding('Vul eerst het beheertoken in.', true); return; }
+    var pad = state.pad;
+    if (alsNieuw) pad = nieuwPad();
+    if (!pad) return;
+    var tekst = $('tekst').value;
+
+    fetch(API + '/api/concept/bestand', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: headers(true),
+      body: JSON.stringify({ pad: pad, tekst: tekst, nieuw: !!alsNieuw })
+    })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, status: r.status, d: d };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          if (res.status === 401) bewaarToken('');
+          throw new Error(res.d.error || ('opslaan mislukt (' + res.status + ')'));
+        }
+        state.pad = res.d.pad;
+        state.origineel = tekst;
+        state.nieuw = false;
+        $('tekst').readOnly = false;
+        $('huidigPad').textContent = res.d.pad;
+        melding((res.d.nieuw ? 'Nieuw bestand gemaakt: ' : 'Opgeslagen: ') +
+                res.d.pad + (res.d.backup ? ' · vorige versie als ' + res.d.backup : ''), false);
+        laadLijst();
+        telWijzigingen();
+      })
+      .catch(function (e) { melding(e.message, true); });
+  }
+
+  function nieuwPad() {
+    var invoer = window.prompt(
+      'Pad van het nieuwe bestand (mappen mogen, eindig op .md):',
+      'concept-site_concept.md');
+    if (!invoer) return '';
+    var pad = invoer.trim().replace(/^\/+/, '');
+    if (!/\.md$/i.test(pad)) pad += '.md';
+    var delen = pad.split('/');
+    var naam = delen.pop();
+    if (naam.indexOf('concept-site_') !== 0) naam = 'concept-site_' + naam;
+    delen.push(naam);
+    return delen.join('/');
+  }
+
+  function maakNieuw() {
+    if (isGewijzigd() &&
+        !window.confirm('Niet-opgeslagen wijzigingen weggooien en een nieuw bestand beginnen?')) {
+      return;
+    }
+    var pad = nieuwPad();
+    if (!pad) return;
+    state.pad = pad;
+    state.origineel = '';
+    state.nieuw = true;
+    $('tekst').value = '# ' + pad.split('/').pop().replace(/\.md$/i, '') + '\n\n';
+    $('tekst').readOnly = false;
+    $('huidigPad').textContent = pad;
+    $('huidigMeta').textContent = 'nieuw — nog niet opgeslagen';
+    $('verwijder').disabled = true;
+    melding('Nieuw bestand: pas de tekst aan en kies Opslaan.', false);
+    telWijzigingen();
+    $('tekst').focus();
+  }
+
+  function verwijder() {
+    if (!state.pad || state.nieuw) return;
+    if (!window.confirm('Verwijderen: ' + state.pad + '?\n' +
+                        'Het bestand wordt hernoemd naar .verwijderd-<tijd> op de server.')) {
+      return;
+    }
+    fetch(API + '/api/concept/verwijder', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: headers(true),
+      body: JSON.stringify({ pad: state.pad })
+    })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, status: r.status, d: d };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          if (res.status === 401) bewaarToken('');
+          throw new Error(res.d.error || ('verwijderen mislukt (' + res.status + ')'));
+        }
+        melding('Verwijderd: ' + res.d.pad + ' · bewaard als ' + res.d.backup, false);
+        state.pad = '';
+        state.origineel = '';
+        state.nieuw = false;
+        $('tekst').value = '';
+        $('tekst').readOnly = true;
+        $('huidigPad').textContent = 'geen bestand gekozen';
+        $('huidigMeta').textContent = 'kies links een bestand';
+        $('verwijder').disabled = true;
+        $('opslaan').disabled = true;
+        laadLijst();
+      })
+      .catch(function (e) { melding(e.message, true); });
+  }
+
+  /* ── bedrading ───────────────────────────────────────────────────── */
+  $('tokenBewaar').addEventListener('click', function () {
+    var t = $('token').value.trim();
+    if (!t) { melding('Vul eerst een token in.', true); return; }
+    bewaarToken(t);
+    melding('Token bewaard voor deze tab.', false);
+    laadLijst();
+  });
+
+  $('token').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('tokenBewaar').click(); }
+  });
+
+  $('zoek').addEventListener('input', function () {
+    state.zoek = this.value.trim();
+    tekenLijst();
+  });
+
+  $('zoek').addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      this.value = '';
+      state.zoek = '';
+      tekenLijst();
+    }
+  });
+
+  $('herlaad').addEventListener('click', function () {
+    if (isGewijzigd() &&
+        !window.confirm('Niet-opgeslagen wijzigingen weggooien en opnieuw laden?')) return;
+    laadLijst();
+    if (state.pad && !state.nieuw) openBestand(state.pad);
+  });
+
+  $('nieuw').addEventListener('click', maakNieuw);
+  $('verwijder').addEventListener('click', verwijder);
+  $('opslaan').addEventListener('click', function () { bewaar(false); });
+  $('tekst').addEventListener('input', telWijzigingen);
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      if (state.nieuw) bewaar(true);
+      else if (state.pad) bewaar(false);
+    }
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (isGewijzigd()) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  /* token uit een vorige sessie in deze tab hergebruiken */
+  var bestaand = token();
+  toonTokenStatus(bestaand);
+  if (bestaand) laadLijst();
+})();
+</script>
+</body>
+</html>

@@ -11,6 +11,8 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden}
+    --ink:#f4f1e8;--ink-2:#c8d6c0;--sand:#00ff88;--brass:#00cc6a;--brass-bright:#00ff88;--panel:rgba(0,20,10,.35);
+
   body{
     background:radial-gradient(ellipse at center,#0d1117 0%,#06080a 70%,#000 100%);
     color:var(--green);font-family:'Courier New',Courier,monospace;
@@ -119,7 +121,7 @@
     display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:0;
   }
   .cat{
-    pointer-events:auto;padding:1.8rem 2.2rem;border:1px solid rgba(0,255,136,.15);
+    pointer-events:auto;padding:2.4rem 3rem;border:1px solid rgba(0,255,136,.15);
     background:rgba(0,20,10,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
     overflow-y:auto;max-height:50vh;
   }
@@ -157,6 +159,17 @@
   .panel .stap p{margin:.2rem 0 0;font-size:.74rem;line-height:1.5;color:#a0b8a8;word-break:break-word}
   .panel .stap-btns{display:flex;gap:.4rem;flex-wrap:wrap}
   .panel textarea{width:100%;min-height:3rem;margin-top:.4rem;font:inherit;font-size:.76rem;color:var(--green);background:rgba(0,0,0,.28);border:1px solid rgba(0,255,136,.3);border-radius:3px;padding:.35rem .45rem}
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   /* fuzzy zoekbalk midden op de pagina */
   .scan-bar{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:8;
@@ -226,8 +239,17 @@
 </style>
 </head>
 <body>
-<a class="back" href="/">← Landing</a>
-<a class="back" href="natuur.html" style="left:7.9rem">🌿 Natuur</a>
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
+
 <div class="radar-container">
   <div class="radar" id="radar">
     <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="ring r4"></div>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tekst-editor · EepsHub</title>
+<meta name="description" content="EepsHub tekst-editor — verander alleen de tekst van de wildpluk-site, niet de code.">
+<meta name="theme-color" content="#07121a">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Code","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --bg:#07121a;--panel:#0a1822;--chrome:#0d1d28;--line:#1b303d;
+    --text:#e6e1d3;--muted:#7f95a2;--dim:#4e6572;
+    --accent:#e6a23c;--accent-2:#ffc861;--on-accent:#140d04;
+    --ok:#38b06b;--danger:#e05a4f;--shadow:0 18px 44px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+    --ink:#f4f1e8;--ink-2:#e7e2d4;--sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;--panel:#0a1822;
+
+  html,body{height:100%}
+  body{
+    margin:0;display:flex;flex-direction:column;height:100dvh;overflow:hidden;
+    background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,select,input,textarea{font:inherit;color:inherit}
+  a{color:var(--accent-2)}
+  :focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+
+  /* ── vensterbalk ── */
+  .window-bar{
+    flex:none;display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;
+    background:var(--chrome);border-bottom:1px solid var(--line);
+  }
+  .dots{display:flex;gap:7px;flex:none}
+  .dot{width:11px;height:11px;border-radius:50%;display:block}
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .brand{display:flex;align-items:baseline;gap:9px;white-space:nowrap}
+  .brand b{font-family:var(--mono);font-size:.92rem;color:var(--accent-2);letter-spacing:.02em}
+  .brand span{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+  .window-path{
+    flex:1;min-width:0;text-align:center;color:var(--dim);font-family:var(--mono);
+    font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .window-path b{color:var(--muted);font-weight:400}
+  .back{
+    flex:none;display:inline-flex;align-items:center;gap:.4em;text-decoration:none;
+    font-family:var(--mono);font-size:.72rem;color:var(--muted);
+    border:1px solid var(--line);border-radius:6px;padding:.36em .65em;background:var(--panel);
+    transition:color .15s,border-color .15s;
+  }
+  .back:hover{color:var(--accent-2);border-color:var(--accent)}
+
+  /* ── werkbalk ── */
+  .toolbar{
+    flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);
+  }
+  .toolbar label{display:flex;align-items:center;gap:.5em;font-size:.78rem;color:var(--muted)}
+  select,input[type=search]{
+    background:var(--chrome);border:1px solid var(--line);border-radius:6px;
+    padding:.42em .6em;font-size:.8rem;
+  }
+  select:hover,input[type=search]:hover{border-color:var(--dim)}
+  input[type=search]{min-width:180px;flex:1}
+  .knop{
+    display:inline-flex;align-items:center;gap:.45em;border:1px solid var(--line);
+    border-radius:6px;background:var(--chrome);padding:.42em .8em;font-size:.8rem;
+    cursor:pointer;transition:border-color .15s,color .15s;
+  }
+  .knop:hover{border-color:var(--accent);color:var(--accent-2)}
+  .knop.primair{
+    background:var(--accent);border-color:var(--accent);color:var(--on-accent);
+    font-weight:700;
+  }
+  .knop.primair:hover{color:var(--on-accent);filter:brightness(1.08)}
+  .knop:disabled{opacity:.45;cursor:not-allowed}
+  .teller{
+    margin-left:auto;font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  }
+  .teller b{color:var(--accent-2);font-weight:700}
+
+  /* ── melding + bevestiging ── */
+  .melding{
+    flex:none;display:flex;align-items:flex-start;gap:.7em;margin:0;
+    padding:9px 14px;background:rgba(230,162,60,.1);border-bottom:1px solid var(--line);
+    color:#f3dcb4;font-size:.82rem;line-height:1.45;
+  }
+  .melding[hidden]{display:none}
+  .melding-sluit{
+    margin-left:auto;flex:none;border:0;background:transparent;color:var(--muted);
+    font-size:1.1rem;line-height:1;cursor:pointer;padding:0 .2em;
+  }
+  .melding-sluit:hover{color:var(--accent-2)}
+  .dialoog{
+    position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+    padding:18px;background:rgba(4,10,15,.72);
+  }
+  .dialoog[hidden]{display:none}
+  .dialoog-venster{
+    width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;box-shadow:var(--shadow);padding:18px 18px 14px;
+  }
+  .dialoog-venster h2{margin:0 0 .5rem;font-size:1rem;color:var(--text)}
+  .dialoog-venster p{margin:0 0 1rem;font-size:.85rem;line-height:1.5;color:var(--muted)}
+  .dialoog-knoppen{display:flex;gap:.6em;justify-content:flex-end}
+
+  /* ── lijst ── */
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  main{flex:1;min-height:0;overflow:auto;padding:18px 14px 40px}
+  .wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  .veld{
+    display:block;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+    padding:10px 12px;transition:border-color .15s,background .15s;
+  }
+  .veld:focus-within{border-color:var(--accent)}
+  .veld.gewijzigd{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+  .veld-kop{
+    display:flex;align-items:center;gap:.55em;flex-wrap:wrap;margin-bottom:6px;
+    font-family:var(--mono);font-size:.68rem;color:var(--dim);
+  }
+  .veld-kop code{
+    color:var(--accent-2);background:var(--chrome);border:1px solid var(--line);
+    border-radius:4px;padding:0 .35em;
+  }
+  .veld-label{color:var(--muted);max-width:46ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chip{
+    border-radius:999px;padding:.05em .5em;font-size:.62rem;letter-spacing:.06em;
+    text-transform:uppercase;border:1px solid currentColor;
+  }
+  .chip.jinja{color:var(--muted)}
+  .chip.gewijzigd{color:var(--accent-2)}
+  .veld textarea{
+    width:100%;display:block;resize:none;overflow:hidden;
+    background:var(--chrome);border:1px solid var(--line);border-radius:6px;
+    padding:.5em .6em;font-family:var(--sans);font-size:.9rem;line-height:1.45;
+  }
+  .veld textarea:focus{outline:none;border-color:var(--accent)}
+  .oud{
+    display:block;margin-top:6px;font-size:.74rem;color:var(--dim);
+    border-left:2px solid var(--line);padding-left:.6em;
+  }
+  .oud b{color:var(--muted);font-weight:400}
+
+  /* ── statusbalk ── */
+  .status{
+    flex:none;display:flex;align-items:center;gap:10px;height:30px;padding:0 14px;
+    background:var(--chrome);border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--muted);
+  }
+  .status .lamp{width:8px;height:8px;border-radius:50%;background:var(--dim);flex:none}
+  .status.ok .lamp{background:var(--ok)}
+  .status.fout .lamp{background:var(--danger)}
+  .status.fout{color:#f2b7b1}
+  .status .pad{margin-left:auto;color:var(--dim)}
+
+  /* ── lege/uitgelegd scherm ── */
+  .uitleg{max-width:640px;margin:8vh auto;padding:0 4px;line-height:1.6;color:var(--muted)}
+  .uitleg h1{font-size:1.15rem;color:var(--text);margin:0 0 .7rem}
+  .uitleg code{font-family:var(--mono);font-size:.8rem;color:var(--accent-2)}
+  .uitleg ul{padding-left:1.1em;margin:.6rem 0}
+  .uitleg li{margin:.25rem 0}
+
+  @media(max-width:520px){
+    .window-path{display:none}
+    .toolbar{gap:8px}
+    select{max-width:44vw}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
+</nav>
+<header class="window-bar">
+  <span class="dots" aria-hidden="true"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i></span>
+  <span class="brand"><b>EepsHub</b><span>tekst-editor</span></span>
+  <span class="window-path" id="pad">~/<b>static/piracy/html-editor.html</b></span>
+  <a class="back" href="../">← Terug naar de site</a>
+</header>
+
+<div class="toolbar">
+  <label>Pagina
+    <select id="pagina">
+      <option value="index">wildpluk-site (startpagina)</option>
+      <option value="landing">Eeps Site (landing)</option>
+      <option value="crew">Crew</option>
+      <option value="bookmarks">Bookmarks</option>
+    </select>
+  </label>
+  <button class="knop" type="button" id="herlaad" title="Opnieuw inlezen vanaf de server">Herladen</button>
+  <input type="search" id="zoek" placeholder="Zoek in de tekst…" autocomplete="off">
+  <span class="teller" id="teller"><b>0</b> gewijzigd</span>
+  <button class="knop primair" type="button" id="opslaan" title="Wijzigingen naar de site schrijven (Ctrl/⌘+S)">Opslaan</button>
+  <button class="knop" type="button" id="vertalen" title="Alle talen opnieuw laten vertalen (nog niet mogelijk)">🌐 Vertalen</button>
+</div>
+
+<div class="melding" id="melding" hidden></div>
+
+<main id="main">
+  <div class="wrap" id="lijst"></div>
+</main>
+
+<div class="status" id="status">
+  <span class="lamp" aria-hidden="true"></span>
+  <span id="statusTekst">bezig…</span>
+  <span class="pad" id="statusPad"></span>
+</div>
+
+<div class="dialoog" id="dialoog" hidden>
+  <div class="dialoog-venster" role="dialog" aria-modal="true" aria-labelledby="dialoogTitel">
+    <h2 id="dialoogTitel">Alle talen opnieuw vertalen?</h2>
+    <p>De editor zou alle teksten in de zes talen (Chinees, Bulgaars, Pools, Engels,
+       Nederlands, Duits) opnieuw laten vertalen. Weet je het zeker?</p>
+    <div class="dialoog-knoppen">
+      <button class="knop" type="button" data-keuze="nee">Nee</button>
+      <button class="knop primair" type="button" data-keuze="ja">Ja</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var state = {
+    pagina: 'index',
+    bestand: '',
+    segmenten: [],       // zoals de server ze gaf (origineel)
+    waarden: [],         // wat er nu in de velden staat
+    zoek: ''
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var lijst = $('lijst');
+
+  /* ── beheertoken (zelfde als AGENTS.md bewerken) ─────────────────── */
+  function token() {
+    try {
+      return localStorage.getItem('eepshub.tekst-token')
+          || localStorage.getItem('agents.beheer-token') || '';
+    } catch (e) { return ''; }
+  }
+  function bewaarToken(t) {
+    try { localStorage.setItem('eepshub.tekst-token', t); } catch (e) {}
+  }
+
+  function zetStatus(tekst, soort) {
+    $('statusTekst').textContent = tekst;
+    var el = $('status');
+    el.className = 'status' + (soort ? ' ' + soort : '');
+  }
+
+  /* ── laden ───────────────────────────────────────────────────────── */
+  function laad(pagina) {
+    zetStatus('tekst ophalen…', '');
+    fetch('/api/tekst?pagina=' + encodeURIComponent(pagina), { cache: 'no-store' })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, d: d, status: r.status };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.d.error || ('server gaf ' + res.status));
+        state.pagina = res.d.pagina;
+        state.bestand = res.d.bestand;
+        state.segmenten = res.d.segmenten || [];
+        state.waarden = state.segmenten.map(function (s) { return s.tekst; });
+        $('pagina').value = res.d.pagina;
+        $('statusPad').textContent = res.d.bestand;
+        $('pad').innerHTML = '~/<b>' + escapeHtml(res.d.bestand) + '</b>';
+        teken();
+        zetStatus(state.segmenten.length + ' tekststukken ingelezen', 'ok');
+      })
+      .catch(function (e) {
+        state.segmenten = [];
+        state.waarden = [];
+        teken();
+        zetStatus(e.message + ' — deze editor werkt alleen op de VPS-versie van de site', 'fout');
+      });
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ── tekenen ─────────────────────────────────────────────────────── */
+  function teken() {
+    lijst.textContent = '';
+
+    if (!state.segmenten.length) {
+      var uitleg = document.createElement('div');
+      uitleg.className = 'uitleg';
+      uitleg.innerHTML =
+        '<h1>Deze pagina toont alleen tekst</h1>' +
+        '<p>De editor leest de zichtbare tekst van de wildpluk-site uit en toont elk ' +
+        'stuk als een eigen veld. Je kunt niets aan de opmaak of de code veranderen — ' +
+        'alleen de woorden.</p>' +
+        '<ul>' +
+        '<li><b>Opslaan</b> schrijft de gewijzigde stukken terug en maakt eerst een ' +
+        'backup (<code>.bak-&lt;tijd&gt;-tekst</code>).</li>' +
+        '<li>Opslaan vraagt één keer om het beheertoken ' +
+        '(<code>agents_token.txt</code> op de VPS); daarna onthoudt de browser het.</li>' +
+        '<li>Een veld met <code>jinja</code> erbij bevat sjabloonlogica ' +
+        '(<code>{{ … }}</code>); pas daar alleen de leesbare woorden aan.</li>' +
+        '</ul>';
+      lijst.appendChild(uitleg);
+      telWijzigingen();
+      return;
+    }
+
+    var zoek = state.zoek.toLowerCase();
+    state.segmenten.forEach(function (seg, i) {
+      var tekst = state.waarden[i];
+      var zichtbaar = !zoek || tekst.toLowerCase().indexOf(zoek) >= 0
+                  || (seg.label || '').toLowerCase().indexOf(zoek) >= 0;
+      if (!zichtbaar) return;
+
+      var veld = document.createElement('label');
+      veld.className = 'veld' + (tekst !== seg.tekst ? ' gewijzigd' : '');
+      veld.dataset.i = String(i);
+
+      var kop = document.createElement('span');
+      kop.className = 'veld-kop';
+      if (seg.tag) {
+        var tag = document.createElement('code');
+        tag.textContent = seg.tag;
+        kop.appendChild(tag);
+      }
+      if (seg.label) {
+        var label = document.createElement('span');
+        label.className = 'veld-label';
+        label.textContent = 'in “' + seg.label + '”';
+        kop.appendChild(label);
+      }
+      if (seg.sjabloon) {
+        var chip = document.createElement('span');
+        chip.className = 'chip jinja';
+        chip.textContent = 'jinja';
+        kop.appendChild(chip);
+      }
+      var gewijzigdChip = document.createElement('span');
+      gewijzigdChip.className = 'chip gewijzigd';
+      gewijzigdChip.textContent = 'gewijzigd';
+      gewijzigdChip.hidden = tekst === seg.tekst;
+      kop.appendChild(gewijzigdChip);
+      veld.appendChild(kop);
+
+      var area = document.createElement('textarea');
+      area.rows = 1;
+      area.value = tekst;
+      area.spellcheck = true;
+      area.addEventListener('input', function () {
+        state.waarden[i] = area.value;
+        pasHoogte(area);
+        var anders = area.value !== seg.tekst;
+        gewijzigdChip.hidden = !anders;
+        veld.classList.toggle('gewijzigd', anders);
+        telWijzigingen();
+      });
+      veld.appendChild(area);
+
+      var oud = document.createElement('span');
+      oud.className = 'oud';
+      oud.hidden = tekst === seg.tekst;
+      oud.innerHTML = '<b>was:</b> ' + escapeHtml(seg.tekst);
+      veld.appendChild(oud);
+      veld._oud = oud;
+
+      lijst.appendChild(veld);
+      pasHoogte(area);
+    });
+
+    telWijzigingen();
+  }
+
+  function pasHoogte(area) {
+    area.style.height = 'auto';
+    area.style.height = Math.max(area.scrollHeight, 34) + 'px';
+  }
+
+  function telWijzigingen() {
+    var n = 0;
+    for (var i = 0; i < state.segmenten.length; i++) {
+      if (state.waarden[i] !== state.segmenten[i].tekst) n++;
+    }
+    $('teller').innerHTML = '<b>' + n + '</b> gewijzigd';
+    $('opslaan').disabled = n === 0;
+    return n;
+  }
+
+  /* ── opslaan ─────────────────────────────────────────────────────── */
+  function opslaan() {
+    var wijzigingen = [];
+    state.segmenten.forEach(function (seg, i) {
+      if (state.waarden[i] !== seg.tekst) {
+        wijzigingen.push({ i: i, oud: seg.tekst, nieuw: state.waarden[i] });
+      }
+    });
+    if (!wijzigingen.length) {
+      zetStatus('niets te bewaren', '');
+      return;
+    }
+
+    var t = token();
+    if (!t) {
+      t = window.prompt('Beheertoken (agents_token.txt of AGENTS_TOKEN op de VPS):', '');
+      if (!t) { zetStatus('opslaan afgebroken: geen token', ''); return; }
+      bewaarToken(t);
+    }
+    if (!window.confirm(wijzigingen.length + ' tekst(en) opslaan in ' + state.bestand + '?\n' +
+                        'De huidige versie wordt eerst als backup bewaard.')) {
+      return;
+    }
+
+    zetStatus('opslaan…', '');
+    $('opslaan').disabled = true;
+    fetch('/api/tekst', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json', 'X-TEKST-Token': t },
+      body: JSON.stringify({ pagina: state.pagina, wijzigingen: wijzigingen })
+    })
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (d) {
+          return { ok: r.ok, d: d };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          if (/token/i.test(res.d.error || '')) bewaarToken('');
+          throw new Error(res.d.error || 'opslaan mislukt');
+        }
+        var n = res.d.opgeslagen || 0;
+        if (res.d.segmenten) {
+          state.segmenten = res.d.segmenten;
+          state.waarden = state.segmenten.map(function (s) { return s.tekst; });
+          teken();
+        }
+        zetStatus(n + ' tekst(en) opgeslagen · backup ' + (res.d.backup || '—'), 'ok');
+      })
+      .catch(function (e) {
+        zetStatus(e.message, 'fout');
+        telWijzigingen();
+      });
+  }
+
+  /* ── vertalen (nog niet mogelijk met de lokale AI) ───────────────── */
+  var dialoog = $('dialoog');
+  var laatsteFocus = null;
+
+  function toonMelding(tekst) {
+    var m = $('melding');
+    m.textContent = '';
+    var span = document.createElement('span');
+    span.textContent = tekst;
+    var sluit = document.createElement('button');
+    sluit.type = 'button';
+    sluit.className = 'melding-sluit';
+    sluit.setAttribute('aria-label', 'Melding sluiten');
+    sluit.textContent = '×';
+    sluit.addEventListener('click', function () { m.hidden = true; });
+    m.appendChild(span);
+    m.appendChild(sluit);
+    m.hidden = false;
+  }
+
+  function openDialoog() {
+    laatsteFocus = document.activeElement;
+    dialoog.hidden = false;
+    var ja = dialoog.querySelector('[data-keuze="ja"]');
+    if (ja) ja.focus();
+  }
+
+  function sluitDialoog(keuze) {
+    dialoog.hidden = true;
+    if (laatsteFocus && laatsteFocus.focus) laatsteFocus.focus();
+    if (!keuze) return;
+    // Bewust dezelfde boodschap bij ja én nee: de knop doet (nog) niets,
+    // want Qwen3-0.6B kan zes talen niet betrouwbaar opnieuw vertalen.
+    toonMelding('Nog niet mogelijk: alle talen opnieuw vertalen kan de lokale AI nog ' +
+                'niet. Qwen3-0.6B parafraseert en verzint tekst, dus deze knop past ' +
+                'niets aan — je huidige teksten blijven precies zoals ze zijn.');
+    zetStatus('vertalen kan nog niet met de lokale AI — niets gewijzigd', '');
+  }
+
+  dialoog.addEventListener('click', function (e) {
+    var knop = e.target.closest('[data-keuze]');
+    if (knop) { sluitDialoog(knop.dataset.keuze); return; }
+    if (e.target === dialoog) sluitDialoog('nee');   // klik naast het venster
+  });
+
+  /* ── bedrading ───────────────────────────────────────────────────── */
+  $('pagina').addEventListener('change', function () {
+    if (telWijzigingen() > 0 &&
+        !window.confirm('Niet-opgeslagen wijzigingen weggooien en een andere pagina laden?')) {
+      $('pagina').value = state.pagina;
+      return;
+    }
+    state.zoek = '';
+    $('zoek').value = '';
+    laad(this.value);
+  });
+
+  $('herlaad').addEventListener('click', function () {
+    if (telWijzigingen() > 0 &&
+        !window.confirm('Niet-opgeslagen wijzigingen weggooien en opnieuw inlezen?')) return;
+    laad(state.pagina);
+  });
+
+  $('zoek').addEventListener('input', function () {
+    state.zoek = this.value.trim();
+    teken();
+  });
+
+  $('opslaan').addEventListener('click', opslaan);
+
+  $('vertalen').addEventListener('click', openDialoog);
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      opslaan();
+    }
+    if (e.key === 'Escape' && !dialoog.hidden) {
+      e.preventDefault();
+      sluitDialoog('nee');
+    }
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (telWijzigingen() > 0) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  laad(state.pagina);
+})();
+</script>
+</body>
+</html>

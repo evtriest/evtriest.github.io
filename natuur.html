@@ -41,6 +41,17 @@
   }
   .topbar a:hover{border-color:rgba(255,200,97,.7);background:rgba(230,162,60,.16)}
   .topbar a[aria-current="page"]{border-color:rgba(255,200,97,.85);background:rgba(230,162,60,.24);color:var(--brass-bright)}
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   main{position:relative;z-index:1;width:min(1080px,100%);margin:0 auto;padding:2rem 18px 3rem;flex:1}
   .kicker{margin:0 0 .35rem;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass)}
   h1{margin:0 0 .6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.05}
@@ -124,13 +135,16 @@
 </style>
 </head>
 <body>
-
-<nav class="topbar" aria-label="Site">
-  <a href="index.html">← Landing</a>
-  <a href="radar.html">📡 Radar</a>
-  <a href="natuur.html" aria-current="page">🌿 Natuur</a>
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+  </div>
 </nav>
-
 <main>
   <p class="kicker">Den Helder · Marsdiep · Waddenkust</p>
   <h1>natuur in categorieën</h1>
