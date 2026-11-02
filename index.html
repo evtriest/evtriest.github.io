@@ -1734,6 +1734,7 @@
             if (!isNaN(t.getTime()) && t.toDateString() === dag) vandaag++;
           });
           voeg(t('tickerVisits'), t('visitsToday', { today: vandaag, total: d.count }));
+          if (d.tewaterlating) voeg(t('uptimeLabel'), uptimeText(d.tewaterlating));
         })
         .catch(function () {});
 

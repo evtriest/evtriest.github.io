@@ -827,6 +827,23 @@ function renderOutages(){
   var nieuw = document.getElementById('outage-new');
   var zoek = document.getElementById('outage-zoek');
 
+  /* open storing? Dan klapt de outages-sectie onder Stratoxbox VPS zelf open,
+     tot de bezoeker er zelf op klikt. */
+  var box = document.getElementById('outages');
+  var openAantal = (outageState.list || []).filter(function (o) {
+    return o.status !== 'gesloten';
+  }).length;
+  if (box) {
+    if (!box.dataset.bewerkt) {
+      box.dataset.bewerkt = '1';
+      var som = box.querySelector('summary');
+      if (som) som.addEventListener('click', function () { box.dataset.gebruiker = '1'; });
+    }
+    if (!box.dataset.gebruiker && box.open !== (openAantal > 0)) {
+      box.open = openAantal > 0;
+    }
+  }
+
   var licht = outageState.error ? 'onbekend' : outageLicht();
   lamp.className = 'state ' + (licht === 'groen' ? 'ok'
     : (licht === 'rood' ? 'critical' : 'warning'));

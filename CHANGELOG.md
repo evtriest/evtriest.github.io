@@ -1,7 +1,13 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.24.1` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.25.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.25.0 — 2026-11-02 — Uptime in de ticker, outages klappen open
+
+- **`landing/index.html` — ticker**: naast het getij staat nu ook de **uptime**, uit `tewaterlating` in `/api/bezoek` met dezelfde `uptimeText()` als onder de tewaterlating (label `uptimeLabel`, dus geen nieuwe sleutels).
+- **`landing/radar.html`**: staat er een storing open, dan klapt de **outages-sectie** in de categorie Stratoxbox VPS bij het laden zelf open; zodra de bezoeker op de kop klikt, neemt de pagina die keuze over (`data-gebruiker`) en blijft de stand zoals ingesteld.
+- **`website/app.py`**: `__version__` → `1.25.0`, herstart zodat de footer bijloopt.
 
 ## 🟩 1.24.1 — 2026-11-02 — Outages alleen nog op de radar
 
