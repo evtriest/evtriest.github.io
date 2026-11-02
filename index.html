@@ -102,6 +102,34 @@
   main{position:relative;z-index:1;flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
   .langbar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
   .langbar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:880px}
+  /* ticker: laatste update, laatste vogelgeluid, laatste outage — helemaal bovenaan */
+  .ticker{
+    position:sticky;top:0;z-index:90;display:flex;align-items:stretch;height:30px;flex:none;
+    background:color-mix(in srgb,#050a10 88%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--brass) 30%,transparent);
+    backdrop-filter:blur(6px);font-size:.72rem;letter-spacing:.04em;color:var(--sand);
+  }
+  .ticker-tag{
+    flex:none;display:inline-flex;align-items:center;padding:0 .7rem;
+    font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-brass);background:linear-gradient(180deg,var(--brass),var(--brass-deep));
+  }
+  .ticker-viewport{position:relative;flex:1;min-width:0;overflow:hidden}
+  .ticker-track{
+    position:absolute;left:0;top:0;display:flex;align-items:center;gap:1.6rem;height:100%;
+    white-space:nowrap;will-change:transform;animation:ticker-scroll 42s linear infinite;
+  }
+  .ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+  .ticker-item{display:inline-flex;align-items:center;gap:.4rem}
+  .ticker-item b{font-weight:700;color:var(--brass-bright);letter-spacing:.06em}
+  .ticker-item a{color:inherit;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--brass) 40%,transparent)}
+  .ticker-item a:hover{color:var(--ink);border-bottom-color:var(--brass-bright)}
+  .ticker-sep{color:color-mix(in srgb,var(--sand) 32%,transparent)}
+  @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){
+    .ticker-track{animation:none;position:static}
+    .ticker-viewport{overflow-x:auto}
+  }
   /* paginanavigatie bovenaan: dezelfde pill-stijl als de taalkeuze */
   .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
   .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
@@ -253,22 +281,48 @@
   .visits-wrap .visits::-webkit-scrollbar{width:6px}
   .visits-wrap .visits::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--brass-bright) 35%,transparent);border-radius:3px}
   .radar-meta{margin:.9rem 0 0;font-size:.72rem;color:var(--faint-2);letter-spacing:.02em}
-  .chat{margin:1.8rem auto 0;max-width:560px;align-self:flex-start;text-align:left;padding:1rem 1.1rem 1.1rem;background:color-mix(in srgb,var(--panel) 66%,transparent);border:1px solid color-mix(in srgb,var(--sand) 18%,transparent);border-radius:14px;backdrop-filter:blur(6px)}
-  .chat h2{margin:0 0 .7rem;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--brass)}
-  .chat-log{display:flex;flex-direction:column;gap:.55rem;max-height:46vh;overflow-y:auto;padding-right:.2rem}
+  /* ── Iva-chatbox: zwevende knop + paneel, zoals de natuurgids op de wildpluk-site ── */
+  .chat-fab{
+    position:fixed;right:16px;bottom:16px;z-index:1000;display:inline-flex;align-items:center;gap:.5rem;
+    border:1px solid color-mix(in srgb,var(--brass-bright) 55%,transparent);border-radius:999px;
+    padding:.7rem 1.05rem;cursor:pointer;font:inherit;font-size:.86rem;font-weight:700;color:var(--on-brass);
+    background:linear-gradient(180deg,color-mix(in srgb,var(--brass) 96%,transparent),color-mix(in srgb,var(--brass-deep) 96%,transparent));
+    box-shadow:0 8px 24px rgba(0,0,0,.45);transition:transform .15s ease,filter .15s ease;
+  }
+  .chat-fab:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .chat-fab:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .chat-panel{
+    position:fixed;right:16px;bottom:76px;z-index:1001;width:min(360px,calc(100vw - 32px));
+    height:min(480px,calc(100vh - 120px));display:none;flex-direction:column;overflow:hidden;
+    border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);border-radius:14px;
+    background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);
+    box-shadow:0 18px 50px rgba(0,0,0,.55);
+  }
+  .chat-panel.open{display:flex}
+  .chat-head{display:flex;align-items:center;gap:.5rem;padding:.6rem .75rem;background:color-mix(in srgb,var(--sea) 82%,transparent);border-bottom:1px solid color-mix(in srgb,var(--sand) 16%,transparent)}
+  .chat-head .t{font-family:var(--serif);font-size:.95rem;line-height:1.2;color:var(--ink)}
+  .chat-head .s{font-size:.66rem;letter-spacing:.02em;color:var(--faint-2)}
+  .chat-close{margin-left:auto;flex:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.85rem;color:var(--sand);background:transparent;border:1px solid color-mix(in srgb,var(--sand) 22%,transparent)}
+  .chat-close:hover{background:color-mix(in srgb,var(--brass) 24%,transparent);color:var(--ink)}
+  .chat-panel .chat-log{flex:1;display:flex;flex-direction:column;gap:.55rem;overflow-y:auto;padding:.75rem;background:color-mix(in srgb,#050a10 55%,transparent)}
   .msg{margin:0;max-width:88%;padding:.55rem .78rem;border-radius:10px;font-size:.86rem;line-height:1.5}
   .msg-bulg{background:rgba(240,128,112,.12);border:1px solid rgba(240,128,112,.26);color:#f7e0dc;align-self:flex-start}
   .msg-user{background:color-mix(in srgb,var(--brass) 92%,transparent);color:var(--on-brass);align-self:flex-end;font-weight:600}
   .msg-pending{opacity:.75;font-style:italic}
   .msg-error{border-color:rgba(224,90,79,.55);background:rgba(224,90,79,.14);color:#ffc9c1}
-  .chat-form{display:flex;gap:.5rem;margin-top:.85rem}
-  .chat-form input{flex:1;min-width:0;font:inherit;font-size:.88rem;padding:.62em .85em;border-radius:999px;border:1px solid color-mix(in srgb,var(--sand) 28%,transparent);background:color-mix(in srgb,var(--sea) 72%,transparent);color:var(--ink)}
-  .chat-form input::placeholder{color:var(--faint)}
-  .chat-form input:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}
+  .chat-form{display:flex;gap:.45rem;margin:0;padding:.5rem;border-top:1px solid color-mix(in srgb,var(--sand) 16%,transparent);background:color-mix(in srgb,var(--sea) 58%,transparent)}
+  .chat-form input,.chat-form textarea{flex:1;min-width:0;font:inherit;font-size:.88rem;padding:.62em .85em;border-radius:12px;border:1px solid color-mix(in srgb,var(--sand) 28%,transparent);background:color-mix(in srgb,var(--sea) 72%,transparent);color:var(--ink)}
+  .chat-form textarea{resize:none;height:40px;max-height:110px;line-height:1.35}
+  .chat-form input::placeholder,.chat-form textarea::placeholder{color:var(--faint)}
+  .chat-form input:focus-visible,.chat-form textarea:focus-visible{outline:2px solid var(--brass-bright);outline-offset:1px}
   .chat-form button{font:inherit;font-size:.86rem;font-weight:700;padding:.62em 1.15em;border-radius:999px;border:1px solid color-mix(in srgb,var(--brass-bright) 55%,transparent);cursor:pointer;color:var(--on-brass);background:linear-gradient(180deg,color-mix(in srgb,var(--brass) 96%,transparent),color-mix(in srgb,var(--brass-deep) 96%,transparent))}
   .chat-form button:hover{filter:brightness(1.06)}
   .chat-form button:disabled{opacity:.6;cursor:progress}
-  .chat-note{margin:.6rem 0 0;font-size:.68rem;color:var(--faint-2);letter-spacing:.02em}
+  .chat-note{margin:0;padding:.4rem .6rem;font-size:.64rem;color:var(--faint-2);letter-spacing:.02em;border-top:1px solid color-mix(in srgb,var(--sand) 12%,transparent)}
+  @media(max-width:520px){
+    .chat-fab{right:12px;bottom:12px}
+    .chat-panel{right:8px;left:8px;width:auto;bottom:70px;height:min(70vh,520px)}
+  }
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .plugin{
     display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .85rem;
@@ -459,6 +513,14 @@
 </head>
 <body>
 
+<!-- ticker: laatste update, laatste vogelgeluid, laatste outage -->
+<div class="ticker" id="ticker" aria-label="Laatste nieuws">
+  <span class="ticker-tag">Laatst</span>
+  <div class="ticker-viewport">
+    <div class="ticker-track" id="ticker-track"><span class="ticker-item">laden…</span></div>
+  </div>
+</div>
+
 <nav class="pagebar" aria-label="Pagina's">
   <div class="pagebar-inner">
     <a href="natuur.html">🌿 Natuur</a>
@@ -490,15 +552,23 @@
 </div>
 
 <main>
-  <!-- Iva-chat: linksboven, naast de hero -->
-  <section class="chat" id="sectie-bulgaars" aria-labelledby="bg-title">
-    <h2 id="bg-title">Iva</h2>
+  <!-- Iva-chatbox: zelfde vorm als de natuurgids op de wildpluk-site (zwevende knop + paneel) -->
+  <button class="chat-fab" id="ivaFab" type="button" aria-expanded="false"
+          aria-controls="sectie-bulgaars"><span aria-hidden="true">🇧🇬</span> Vraag het Iva</button>
+  <section class="chat-panel" id="sectie-bulgaars" role="dialog" aria-modal="false" aria-labelledby="bg-title">
+    <div class="chat-head">
+      <div>
+        <div class="t" id="bg-title">🇧🇬 Iva</div>
+        <div class="s">AI op deze server · kan fouten maken</div>
+      </div>
+      <button class="chat-close" type="button" id="ivaClose" aria-label="Sluiten">✕</button>
+    </div>
     <div class="chat-log" id="bg-log" aria-live="polite">
       <p class="msg msg-bulg">Здравейте! Тук можете да попитате за миди, риби, гъби и прилива край Ден Хелдер — отговорите са на български.</p>
     </div>
     <form class="chat-form" id="bg-form">
       <label class="sr-only" for="bg-input">Je vraag in het Bulgaars</label>
-      <input id="bg-input" name="q" type="text" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…">
+      <textarea id="bg-input" name="q" rows="1" autocomplete="off" maxlength="500" lang="bg" placeholder="Задайте своя въпрос…"></textarea>
       <button type="submit" id="bg-send">Stuur</button>
     </form>
     <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
@@ -721,6 +791,8 @@
         visitsSummary: `Toon bezoeken`,
         visitsFirst: `alleen eerste bezoek`, visitsIp: `filter ip…`,
         visitsNoMatch: `Geen bezoeken die passen.`,
+        tickerUpdate: `Laatste update`, tickerOutage: `Outage`,
+        tickerNoOutage: `geen openstaande outage`, tickerOpen: `open`, tickerClosed: `gesloten`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
         pluginDenied: `afgewezen`, pluginLink: `mouse-in-the-corner`,
@@ -770,6 +842,8 @@
         visitsSummary: `Show visits`,
         visitsFirst: `first visits only`, visitsIp: `filter ip…`,
         visitsNoMatch: `No visits match.`,
+        tickerUpdate: `Latest update`, tickerOutage: `Outage`,
+        tickerNoOutage: `no open outage`, tickerOpen: `open`, tickerClosed: `closed`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
         pluginDenied: `rejected`, pluginLink: `mouse-in-the-corner`,
@@ -819,6 +893,8 @@
         visitsSummary: `Besuche anzeigen`,
         visitsFirst: `nur erste Besuche`, visitsIp: `IP filtern…`,
         visitsNoMatch: `Keine passenden Besuche.`,
+        tickerUpdate: `Letzte Änderung`, tickerOutage: `Störung`,
+        tickerNoOutage: `keine offene Störung`, tickerOpen: `offen`, tickerClosed: `geschlossen`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
         pluginDenied: `abgelehnt`, pluginLink: `mouse-in-the-corner`,
@@ -868,6 +944,8 @@
         visitsSummary: `Pokaż wizyty`,
         visitsFirst: `tylko pierwsze wizyty`, visitsIp: `filtruj IP…`,
         visitsNoMatch: `Brak pasujących wizyt.`,
+        tickerUpdate: `Ostatnia zmiana`, tickerOutage: `Awaria`,
+        tickerNoOutage: `brak otwartej awarii`, tickerOpen: `otwarta`, tickerClosed: `zamknięta`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
         pluginDenied: `odrzucony`, pluginLink: `mouse-in-the-corner`,
@@ -917,6 +995,8 @@
         visitsSummary: `Покажи посещения`,
         visitsFirst: `само първи посещения`, visitsIp: `филтър по IP…`,
         visitsNoMatch: `Няма съвпадащи посещения.`,
+        tickerUpdate: `Последна промяна`, tickerOutage: `Авария`,
+        tickerNoOutage: `няма открита авария`, tickerOpen: `отворена`, tickerClosed: `затворена`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
         pluginDenied: `отхвърлен`, pluginLink: `mouse-in-the-corner`,
@@ -966,6 +1046,8 @@
         visitsSummary: `显示访客`,
         visitsFirst: `只看首次访问`, visitsIp: `筛选 IP…`,
         visitsNoMatch: `没有匹配的访客。`,
+        tickerUpdate: `最新更新`, tickerOutage: `故障`,
+        tickerNoOutage: `没有未解决的故障`, tickerOpen: `进行中`, tickerClosed: `已关闭`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
         pluginDenied: `已拒绝`, pluginLink: `mouse-in-the-corner`,
@@ -1474,7 +1556,86 @@
     applyLang('nl');
     loadPluginStatus();
 
+    /* ---- ticker bovenaan: laatste update, laatste vogelgeluid, laatste outage ---- */
+    (function ticker() {
+      var track = document.getElementById('ticker-track');
+      if (!track) return;
+      var onderdelen = [];
+
+      function voeg(label, tekst, href) {
+        if (!tekst) return;
+        var body = href
+          ? '<a href="' + esc(href) + '" rel="noopener">' + esc(tekst) + '</a>'
+          : esc(tekst);
+        onderdelen.push('<span class="ticker-item"><b>' + esc(label) + '</b> ' + body + '</span>');
+      }
+
+      function teken() {
+        if (!onderdelen.length) return;
+        var scheiding = '<span class="ticker-sep" aria-hidden="true">✳</span>';
+        var rij = onderdelen.join(scheiding);
+        track.innerHTML = rij + scheiding + rij;   // tweede kopie: naadloze loop
+      }
+
+      var update = fetch('CHANGELOG.md', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.text() : ''; })
+        .then(function (md) {
+          var regel = (md || '').split('\n').filter(function (l) { return /^##\s+/.test(l); })[0] || '';
+          var tekst = regel.replace(/^##\s+/, '').replace(/\*\*/g, '').replace(/[🟩🟨🟥🟦]/g, '').trim();
+          if (tekst) voeg(t('tickerUpdate'), tekst);
+        })
+        .catch(function () {});
+
+      var vogel = fetch(API + '/api/waarnemingen?group=1&limit=50', { mode: 'cors', cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (d) {
+          var rijen = (d && d.results) || [];
+          var geluid = null;
+          for (var i = 0; i < rijen.length; i++) {
+            if (rijen[i] && rijen[i].sound) { geluid = rijen[i]; break; }
+          }
+          if (!geluid) return;
+          voeg('🐦', geluid.name + (geluid.time ? ' · ' + geluid.time : '') +
+               (geluid.location ? ' · ' + geluid.location : ''), geluid.link);
+        })
+        .catch(function () {});
+
+      var outage = fetch(API + '/api/outages', { mode: 'cors', cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (d) {
+          var lijst = (d && d.outages) || [];
+          var laatste = lijst[0];
+          if (!laatste) { voeg(t('tickerOutage'), t('tickerNoOutage')); return; }
+          voeg(t('tickerOutage'), laatste.titel +
+               (laatste.status === 'gesloten' ? ' · ' + t('tickerClosed') : ' · ' + t('tickerOpen')));
+        })
+        .catch(function () {});
+
+      Promise.all([update, vogel, outage]).then(teken);
+    })();
+
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
+
+    /* Iva-paneel open/dicht, net als de gids-chat op de wildpluk-site */
+    (function ivaPaneel() {
+      var fab = document.getElementById('ivaFab');
+      var paneel = document.getElementById('sectie-bulgaars');
+      var sluit = document.getElementById('ivaClose');
+      if (!fab || !paneel) return;
+      function zet(open) {
+        paneel.classList.toggle('open', open);
+        fab.setAttribute('aria-expanded', String(open));
+        if (open) {
+          var veld = document.getElementById('bg-input');
+          if (veld) veld.focus();
+        }
+      }
+      fab.addEventListener('click', function () { zet(!paneel.classList.contains('open')); });
+      if (sluit) sluit.addEventListener('click', function () { zet(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && paneel.classList.contains('open')) zet(false);
+      });
+    })();
 
     /* ---- bemanning: één dynamische lijst, altijd uit de bron ----
        Volgorde van bronnen: de live API op de VPS, dezelfde route op deze

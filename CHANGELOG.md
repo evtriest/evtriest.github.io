@@ -1,7 +1,13 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.18.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.19.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.19.0 — 2026-11-02 — Ticker bovenaan en Iva als zwevend paneel
+
+- **`landing/index.html` — ticker**: helemaal bovenaan een smalle balk (`position:sticky`) met een loop van drie dingen: de **laatste update** (eerste kop uit `CHANGELOG.md`), het **laatste vogelgeluid** (`/api/waarnemingen?group=1`, eerste waarneming met geluid, met tijd en plek) en de **laatste outage** (`/api/outages`, open of gesloten). Stopt met schuiven bij hover/focus en bij `prefers-reduced-motion`; de inhoud wordt één keer gedupliceerd voor een naadloze loop. Vijf nieuwe i18n-sleutels in alle zes talen.
+- **`landing/index.html` — Iva-chatbox**: de chat staat niet meer als blok in de pagina maar als **zwevende knop rechtsonder + paneel**, net als de natuurgids-chat op de wildpluk-site: kop met naam en “AI op deze server · kan fouten maken”, sluitknop, scrollbaar log, textarea met **Stuur** en Escape om te sluiten. De ids (`bg-form`, `bg-input`, `bg-send`, `bg-log`) zijn gelijk gebleven, dus `frontChat` werkt ongewijzigd.
+- **`website/app.py`**: `/api/waarnemingen` stuurt nu CORS-headers mee, zodat de ticker ook op GitHub Pages het vogelgeluid kan ophalen.
 
 ## 🟩 1.18.0 — 2026-11-02 — Bezoekers op de radar, filter en leesbaar logboek
 
