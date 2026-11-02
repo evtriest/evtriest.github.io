@@ -1,7 +1,13 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.22.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.23.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.23.0 — 2026-11-02 — Taalmenu, rode ticker bij storing, outage afgesloten
+
+- **`landing/index.html` — taalkeuze als menu**: onder de themakiezer staat nu één klein rond knopje (🌐); klikken opent het taallijstje, een klik ernaast of Escape sluit het en na het kiezen van een taal klapt het dicht. Zelfde kleine `.56rem`-knoppen als eerst.
+- **`landing/index.html` — ticker waarschuwt**: zolang er een outage open staat krijgt de balk `.ticker-alert` (rode onderrand, rode tag, rode labels) en begint het outage-item met ⚠️. Zodra alles gesloten is, verdwijnt dat weer — de klasse wordt bij elke verversing opnieuw gezet.
+- **Outage “Iva-chat: Failed to fetch” afgesloten** via de driestaps-afhandeling van de radar: AI-commentaar, mens-stap en akkoord → stoplicht weer groen.
 
 ## 🟩 1.22.0 — 2026-11-02 — Iva-chat hersteld, taalkeuze klein onder het thema
 
