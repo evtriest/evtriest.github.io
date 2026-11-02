@@ -139,6 +139,24 @@
   .cat summary::after{content:"▾";margin-left:.4rem;font-size:.6rem;transition:transform .2s}
   .cat details[open] summary::after{transform:rotate(180deg)}
   .cat .outage{font-size:.68rem;color:rgba(0,255,136,.65);margin:.3rem 0;padding-left:.6rem;border-left:2px solid rgba(0,255,136,.2)}
+  /* outages: stoplicht per site + driestaps afsluiting */
+  .cat .outage-item{display:flex;gap:.4rem;align-items:baseline;cursor:pointer}
+  .cat .outage-item:hover{color:var(--green)}
+  .cat .lamp{width:8px;height:8px;border-radius:50%;flex:none;box-shadow:0 0 6px currentColor}
+  .cat .lamp.groen{background:var(--green);color:var(--green)}
+  .cat .lamp.rood{background:var(--red);color:var(--red);animation:blip-pulse 1.2s infinite}
+  .cat .lamp.onbekend{background:var(--amber);color:var(--amber)}
+  .cat .outage-form{display:flex;flex-direction:column;gap:.3rem;margin-top:.4rem}
+  .cat .outage-form input,.cat .outage-form textarea{width:100%;font:inherit;font-size:.68rem;color:var(--green);background:rgba(0,0,0,.28);border:1px solid rgba(0,255,136,.3);border-radius:3px;padding:.3rem .4rem}
+  .cat .outage-form textarea{min-height:3.4rem;resize:vertical}
+  .outage-btn{font:inherit;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);background:0;border:1px solid rgba(0,255,136,.35);border-radius:3px;padding:.28rem .48rem;cursor:pointer;margin-top:.35rem;align-self:flex-start}
+  .outage-btn:hover{background:rgba(0,255,136,.12)}
+  .panel .stap{display:flex;gap:.5rem;padding:.4rem 0;font-size:.8rem;border-bottom:1px solid rgba(0,255,136,.1)}
+  .panel .stap .num{flex:none;width:1rem;opacity:.6}
+  .panel .stap .todo{opacity:.45}
+  .panel .stap p{margin:.2rem 0 0;font-size:.74rem;line-height:1.5;color:#a0b8a8;word-break:break-word}
+  .panel .stap-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+  .panel textarea{width:100%;min-height:3rem;margin-top:.4rem;font:inherit;font-size:.76rem;color:var(--green);background:rgba(0,0,0,.28);border:1px solid rgba(0,255,136,.3);border-radius:3px;padding:.35rem .45rem}
   /* fuzzy zoekbalk boven de radar */
   .scan-bar{
     position:fixed;top:3.2rem;left:50%;transform:translateX(-50%);z-index:8;
@@ -229,6 +247,21 @@
     <p><b>Schijf:</b> 3.4 / 19.5 GB</p>
     <p><b>Latency:</b> 12ms</p>
     <p><b>Uptime:</b> 99.8%</p>
+    <p><span class="state" id="lamp-wildpluk"></span><b>Wildpluk</b> — <span id="wildpluk-sub">status laden…</span></p>
+    <details id="outages">
+      <summary>Outages (<span id="outage-count">0</span>)</summary>
+      <div id="outage-list"></div>
+      <span id="outage-zoek" hidden></span>
+      <p class="outage" id="outage-note" hidden></p>
+      <button class="outage-btn" id="outage-new" type="button" hidden>＋ Nieuwe outage</button>
+      <form class="outage-form" id="outage-form" hidden>
+        <input id="outage-titel" type="text" placeholder="titel (kort)" maxlength="120" required>
+        <textarea id="outage-tekst" placeholder="omschrijving in maximaal 3 zinnen" maxlength="480" required></textarea>
+        <input id="outage-duur" type="number" min="1" max="1440" placeholder="duur in minuten">
+        <button class="outage-btn" type="submit">Melden</button>
+        <p class="outage" id="outage-form-fout" hidden></p>
+      </form>
+    </details>
   </div>
 
   <!-- 3: GitHub -->
@@ -689,7 +722,253 @@ function initScanSearch(){
   });
   loadLandingText();
 }
-window.addEventListener('DOMContentLoaded', function () { init(); initScanSearch(); });
+/* ---- outages: stoplicht voor Wildpluk, driestaps afsluiting ---- */
+var OUTAGE_API = location.hostname.indexOf('github.io') !== -1
+  ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
+  : '';
+var outageState = { sites: [], list: [], error: '' };
+
+function outageFmtTime(iso){
+  if (!iso) return '—';
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleString('nl-NL', { day: 'numeric', month: 'short',
+    hour: '2-digit', minute: '2-digit' });
+}
+
+function outageLicht(){
+  var site = outageState.sites.filter(function (s) { return s.id === 'wildpluk'; })[0];
+  return site ? site.licht : 'onbekend';
+}
+
+async function loadOutages(){
+  try {
+    var res = await fetch(OUTAGE_API + '/api/outages', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    outageState.sites = data.sites || [];
+    outageState.list = data.outages || [];
+    outageState.error = '';
+  } catch (err) {
+    outageState.error = err.message;
+  }
+  renderOutages();
+}
+
+async function outagePost(path, body){
+  var res = await fetch(OUTAGE_API + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  var data = await res.json().catch(function () { return {}; });
+  if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
+function renderOutages(){
+  var list = document.getElementById('outage-list');
+  if (!list) return;
+  var lamp = document.getElementById('lamp-wildpluk');
+  var sub = document.getElementById('wildpluk-sub');
+  var note = document.getElementById('outage-note');
+  var nieuw = document.getElementById('outage-new');
+  var zoek = document.getElementById('outage-zoek');
+
+  var licht = outageState.error ? 'onbekend' : outageLicht();
+  lamp.className = 'state ' + (licht === 'groen' ? 'ok'
+    : (licht === 'rood' ? 'critical' : 'warning'));
+  sub.textContent = outageState.error ? 'status onbekend'
+    : (licht === 'groen' ? 'online' : 'storing');
+  document.getElementById('outage-count').textContent = outageState.list.length;
+  nieuw.hidden = !!outageState.error;
+  note.hidden = !outageState.error;
+  if (outageState.error){
+    note.textContent = 'Meldingen niet bereikbaar (' + outageState.error +
+      '). Alleen lezen.';
+  }
+
+  list.innerHTML = '';
+  if (!outageState.list.length && !outageState.error){
+    var leeg = document.createElement('p');
+    leeg.className = 'outage';
+    leeg.textContent = 'Geen outages gemeld.';
+    list.appendChild(leeg);
+  }
+  var zoekdelen = [];
+  outageState.list.forEach(function (o) {
+    zoekdelen.push(o.titel + ' ' + o.omschrijving);
+    var item = document.createElement('div');
+    item.className = 'outage outage-item';
+    var dot = document.createElement('span');
+    dot.className = 'lamp ' + (o.status === 'gesloten' ? 'groen' : 'rood');
+    var titel = document.createElement('span');
+    titel.textContent = o.titel;
+    var when = document.createElement('span');
+    when.style.opacity = '.55';
+    when.style.fontSize = '.6rem';
+    when.textContent = outageFmtTime(o.start);
+    item.appendChild(dot);
+    item.appendChild(titel);
+    item.appendChild(when);
+    item.addEventListener('click', function (e) {
+      e.stopPropagation();
+      openOutagePanel(o);
+    });
+    list.appendChild(item);
+  });
+  // de omschrijvingen meelopen in de fuzzy zoekbalk van de radar
+  if (zoek) zoek.textContent = zoekdelen.join(' ');
+}
+
+function outageMetric(key, value){
+  var row = document.createElement('div');
+  row.className = 'metric';
+  var label = document.createElement('b');
+  label.textContent = key;
+  var span = document.createElement('span');
+  span.textContent = value;
+  row.appendChild(label);
+  row.appendChild(span);
+  return row;
+}
+
+function outageStapRij(num, titel, tekst){
+  var row = document.createElement('div');
+  row.className = 'stap';
+  var n = document.createElement('span');
+  n.className = 'num';
+  n.textContent = num;
+  var body = document.createElement('div');
+  var head = document.createElement('span');
+  head.className = tekst ? '' : 'todo';
+  head.textContent = titel + (tekst ? ' ✓' : '');
+  body.appendChild(head);
+  if (tekst){
+    var p = document.createElement('p');
+    p.textContent = tekst;
+    body.appendChild(p);
+  }
+  row.appendChild(n);
+  row.appendChild(body);
+  return row;
+}
+
+function outageBtn(tekst, fn){
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'outage-btn';
+  b.textContent = tekst;
+  b.addEventListener('click', fn);
+  return b;
+}
+
+function openOutagePanel(o){
+  document.getElementById('panel-name').textContent = o.titel;
+  var statusEl = document.getElementById('panel-status');
+  var gesloten = o.status === 'gesloten';
+  statusEl.className = 'status ' + (gesloten ? 'ok' : 'critical');
+  statusEl.textContent = gesloten ? 'gesloten · groen' : 'open · rood';
+
+  var metrics = document.getElementById('panel-metrics');
+  metrics.innerHTML = '';
+  [['Site', 'Wildpluk'],
+   ['Start', outageFmtTime(o.start)],
+   ['Duur', o.duur_min ? o.duur_min + ' minuten' : '—'],
+   ['Omschrijving', o.omschrijving],
+   ['Gesloten', o.gesloten ? outageFmtTime(o.gesloten) : '—']].forEach(function (pair) {
+    metrics.appendChild(outageMetric(pair[0], pair[1]));
+  });
+
+  metrics.appendChild(outageStapRij('1', 'AI-commentaar', o.ai || ''));
+  metrics.appendChild(outageStapRij('2', 'Mens', o.mens || ''));
+  metrics.appendChild(outageStapRij('3', 'Akkoord', o.akkoord === null ? ''
+    : (o.akkoord ? 'ja — stoplicht groen' : 'nee — blijft open')));
+
+  if (!gesloten){
+    if (!o.ai){
+      metrics.appendChild(outageBtn('AI-commentaar ophalen', function () {
+        stuurOutageStap(o, { stap: 'ai' });
+      }));
+    }
+    if (o.ai){
+      var veld = document.createElement('textarea');
+      veld.placeholder = 'wat zag of deed de mens? (verplicht)';
+      veld.value = o.mens || '';
+      metrics.appendChild(veld);
+      metrics.appendChild(outageBtn('Mens-stap opslaan', function () {
+        if (!veld.value.trim()){ veld.focus(); return; }
+        stuurOutageStap(o, { stap: 'mens', tekst: veld.value });
+      }));
+    }
+    if (o.ai && o.mens){
+      var rij = document.createElement('div');
+      rij.className = 'stap-btns';
+      rij.appendChild(outageBtn('Akkoord: ja, groen', function () {
+        stuurOutageStap(o, { stap: 'akkoord', akkoord: true });
+      }));
+      rij.appendChild(outageBtn('Nee, blijft open', function () {
+        stuurOutageStap(o, { stap: 'akkoord', akkoord: false });
+      }));
+      metrics.appendChild(rij);
+    }
+  }
+  panel.classList.add('open');
+}
+
+async function stuurOutageStap(o, body){
+  try {
+    var data = await outagePost('/api/outages/' + o.id + '/stap', body);
+    outageState.sites = data.sites || outageState.sites;
+    outageState.list = data.outages || outageState.list;
+    outageState.error = '';
+    renderOutages();
+    var bij = outageState.list.filter(function (x) { return x.id === o.id; })[0];
+    if (bij) openOutagePanel(bij);
+  } catch (err) {
+    alert('Mislukt: ' + err.message);
+  }
+}
+
+function wireOutages(){
+  var nieuw = document.getElementById('outage-new');
+  var form = document.getElementById('outage-form');
+  var fout = document.getElementById('outage-form-fout');
+  if (!nieuw || !form) return;
+  nieuw.addEventListener('click', function () {
+    form.hidden = !form.hidden;
+    if (!form.hidden) document.getElementById('outage-titel').focus();
+  });
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var duur = parseInt(document.getElementById('outage-duur').value, 10);
+    try {
+      var data = await outagePost('/api/outages', {
+        site: 'wildpluk',
+        titel: document.getElementById('outage-titel').value,
+        omschrijving: document.getElementById('outage-tekst').value,
+        duur_min: isNaN(duur) ? 0 : duur
+      });
+      outageState.sites = data.sites || outageState.sites;
+      outageState.list = data.outages || outageState.list;
+      outageState.error = '';
+      form.reset();
+      form.hidden = true;
+      fout.hidden = true;
+      renderOutages();
+    } catch (err) {
+      fout.hidden = false;
+      fout.textContent = err.message;
+    }
+  });
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  init();
+  initScanSearch();
+  loadOutages();
+  wireOutages();
+});
 </script>
 </body>
 </html>
