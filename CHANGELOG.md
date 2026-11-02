@@ -1,7 +1,11 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.23.1` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.24.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.24.0 — 2026-11-02 — Uptime onder de tewaterlating
+
+- **`landing/index.html`**: de regel **Uptime** onder de tewaterlating blijft niet langer op `…` staan. `renderLaunch()` vult nu `#uptime-status` met de tijd sinds het eerste bezoek dat de site vastlegde (`data.tewaterlating` uit `/api/bezoek`), als `3 dagen` / `4 uur` / `12 minuten`. De tekst komt uit `Intl.NumberFormat` in de gekozen taal (geen nieuwe i18n-sleutels) en de tooltip toont de exacte tewaterlatingsdatum.
 
 ## 🟩 1.23.1 — 2026-11-02 — Themakiezer en taalknop zakken onder de ticker
 

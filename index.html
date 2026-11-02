@@ -1298,12 +1298,42 @@
       }
     }
 
+    /* uptime: hoe lang de site al te water ligt, gerekend vanaf het eerste
+       bezoek dat de site ooit vastlegde (data.tewaterlating uit /api/bezoek) */
+    function uptimeText(iso) {
+      var start = new Date(iso);
+      if (isNaN(start.getTime())) return '…';
+      var ms = Math.max(0, Date.now() - start.getTime());
+      function eenheid(n, unit) {
+        try {
+          return new Intl.NumberFormat(current, {
+            style: 'unit', unit: unit, unitDisplay: 'long'
+          }).format(n);
+        } catch (err) {
+          return n + ' ' + (unit === 'day' ? 'd' : (unit === 'hour' ? 'u' : 'min'));
+        }
+      }
+      if (ms >= 86400000) return eenheid(Math.floor(ms / 86400000), 'day');
+      if (ms >= 3600000) return eenheid(Math.floor(ms / 3600000), 'hour');
+      return eenheid(Math.max(1, Math.floor(ms / 60000)), 'minute');
+    }
+
     function renderLaunch() {
       var el = document.getElementById('launch-date');
-      if (!el) return;
-      if (!firstVisit) { el.textContent = '…'; el.removeAttribute('datetime'); return; }
-      el.textContent = stamp(firstVisit);
-      el.setAttribute('datetime', firstVisit);
+      var up = document.getElementById('uptime-status');
+      if (!firstVisit) {
+        if (el) { el.textContent = '…'; el.removeAttribute('datetime'); }
+        if (up) { up.textContent = '…'; up.removeAttribute('title'); }
+        return;
+      }
+      if (el) {
+        el.textContent = stamp(firstVisit);
+        el.setAttribute('datetime', firstVisit);
+      }
+      if (up) {
+        up.textContent = uptimeText(firstVisit);
+        up.title = stamp(firstVisit);
+      }
     }
 
     function renderLogbook() {
