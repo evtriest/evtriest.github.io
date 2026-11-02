@@ -347,6 +347,27 @@
   .gitlog span{overflow-wrap:anywhere}
   .gitlog small{display:block;color:var(--faint-2);font-size:.66rem}
   .gitlog-note{display:block;color:var(--faint-2);grid-template-columns:none}
+  /* laatste updates: korte, scrollbare lijst in de footer */
+  .updates{
+    margin:1.1rem auto 0;max-width:44rem;text-align:left;
+    border:1px solid rgba(232,220,192,.18);border-radius:6px;
+    background:rgba(0,0,0,.18);padding:.75rem .9rem;
+  }
+  .updates-title{
+    font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--brass);margin:0 0 .5rem;max-width:none;
+  }
+  .updates-list{
+    list-style:none;margin:0;padding:0 0 0 .1rem;
+    max-height:9.5rem;overflow-y:auto;scrollbar-width:thin;
+    display:flex;flex-direction:column;gap:.45rem;
+  }
+  .updates-list li{
+    display:grid;grid-template-columns:4rem minmax(0,1fr);gap:.6rem;
+    font-size:.76rem;line-height:1.5;color:var(--ink-2);
+  }
+  .updates-list time{color:var(--brass);font-size:.64rem;letter-spacing:.06em;padding-top:.12rem}
+  .updates-list span{overflow-wrap:anywhere}
   /* inklapbare panelen: Bezoek en Bemanning */
   .panel>summary{cursor:pointer;list-style:none;position:relative;padding-right:2.2rem}
   .panel>summary::-webkit-details-marker{display:none}
@@ -704,6 +725,17 @@
     <span data-i18n="thanks">Dank aan</span><span><span class="sym" aria-hidden="true">🐙</span>GitHub</span><span><span class="sym" aria-hidden="true">✈️</span>Telegram</span><span><span class="sym" aria-hidden="true">🌿</span>Natuur NGO<small>(in aanbouw)</small></span><span><span class="sym" aria-hidden="true">🕳️</span>Cave</span><span><span class="sym" aria-hidden="true">🦬</span>FreeBuff</span><span><span class="sym" aria-hidden="true">🔍</span>Google<small>(wordt aan gewerkt)</small></span><span><span class="sym" aria-hidden="true">🧠</span>OpenAI</span><span><span class="sym" aria-hidden="true">🦙</span>llama</span><span><span class="sym" aria-hidden="true">🗺️</span>OpenStreetMap</span><span><span class="sym" aria-hidden="true">🐦</span>waarneming.nl</span><span><span class="sym" aria-hidden="true">🌊</span>Waterschap</span><span><span class="sym" aria-hidden="true">🐧</span>Omarchy</span>
   </p>
   <p class="sponsors" data-i18n="sponsors">Zoek nog sponsors voor de boot.</p>
+  <section class="updates" aria-labelledby="updates-title">
+    <p class="updates-title" id="updates-title">Laatste updates</p>
+    <ol class="updates-list">
+      <li><time datetime="2026-11-02">2 nov</time><span>Radar is de moeite waard, goed gestolen en toch al tweede outage overleeft anders had ik hier niet gestaan</span></li>
+      <li><time datetime="2026-11-02">2 nov</time><span>Radar: fuzzy zoekbalk, site-contacts en een eigen natuur-pagina.</span></li>
+      <li><time datetime="2026-11-02">2 nov</time><span>Stoplicht per dienst in de Stratoxbox-box, met uitklapbare outages.</span></li>
+      <li><time datetime="2026-11-01">1 nov</time><span>Crew: dynamische lijst, een haiku per agent en de agenda van de kapitein.</span></li>
+      <li><time datetime="2026-10-31">31 okt</time><span>Tekst-editor: alleen de zichtbare tekst van een pagina, per stuk bewerkbaar.</span></li>
+    </ol>
+  </section>
+
   <details class="logbook">
     <summary class="logbook-title"><span data-i18n="logbookTitle">Logboek</span> <code>$ git log --oneline -5</code></summary>
     <ol class="gitlog" id="gitlog">
