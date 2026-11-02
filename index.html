@@ -200,10 +200,6 @@
   }
   .launch time{font-variant-numeric:tabular-nums}
   .uptime{margin:-4px 0 6px;font-family:var(--sans);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sand);opacity:.78}
-  .outages{margin:0 0 18px;padding:.55rem .7rem;border-radius:10px;background:color-mix(in srgb,var(--panel) 55%,transparent);border:1px solid color-mix(in srgb,var(--sand) 16%,transparent);display:inline-block;text-align:left}
-  .outages summary{cursor:pointer;font-family:var(--sans);font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brass)}
-  .outages summary::-webkit-details-marker{display:none}
-  .outages ul{margin:.4rem 0 0;padding:0 0 0 1.1rem;font-size:.76rem;line-height:1.55;color:var(--muted)}
   h1{
     margin:0;font-family:var(--serif);font-weight:700;
     font-size:clamp(2.35rem,7.4vw,4.6rem);line-height:1.02;letter-spacing:.01em;
@@ -609,12 +605,6 @@
     <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
     <p class="uptime"><span data-i18n="uptimeLabel">Uptime</span> · <span id="uptime-status">…</span></p>
-    <details class="outages">
-      <summary><span data-i18n="outagesLabel">Outages</span></summary>
-      <ul id="outages-list">
-        <li>6 hour site unreachable, hmm door menselijke fout zegt de kapitein</li>
-      </ul>
-    </details>
     <h1><span class="the">Eeps</span>Site</h1>
     <p class="lede" data-i18n-html="lede">
       Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
@@ -802,7 +792,6 @@
         cta: `Enter de Wildpluk-site`,
         fineprint: `Geen inloggen, geen schatkaart nodig — het getij staat al achter je.`,
         uptimeLabel: `Uptime`,
-        outagesLabel: `Outages`,
         card1: `Buit`, card1s: `schelpen, zeewier en één krab met een mening`,
         card2: `Vloot`, card2s: `1 schip (geleend) · 0 kanonnen (belasting)`,
         card3: `Getij`, card3s: `elke 10 minuten vers, recht uit Rijkswaterstaat`,
@@ -857,7 +846,6 @@
         cta: `Enter the Wildpluk site`,
         fineprint: `No login, no treasure map needed — the tide is already at your back.`,
         uptimeLabel: `Uptime`,
-        outagesLabel: `Outages`,
         card1: `Loot`, card1s: `shells, seaweed and one opinionated crab`,
         card2: `Fleet`, card2s: `1 ship (borrowed) · 0 cannons (tax)`,
         card3: `Tide`, card3s: `fresh every 10 minutes, straight from Rijkswaterstaat`,
@@ -912,7 +900,6 @@
         cta: `Enter die Wildpluk-Seite`,
         fineprint: `Kein Login, keine Schatzkarte nötig — die Gezeit steht schon hinter dir.`,
         uptimeLabel: `Uptime`,
-        outagesLabel: `Ausfälle`,
         card1: `Beute`, card1s: `Muscheln, Seetang und eine Krabbe mit Meinung`,
         card2: `Flotte`, card2s: `1 Schiff (geliehen) · 0 Kanonen (Steuer)`,
         card3: `Gezeit`, card3s: `alle 10 Minuten frisch, direkt von Rijkswaterstaat`,
@@ -967,7 +954,6 @@
         cta: `Wejdź na stronę Wildpluk`,
         fineprint: `Bez logowania i bez mapy skarbów — pływ już masz za sobą.`,
         uptimeLabel: `Uptime`,
-        outagesLabel: `Przerwy`,
         card1: `Łup`, card1s: `muszle, wodorosty i jeden krab z opinią`,
         card2: `Flota`, card2s: `1 statek (pożyczony) · 0 dział (podatek)`,
         card3: `Pływ`, card3s: `świeży co 10 minut, prosto z Rijkswaterstaat`,
@@ -1022,7 +1008,6 @@
         cta: `Влез в Wildpluk`,
         fineprint: `Без вход и без карта на съкровища — приливът вече е зад теб.`,
         uptimeLabel: `Uptime`,
-        outagesLabel: `Проблеми`,
         card1: `Плячка`, card1s: `миди, водорасли и един рак с мнение`,
         card2: `Флота`, card2s: `1 кораб (зает назаем) · 0 оръдия (данък)`,
         card3: `Прилив`, card3s: `пресен на всеки 10 минути, направо от Rijkswaterstaat`,
@@ -1077,7 +1062,6 @@
         cta: `进入 Wildpluk 网站`,
         fineprint: `无需登录，也不需要藏宝图——潮水已经在你身后。`,
         uptimeLabel: `运行时间`,
-        outagesLabel: `故障`,
         card1: `收获`, card1s: `贝壳、海藻，还有一只有主见的螃蟹`,
         card2: `船队`, card2s: `1 艘船（借的）· 0 门炮（交税）`,
         card3: `潮汐`, card3s: `每 10 分钟更新，直接来自 Rijkswaterstaat`,

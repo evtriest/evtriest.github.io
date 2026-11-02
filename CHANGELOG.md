@@ -1,7 +1,11 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.24.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.24.1` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.24.1 — 2026-11-02 — Outages alleen nog op de radar
+
+- **`landing/index.html`**: het uitklapblok **Outages** onder de uptime-regel is weg (markup, CSS en de `outagesLabel`-sleutel in alle zes talen). De storingen staan alleen nog op de radarpagina, in de sectie **Stratoxbox VPS**, met stoplicht, lijst, driestaps-afhandeling en het formulier voor een nieuwe melding. De ticker op de landing blijft wél waarschuwen als er een storing open staat.
 
 ## 🟩 1.24.0 — 2026-11-02 — Uptime onder de tewaterlating
 
