@@ -1,7 +1,22 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.25.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.25.2` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.25.2 — 2026-11-02 — Kaartjes voor agenten
+
+- **Nieuwe tabel `cards`**: titel, tekst, status, toegewezen_aan, gemaakt_door.
+- **Nieuwe tabel `card_attachments`**: afbeeldingen/bestanden per kaart.
+- **API-endpoints**: `GET/POST /api/cards`, `GET/PUT /api/cards/<id>`,
+  `POST /api/cards/<id>/assign`, `POST /api/cards/<id>/close`,
+  `POST /api/cards/<id>/attachments`, `DELETE /api/cards/<id>/attachments/<id>`.
+- **Crew-pagina**: horizontaal schuifvenster met actieve kaartjes per agent.
+- **Marta**: `website/agents/admin/AGENTS.md` bijgewerkt naar secretaresse.
+
+## 🟩 1.25.1 — 2026-11-02 — Llama-requests geserialiseerd
+
+- **`website/app.py`**: alle llama.cpp-aanroepen (`/v1/chat/completions`, `/tools`) lopen nu via `threading.Semaphore(1)`. Dit voorkomt burst-requests die de Instabox-tunnel in cooldown drukken.
+- **`__version__`** → `1.25.1`.
 
 ## 🟩 1.25.0 — 2026-11-02 — Uptime in de ticker, outages klappen open
 

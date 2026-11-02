@@ -141,6 +141,15 @@
   }
   .agenda-beheer summary{cursor:pointer;list-style:none;color:var(--sand);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
   .agenda-beheer summary::-webkit-details-marker{display:none}
+  /* Kaartjes: eenvoudige horizontale schuif */
+  .kaarten-wrap{display:flex;gap:.5rem;overflow-x:auto;padding:.4rem 0;margin-top:.4rem}
+  .kaart{flex:0 0 220px;background:rgba(4,10,16,.55);border:1px solid rgba(232,220,192,.2);border-radius:10px;padding:.55rem;color:var(--ink)}
+  .kaart-titel{font-size:.72rem;font-weight:700;margin-bottom:.25rem}
+  .kaart-tekst{font-size:.65rem;color:var(--faint);line-height:1.4;max-height:80px;overflow:hidden}
+  .kaart-meta{font-size:.6rem;color:var(--faint-2);margin-top:.3rem;display:flex;justify-content:space-between}
+  .kaart-knoppen{display:flex;gap:.3rem;margin-top:.35rem}
+  .kaart-knop{font:inherit;font-size:.6rem;font-weight:700;padding:.3em .55em;border-radius:999px;border:1px solid rgba(232,220,192,.25);background:rgba(232,220,192,.08);color:var(--sand);cursor:pointer}
+  .kaart-knop:hover{filter:brightness(1.1)}
   @media(max-width:640px){
     .chat-grid{grid-template-columns:1fr}
     .profiel{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
@@ -244,6 +253,8 @@
       <p class="chat-doubt">FreeBuff betwijfelt dat.</p>
     </section>
 
+    <div class="kaarten-wrap" data-agent="kapitein"></div>
+
     <section class="chat chat-bulg" id="sectie-bulgaars" aria-labelledby="bg-title">
       <h2 id="bg-title">Iva</h2>
       <div class="chat-log" id="bg-log" aria-live="polite">
@@ -256,6 +267,8 @@
       </form>
       <p class="chat-note">Deze chat antwoordt in het Bulgaars; de gids verstaat ook vragen in die taal.</p>
     </section>
+
+    <div class="kaarten-wrap" data-agent="bulgaars"></div>
 
     <section class="chat" id="sectie-natuurgids" aria-labelledby="chat-title">
       <h2 id="chat-title">Natuurgids</h2>
@@ -270,6 +283,8 @@
       <p class="chat-note">De gids draait lokaal op de VPS; een antwoord kan even duren.</p>
     </section>
 
+    <div class="kaarten-wrap" data-agent="natuurgids"></div>
+
     <section class="chat chat-birds" id="sectie-vogelgids" aria-labelledby="birds-title">
       <h2 id="birds-title">Vogelgeluiden</h2>
       <div class="chat-log" id="birds-log" aria-live="polite">
@@ -283,6 +298,8 @@
       <p class="chat-note">De vogelgids zoekt in de vogelgeluidenbank en speelt de roep meteen af. Hoort het niet? Klik op de play-knop van de speler.</p>
     </section>
 
+    <div class="kaarten-wrap" data-agent="vogelgids"></div>
+
     <section class="chat chat-admin" id="sectie-admin" aria-labelledby="admin-title">
       <h2 id="admin-title">Admin</h2>
       <div class="chat-log" id="admin-log" aria-live="polite">
@@ -295,6 +312,8 @@
       </form>
       <p class="chat-note">De admin bewaakt de API-gateway en helpt bij technische problemen.</p>
     </section>
+
+    <div class="kaarten-wrap" data-agent="admin"></div>
 
     <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span>Enter de Wildpluk-site</a>
 
@@ -342,6 +361,11 @@
     var API = location.hostname === 'evtriest.github.io'
       ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
       : '';
+    function esc(value) {
+      return String(value == null ? '' : value).replace(/[&<>"]/g, function (c) {
+        return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c];
+      });
+    }
     function bubble(text, kind, logEl) {
       var el = document.createElement('p');
       el.className = 'msg msg-' + kind;
@@ -771,6 +795,40 @@
         })
         .catch(function () { /* tags zijn niet kritisch */ });
     })();
+
+    /* ── Kaartjes laden per agent ── */
+    function laadKaarten(agent) {
+      var wrap = document.querySelector('.kaarten-wrap[data-agent="' + agent + '"]');
+      if (!wrap) return;
+      fetch(API + '/api/cards?agent=' + encodeURIComponent(agent), { mode: 'cors' })
+        .then(function (r) { return r.json(); })
+        .then(function (lijst) {
+          wrap.innerHTML = '';
+          (lijst || []).forEach(function (kaart) {
+            var el = document.createElement('div');
+            el.className = 'kaart';
+            el.innerHTML =
+              '<div class="kaart-titel">' + esc(kaart.titel) + '</div>' +
+              '<div class="kaart-tekst">' + esc(kaart.tekst) + '</div>' +
+              '<div class="kaart-meta">' +
+                '<span>#' + kaart.id + '</span>' +
+                '<span>' + esc(kaart.gemaakt_door || '') + '</span>' +
+              '</div>' +
+              '<div class="kaart-knoppen">' +
+                '<button class="kaart-knop" data-act="bewerk" data-id="' + kaart.id + '">Bewerk</button>' +
+                '<button class="kaart-knop" data-act="wijs" data-id="' + kaart.id + '">Wijs toe</button>' +
+                '<button class="kaart-knop" data-act="sluit" data-id="' + kaart.id + '">Sluit</button>' +
+              '</div>';
+            wrap.appendChild(el);
+          });
+        })
+        .catch(function () { /* kaartjes zijn niet kritisch */ });
+    }
+
+    document.querySelectorAll('.kaarten-wrap').forEach(function (wrap) {
+      var agent = wrap.getAttribute('data-agent');
+      if (agent) laadKaarten(agent);
+    });
   })();
 </script>
 </body>
