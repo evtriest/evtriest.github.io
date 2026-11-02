@@ -19,6 +19,16 @@
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     position:relative;
   }
+  .pagebar{position:fixed;top:0;left:0;right:0;z-index:20;padding:10px 16px;display:flex;justify-content:center;background:rgba(6,8,10,.85);backdrop-filter:blur(4px);border-bottom:1px solid rgba(0,255,136,.15)}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   /* scanlines */
   body::before{
     content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
@@ -31,6 +41,7 @@
   }
   .radar-container{
     position:relative;z-index:3;width:min(90vw,90vh,800px);height:min(90vw,90vh,800px);
+    margin-top:52px;
     border-radius:50%;box-shadow:0 0 80px rgba(0,255,136,.12),inset 0 0 60px rgba(0,255,136,.06);
   }
   .radar{
@@ -159,17 +170,6 @@
   .panel .stap p{margin:.2rem 0 0;font-size:.74rem;line-height:1.5;color:#a0b8a8;word-break:break-word}
   .panel .stap-btns{display:flex;gap:.4rem;flex-wrap:wrap}
   .panel textarea{width:100%;min-height:3rem;margin-top:.4rem;font:inherit;font-size:.76rem;color:var(--green);background:rgba(0,0,0,.28);border:1px solid rgba(0,255,136,.3);border-radius:3px;padding:.35rem .45rem}
-  /* paginanavigatie bovenaan */
-  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
-  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
-  .pagebar a{
-    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
-    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
-    background:color-mix(in srgb,var(--sand) 6%,transparent);
-    transition:background .15s ease,border-color .15s ease,color .15s ease;
-  }
-  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
-  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   /* fuzzy zoekbalk midden op de pagina */
   .scan-bar{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:8;
