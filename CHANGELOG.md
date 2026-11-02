@@ -1,7 +1,13 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.21.0` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.22.0` · **Laatst bijgewerkt:** 2026-11-02
+
+## 🟩 1.22.0 — 2026-11-02 — Iva-chat hersteld, taalkeuze klein onder het thema
+
+- **Iva-chat “Failed to fetch”**: `/api/chat` accepteert nu ook `OPTIONS` en antwoordt met `204` + CORS-headers, zodat de preflight vanaf GitHub Pages slaagt (die gaf eerst 405 en dus een netwerkfout in de browser). De chat zelf probeert bij een netwerkfout **één keer opnieuw** na 0,9 s — precies wat nodig is als de site net herstart is — en toont anders een leesbare melding (`chatOffline`, in alle zes talen) in plaats van de ruwe browsertekst. Een mislukte vraag gaat niet mee in de gespreksgeschiedenis.
+- **Taalknoppen**: de taalkeuze staat niet meer als balk bovenaan de pagina maar als **kleine kolom rechtsboven, direct onder de themakiezer** (`.langbar` → `position:fixed`, `top:60px`, `right:16px`, z-index onder het themamenu). De knoppen zijn veel kleiner (`.56rem`, compacte padding), zodat de paginanavigatie weer bovenaan staat.
+- **Outage vastgelegd**: de storing rond de Iva-chat staat in `/api/outages` als melding “Iva-chat: Failed to fetch”.
 
 ## 🟩 1.21.0 — 2026-11-02 — Bezoekers in de ticker en in de radarzoek
 

@@ -100,8 +100,10 @@
     pointer-events:none;
   }
   main{position:relative;z-index:1;flex:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:min(7vh,52px) 20px 32px}
-  .langbar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
-  .langbar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:880px}
+  /* taalkeuze: kleine kolom rechtsboven, direct onder de themakiezer */
+  .langbar{position:fixed;top:60px;right:16px;z-index:59;padding:0;display:block;text-align:right}
+  .langbar-inner{display:flex;flex-direction:column;align-items:flex-end;gap:2px;max-width:none}
+  @media(max-width:520px){.langbar{top:52px;right:10px}}
   /* ticker: laatste update, laatste vogelgeluid, laatste outage — helemaal bovenaan */
   .ticker{
     position:sticky;top:0;z-index:90;display:flex;align-items:stretch;height:30px;flex:none;
@@ -147,12 +149,14 @@
   .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
   .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
   .lang-btn{
-    font:inherit;font-size:.88rem;padding:.55em .95em;border-radius:999px;cursor:pointer;
-    display:inline-flex;align-items:center;gap:.5em;color:var(--ink);
-    border:1px solid color-mix(in srgb,var(--sand) 28%,transparent);background:color-mix(in srgb,var(--panel) 55%,transparent);
-    transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease;
+    display:inline-flex;align-items:center;gap:.28em;cursor:pointer;
+    font:inherit;font-size:.56rem;letter-spacing:.02em;line-height:1.15;
+    padding:.16em .5em;border-radius:999px;color:var(--ink-2);
+    border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);
+    background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(4px);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
   }
-  .lang-btn .lf{font-size:1.2rem;line-height:1}
+  .lang-btn .lf{font-size:.82rem;line-height:1}
   .lang-btn:hover{border-color:color-mix(in srgb,var(--brass-bright) 70%,transparent);background:color-mix(in srgb,var(--brass) 16%,transparent)}
   .lang-btn[aria-pressed="true"]{border-color:color-mix(in srgb,var(--brass-bright) 85%,transparent);background:color-mix(in srgb,var(--brass) 28%,transparent);color:var(--brass-bright)}
   .lang-btn:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
@@ -801,6 +805,7 @@
         tickerBird: `laatste vogel`, tickerSound: `laatste vogelgeluid`,
         tickerTide: `getij`, tickerCommit: `laatste commit`,
         tickerVisits: `bezoekers`, visitsToday: `{today} vandaag · {total} totaal`,
+        chatOffline: `de server was even niet bereikbaar — probeer het nog eens`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
         pluginDenied: `afgewezen`, pluginLink: `mouse-in-the-corner`,
@@ -855,6 +860,7 @@
         tickerBird: `latest bird`, tickerSound: `latest bird sound`,
         tickerTide: `tide`, tickerCommit: `latest commit`,
         tickerVisits: `visitors`, visitsToday: `{today} today · {total} total`,
+        chatOffline: `the server was briefly unreachable — try again`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
         pluginDenied: `rejected`, pluginLink: `mouse-in-the-corner`,
@@ -909,6 +915,7 @@
         tickerBird: `letzter Vogel`, tickerSound: `letzter Vogelgesang`,
         tickerTide: `Gezeit`, tickerCommit: `letzter Commit`,
         tickerVisits: `Besucher`, visitsToday: `{today} heute · {total} gesamt`,
+        chatOffline: `der Server war kurz nicht erreichbar — versuch es noch einmal`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
         pluginDenied: `abgelehnt`, pluginLink: `mouse-in-the-corner`,
@@ -963,6 +970,7 @@
         tickerBird: `ostatni ptak`, tickerSound: `ostatni ptasi głos`,
         tickerTide: `pływ`, tickerCommit: `ostatni commit`,
         tickerVisits: `odwiedzający`, visitsToday: `{today} dziś · {total} łącznie`,
+        chatOffline: `serwer był chwilowo nieosiągalny — spróbuj ponownie`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
         pluginDenied: `odrzucony`, pluginLink: `mouse-in-the-corner`,
@@ -1017,6 +1025,7 @@
         tickerBird: `последна птица`, tickerSound: `последен птичи глас`,
         tickerTide: `прилив`, tickerCommit: `последен commit`,
         tickerVisits: `посетители`, visitsToday: `{today} днес · {total} общо`,
+        chatOffline: `сървърът беше за малко недостъпен — опитай отново`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
         pluginDenied: `отхвърлен`, pluginLink: `mouse-in-the-corner`,
@@ -1071,6 +1080,7 @@
         tickerBird: `最近的鸟`, tickerSound: `最近的鸟鸣`,
         tickerTide: `潮汐`, tickerCommit: `最新提交`,
         tickerVisits: `访客`, visitsToday: `今天 {today} · 总计 {total}`,
+        chatOffline: `服务器暂时无法连接 — 请再试一次`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
         pluginDenied: `已拒绝`, pluginLink: `mouse-in-the-corner`,
@@ -1202,12 +1212,22 @@
         var body = { messages: history };
         if (opts.agent) body.agent = opts.agent;
 
-        fetch(API + '/api/chat', {
-          method: 'POST',
-          mode: 'cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        })
+        /* één herhaling bij een netwerkfout: precies na een herstart van de
+           site faalt de eerste POST en dat mag de bezoeker niet raken */
+        function stuur(poging) {
+          return fetch(API + '/api/chat', {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+          }).catch(function (err) {
+            if (poging >= 2) throw err;
+            return new Promise(function (klaar) { setTimeout(klaar, 900); })
+              .then(function () { return stuur(poging + 1); });
+          });
+        }
+
+        stuur(1)
           .then(function (resp) { return resp.json().then(function (data) { return { ok: resp.ok, data: data }; }); })
           .then(function (result) {
             var reply = result.ok && result.data && result.data.reply;
@@ -1217,9 +1237,12 @@
             history.push({ role: 'assistant', content: reply });
           })
           .catch(function (err) {
-            pending.textContent = (opts.stil || 'Fout: ') + err.message;
+            var netwerk = err && err.name === 'TypeError';
+            pending.textContent = (opts.stil || 'Fout: ') +
+              (netwerk ? t('chatOffline') : err.message);
             pending.classList.remove('msg-pending');
             pending.classList.add('msg-error');
+            if (netwerk) history.pop();   // mislukte vraag niet onthouden
           })
           .then(function () {
             input.disabled = false;
