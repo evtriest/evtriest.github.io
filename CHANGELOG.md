@@ -1,7 +1,23 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.29.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.31.0` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.31.0 — 2026-11-03 — tekst-editor uit het hoofdmenu
+
+- **Hoofdmenu** (`index.html` / `.tpl-index.html`): `✏️ Tekst-editor` eruit,
+  net als eerder `⚡ n8n` en `🔌 API` uit de pagebar. De editor blijft werken
+  op `/static/piracy/html-editor.html`, alleen de link in het menu is weg.
+- **`__version__`** → `1.31.0`.
+
+## 🟩 1.30.0 — 2026-11-03 — pagebar opgeschoond
+
+- **Pagebar**: de items `✏️ Tekst-editor`, `⚡ n8n` en `🔌 API` zijn van alle
+  pagina's gehaald. Wat overblijft is de publieke navigatie (Natuur, Radar,
+  Crew, Bookmarks, Concept, n8n-uitleg); de beheer- en documentatiepagina's
+  blijven bereikbaar via hun eigen URL (`/static/piracy/html-editor.html`,
+  `/n8n_front`, `/api_page`).
+- **`__version__`** → `1.30.0`.
 
 ## 🟩 1.29.0 — 2026-11-03 — n8n-uitleg publiek + logboek op /n8n_front
 
