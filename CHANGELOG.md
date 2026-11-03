@@ -1,7 +1,11 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.25.2` · **Laatst bijgewerkt:** 2026-11-02
+**Huidige versie:** `1.25.3` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.25.3 — 2026-11-03 — Sponsors in footer
+
+- **EepsHub footer**: Restic (backup), Deepseek V4.1 en n8n (workflow flash cards) toegevoegd als sponsor.
 
 ## 🟩 1.25.2 — 2026-11-02 — Kaartjes voor agenten
 
