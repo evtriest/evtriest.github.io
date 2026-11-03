@@ -1,7 +1,18 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.31.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.32.0` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.32.0 — 2026-11-03 — gereedschap naar de footer
+
+- **Footer**: onderaan elke pagina staat nu één discreet regeltje met
+  `Tekst-editor` · `n8n` · `API`. Ze zijn uit het hoofdmenu en de pagebar
+  verdwenen, maar blijven zo bereikbaar zonder de navigatie te vervuilen.
+- **`website/index.html`**: dezelfde linkrij in de footer van de site zelf,
+  in dezelfde kleine `.src`-regel als de versie en de kaartdata.
+- **`README.md`**: beschrijft de editor nu als footerlink in plaats van als
+  menu-item.
+- **`__version__`** → `1.32.0`.
 
 ## 🟩 1.31.0 — 2026-11-03 — tekst-editor uit het hoofdmenu
 
