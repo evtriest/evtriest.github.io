@@ -1,7 +1,27 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.34.1` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.35.0` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.35.0 — 2026-11-03 — radarachtergrond hersteld, mobiele controles
+
+- **`radar.html`**: de kleurvariabelen van de pagebar stonden per ongeluk
+  buiten `:root`, direct onder `html,body{…}`. De browser slikte daardoor
+  de hele `body`-regel in: geen donkere achtergrond, geen vignette en geen
+  centrering, met een grijze scanline-achtergrond als resultaat. De
+  variabelen staan weer in `:root`; de pagina rendert weer zwart.
+- **`bookmarks.html`, `crew.html`, `site-concept.html`, `html-editor.html`**:
+  dezelfde losse declaratie stond vóór `html,body{height:100%}` en haalde
+  die regel weg. Ook hersteld.
+- **`bookmarks.html`**: op smalle schermen liep de kaartenlijst horizontaal
+  over de rand (de gridkolom rekte op tot de min-content van de kaart). Nu
+  `minmax(0,1fr)` als kolom, `min-width:0` op de kaart en een soepelere
+  toolbarbalk onder 560 px.
+- **`html-editor.html`**: de toollrij staat boven de statusbalk
+  (`bottom:38px`) in plaats van eroverheen.
+- **`radar.html`**: op smalle schermen schuift de scantijd boven de
+  bezoekersbox en wordt de toollrij compacter.
+- **`__version__`** → `1.35.0`.
 
 ## 🟩 1.34.1 — 2026-11-03 — footer op de vaste-hoogtepagina's
 

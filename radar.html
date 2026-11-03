@@ -8,10 +8,11 @@
   :root{
     --bg:#0a0e12; --green:#00ff88; --amber:#ffaa00; --red:#ff3355;
     --glow-green:rgba(0,255,136,.35); --glow-amber:rgba(255,170,0,.4); --glow-red:rgba(255,51,85,.45);
+    --ink:#f4f1e8; --ink-2:#c8d6c0; --sand:#00ff88; --brass:#00cc6a; --brass-bright:#00ff88;
+    --panel:rgba(0,20,10,.35);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;overflow:hidden}
-    --ink:#f4f1e8;--ink-2:#c8d6c0;--sand:#00ff88;--brass:#00cc6a;--brass-bright:#00ff88;--panel:rgba(0,20,10,.35);
 
   body{
     background:radial-gradient(ellipse at center,#0d1117 0%,#06080a 70%,#000 100%);
@@ -245,6 +246,12 @@
   footer .foot-tools{margin:0;font-size:.68rem}
   footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   footer .foot-tools a:hover{text-decoration-thickness:2px}
+  @media(max-width:640px){
+    /* smalle schermen: de bezoekersbox vult de breedte onderaan, dus de
+       scantijd schuift erboven en de toollrij wordt iets compacter */
+    .timestamp{bottom:4rem;right:1rem;font-size:.6rem;letter-spacing:.08em}
+    footer{bottom:4px;font-size:.62rem;max-width:calc(100vw - 1rem)}
+  }
 </style>
 </head>
 <body>
