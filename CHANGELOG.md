@@ -1,7 +1,17 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.32.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.33.0` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.33.0 — 2026-11-03 — kleine lettertjes en een dode link
+
+- **Footer**: de rij `Tekst-editor · n8n · API` staat nu opzettelijk klein en
+  gedempt (`.foot-tools`, 0.7rem, `opacity:.7`, hover licht op), zodat hij
+  leest als kleine lettertjes in plaats van als tweede menu.
+- **`build.py`**: elke `href="/static/piracy/…"` wijst op GitHub Pages nu
+  naar de VPS-site. Dat repareert `📝 Concept` (stond op Pages op een
+  onbestaand pad) en meteen ook de losse `bookmarks.html`-link op crew.
+- **`__version__`** → `1.33.0`.
 
 ## 🟩 1.32.0 — 2026-11-03 — gereedschap naar de footer
 
