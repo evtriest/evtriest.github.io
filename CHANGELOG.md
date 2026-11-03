@@ -1,7 +1,53 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.25.3` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.29.0` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.29.0 — 2026-11-03 — n8n-uitleg publiek + logboek op /n8n_front
+
+- **Nieuwe pagina `n8n.html`** in `landing/` (en via `build.py` in
+  `landing-gh/site/`): publieke uitleg over n8n op de EepsHub — container,
+  bereikbaarheid via SSH-tunnel, Telegram-meldingen, back-up, de drie workflows
+  met hun schema en de keten van trigger tot melding. Bewust statisch: geen
+  polling, geen live-cijfers.
+- **Pagebar**: nieuw item `🤖 n8n-uitleg` naast `⚡ n8n` op alle pagina's.
+- **`/n8n_front`**: nieuwe sectie **Logboek** met de laatste 150 regels van de
+  container (nieuw endpoint `/n8n_front/api/logs`, beheer-token verplicht) en de
+  image-kaart toont nu het image-id, de starttijd en of de tag gepind is.
+- **`build.py`**: `n8n.html` toegevoegd aan `PAGES`.
+- **`__version__`** → `1.29.0`.
+
+## 🟩 1.28.0 — 2026-11-03 — n8n_front: onderhoud
+
+- **`/n8n_front`**: nieuwe sectie **Onderhoud** met upgraden (back-up → versie
+  pinnen → pull + up → testworkflow), de restic-back-up van `/data/n8n`
+  (SQLite via de `sqlite3`-backup-API, `.env` mee in de snapshot), rollback en
+  de valkuilen uit `n8n.md` (CLI versus task-broker op 5679, publiceren pas na
+  een herstart, `scheduled_job` bijwerken, `execute` met Schedule Trigger,
+  ontbrekende Python-runner, geen `sqlite3`-CLI, IPv6 naar Telegram vanaf de
+  host).
+- **`__version__`** → `1.28.0`.
+
+## 🟩 1.27.0 — 2026-11-03 — API-pagina
+
+- **Nieuwe pagina `/api_page`** (`website/api_page.py`): architectuur van de
+  API (één Flask-proces, SQLite, externe bronnen, CORS, token, limieten), een
+  automatisch opgebouwde routetabel uit `app.url_map` met zoekfilter, en de
+  deploy/beheerafspraken.
+- **Menu**: nieuw item `🔌 API` in de paginabalk, naast `⚡ n8n`.
+- **`__version__`** → `1.27.0`.
+
+## 🟩 1.26.0 — 2026-11-03 — n8n_front: status, kaarten en planning
+
+- **Nieuwe pagina `/n8n_front`** (`website/n8n_front.py`, geregistreerd in
+  `app.py`): uitleg van de n8n-architectuur op EepsHub, live containerstatus,
+  workflows met trigger en volgende run, de laatste uitvoeringen, de
+  outage-kaarten (AI-stap, mens-stap, akkoord/sluiten, nieuwe kaart) en het
+  schema per workflow kunnen wijzigen.
+- **Schrijfacties** (aan/uit, schema) vragen het beheer-token uit
+  `agents_token.txt` via de header `X-N8N-Token`; lezen kan zonder.
+- **Menu**: nieuw item `⚡ n8n` in de paginabalk van alle pagina's.
+- **`__version__`** → `1.26.0`.
 
 ## 🟩 1.25.3 — 2026-11-03 — Sponsors in footer
 

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!-- BOUWERS: deze pagina is bewust statisch. Geen polling, geen live API-calls —
+     de cijfers hieronder staan in de tekst en worden met de hand bijgewerkt.
+     Wil je hier wel live data, waarschuw Eep eerst over het verwachte
+     API-gebruik en netwerkverkeer en wacht op akkoord.
+     Zes talen in één I18N-object onderaan: een nieuwe regel betekent een
+     sleutel in alle zes, anders valt hij terug op Nederlands. -->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n8n · Eeps Site</title>
+<meta name="description" content="n8n op de EepsHub: de workflow-automaat die de radar in de gaten houdt en via Telegram meldt wanneer er een storing opengaat of dichtgaat.">
+<meta name="theme-color" content="#081018">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --ink:#f4f1e8;--ink-2:#e7e2d4;--muted:#c9c3b4;--faint:#a9a291;
+    --sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;
+    --sea:#081018;--panel:#0a121a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);
+    background:var(--sea) url("tide-bg.jpg") center/cover no-repeat fixed;
+    display:flex;flex-direction:column;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.14) 0%,rgba(4,10,16,.45) 55%,rgba(4,10,16,.82) 100%),
+      linear-gradient(to bottom,rgba(4,10,16,.45),rgba(4,10,16,.08) 40%,rgba(4,10,16,.78));
+  }
+  a{color:var(--brass-bright)}
+  /* taalkeuze: één klein knopje rechtsboven, menu klapt open */
+  .langbar{position:fixed;top:14px;right:14px;z-index:80;padding:0;display:flex;flex-direction:column;align-items:flex-end;text-align:right}
+  .lang-toggle{
+    display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;
+    font:inherit;font-size:.82rem;cursor:pointer;border-radius:50%;color:var(--brass-bright);
+    border:1px solid color-mix(in srgb,var(--brass-bright) 45%,transparent);
+    background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(6px);
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .lang-toggle:hover{background:color-mix(in srgb,var(--brass) 22%,transparent);border-color:color-mix(in srgb,var(--brass-bright) 75%,transparent)}
+  .lang-toggle:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  .langbar.open .lang-toggle{border-color:color-mix(in srgb,var(--brass-bright) 75%,transparent)}
+  .langbar-inner{
+    display:none;flex-direction:column;align-items:flex-end;gap:2px;max-width:none;margin-top:5px;
+    padding:4px;border-radius:10px;border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--panel) 97%,transparent);backdrop-filter:blur(8px);
+    box-shadow:0 14px 30px rgba(0,0,0,.5);
+  }
+  .langbar.open .langbar-inner{display:flex}
+  .lang-btn{
+    display:inline-flex;align-items:center;gap:.28em;cursor:pointer;
+    font:inherit;font-size:.62rem;letter-spacing:.02em;line-height:1.15;
+    padding:.2em .55em;border-radius:999px;color:var(--ink-2);
+    border:1px solid color-mix(in srgb,var(--sand) 20%,transparent);
+    background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(4px);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .lang-btn .lf{font-size:.82rem;line-height:1}
+  .lang-btn:hover{border-color:color-mix(in srgb,var(--brass-bright) 70%,transparent);background:color-mix(in srgb,var(--brass) 16%,transparent)}
+  .lang-btn[aria-pressed="true"]{border-color:color-mix(in srgb,var(--brass-bright) 85%,transparent);background:color-mix(in srgb,var(--brass) 28%,transparent);color:var(--brass-bright)}
+  .lang-btn:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 68px 0 16px;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  main{position:relative;z-index:1;width:min(1080px,100%);margin:0 auto;padding:2rem 18px 3rem;flex:1}
+  .kicker{margin:0 0 .35rem;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass)}
+  h1{margin:0 0 .6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.05}
+  .lede{margin:0;max-width:46rem;font-size:.95rem;line-height:1.65;color:var(--ink-2)}
+  .source{margin:.7rem 0 0;font-size:.72rem;color:var(--faint);letter-spacing:.02em}
+  h2{
+    margin:2.2rem 0 .9rem;font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--ink);
+    padding-bottom:.4rem;border-bottom:1px solid rgba(232,220,192,.16);
+  }
+  h3{margin:0 0 .35rem;font-size:.95rem;color:var(--brass-bright);font-family:var(--sans)}
+  p{margin:.5rem 0;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{
+    padding:.95rem 1.05rem;border-radius:12px;border:1px solid rgba(232,220,192,.16);
+    background:rgba(8,16,24,.72);backdrop-filter:blur(6px);
+  }
+  .card p{font-size:.82rem;color:var(--muted);margin:.2rem 0}
+  .tag{font-size:.72rem;letter-spacing:.04em;color:var(--faint)}
+  table{
+    width:100%;border-collapse:collapse;background:rgba(8,16,24,.72);border-radius:12px;overflow:hidden;
+    border:1px solid rgba(232,220,192,.16);
+  }
+  th,td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid rgba(232,220,192,.1);font-size:.84rem;vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  tr:last-child td{border-bottom:0}
+  td code,p code,li code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84em;
+    padding:.08em .34em;border-radius:5px;color:var(--brass-bright);
+    background:rgba(230,162,60,.12);border:1px solid rgba(230,162,60,.18);
+  }
+  ol,ul{margin:.5rem 0;padding-left:1.25rem;color:var(--ink-2);font-size:.88rem;line-height:1.7}
+  li{margin:.2rem 0}
+  li::marker{color:var(--brass)}
+  .chain{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.9rem 0}
+  .chain span{
+    font-size:.74rem;padding:.35em .7em;border-radius:999px;
+    border:1px solid rgba(230,162,60,.3);background:rgba(230,162,60,.1);color:var(--sand);
+  }
+  .chain i{color:var(--faint);font-style:normal;font-size:.8rem}
+  .note{
+    margin:1.4rem 0 0;padding:.9rem 1.05rem;border-radius:12px;
+    border:1px solid rgba(255,200,97,.35);background:rgba(230,162,60,.1);
+  }
+  .note p{margin:.2rem 0;font-size:.85rem}
+  footer{
+    position:relative;z-index:1;padding:1.4rem 18px 2rem;text-align:center;
+    font-size:.74rem;color:var(--faint);
+  }
+</style>
+</head>
+<body>
+<nav class="langbar" id="langbar" aria-label="Taal">
+  <button class="lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" title="Taal / language" aria-label="Kies een taal"><span aria-hidden="true">🌐</span></button>
+  <div class="langbar-inner" id="langMenu" role="menu">
+    <button class="lang-btn" type="button" data-lang="nl" aria-pressed="true"><span class="lf" aria-hidden="true">🇳🇱</span>Nederlands</button>
+    <button class="lang-btn" type="button" data-lang="zh" aria-pressed="false"><span class="lf" aria-hidden="true">🇨🇳</span>中文</button>
+    <button class="lang-btn" type="button" data-lang="bg" aria-pressed="false"><span class="lf" aria-hidden="true">🇧🇬</span>Български</button>
+    <button class="lang-btn" type="button" data-lang="pl" aria-pressed="false"><span class="lf" aria-hidden="true">🇵🇱</span>Polski</button>
+    <button class="lang-btn" type="button" data-lang="en" aria-pressed="false"><span class="lf" aria-hidden="true">🇬🇧</span>English</button>
+    <button class="lang-btn" type="button" data-lang="de" aria-pressed="false"><span class="lf" aria-hidden="true">🇩🇪</span>Deutsch</button>
+  </div>
+</nav>
+
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="natuur.html">🌿 Natuur</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="/static/piracy/html-editor.html">✏️ Tekst-editor</a>
+    <a href="/static/piracy/site-concept.html">📝 Concept</a>
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">⚡ n8n</a>
+    <a href="n8n.html">🤖 n8n-uitleg</a>
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/api_page">🔌 API</a>
+  </div>
+</nav>
+
+<main>
+  <p class="kicker" data-i18n="kicker">EepsHub · workflows</p>
+  <h1 data-i18n="h1">n8n op de EepsHub</h1>
+  <p class="lede" data-i18n="lede">De EepsHub heeft één automatiseerder: n8n. Geen
+  cron-bestand dat iemand ooit heeft geschreven en waar niemand meer naar kijkt,
+  maar een workflow die je in de browser kunt openen, uitlezen en uitzetten. Op
+  dit moment doet hij één ding goed: de radar in de gaten houden en alleen iets
+  zeggen als er iets verandert.</p>
+  <p class="source" data-i18n="source">Deze pagina is een uitleg, geen dashboard.
+  Cijfers en workflow-namen staan in de tekst en worden met de hand bijgehouden.</p>
+
+  <h2 data-i18n="whatTitle">Wat er draait</h2>
+  <div class="grid">
+    <div class="card">
+      <h3 data-i18n="card1t">Eén container</h3>
+      <p data-i18n-html="card1b">n8n in Docker, versie gepind op
+      <code>n8nio/n8n:2.46.4</code> — nooit <code>latest</code>. SQLite als
+      opslag: geen Postgres, geen Redis, geen queue mode. Begrensd op 1,5 CPU en
+      1,5 GB geheugen, met een healthcheck op <code>/healthz</code> en
+      logrotatie.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card2t">Niet naar buiten</h3>
+      <p data-i18n-html="card2b">De container luistert alleen op
+      <code>127.0.0.1:5678</code>. Er komt geen poort open in de firewall; je
+      komt er met een SSH-tunnel en dan <code>http://localhost:5678</code> in je
+      eigen browser. Data staat in <code>/data/n8n/data</code>, de sleutel
+      waarmee credentials versleuteld zijn in
+      <code>/data/n8n/compose/.env</code>.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card3t">Meldingen via Telegram</h3>
+      <p data-i18n-html="card3b">Eén bot, één credential. Geen mailprovider, geen
+      webhook naar buiten. Gaat er iets mis, dan komt het bericht in een
+      privéchat, niet op een publiek kanaal.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card4t">Back-up</h3>
+      <p data-i18n-html="card4b"><code>/data/n8n</code> zit in de
+      restic-back-up. De database wordt niet live gekopieerd maar via de
+      sqlite-backup-API, zodat een run halverwege geen half bestand
+      oplevert.</p>
+    </div>
+  </div>
+
+  <h2 data-i18n="wfTitle">De drie workflows</h2>
+  <table>
+    <thead>
+      <tr>
+        <th data-i18n="thWorkflow">Workflow</th>
+        <th data-i18n="thWhen">Wanneer</th>
+        <th data-i18n="thWhat">Wat hij doet</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Wildpluk radar check</b></td>
+        <td data-i18n="wf1w">elke 15 minuten</td>
+        <td data-i18n-html="wf1d">Haalt de open storingen op, vergelijkt ze met de
+        vorige run en meldt alleen een <b>wijziging</b>: nieuw open of net
+        opgelost. Ongewijzigd is stil.</td>
+      </tr>
+      <tr>
+        <td><b>Radar dagoverzicht</b></td>
+        <td data-i18n="wf2w">dagelijks 08:00</td>
+        <td data-i18n-html="wf2d">Eén bericht per dag, ook als er niets
+        veranderde: 24 uur nieuw en opgelost, hoeveel er open staan en het
+        stoplicht per site.</td>
+      </tr>
+      <tr>
+        <td><b>Radar 6-uurscheck</b></td>
+        <td data-i18n="wf3w">elke 6 uur</td>
+        <td data-i18n-html="wf3d">Vangnet naast de 15-minutencheck. Meldt de open
+        storingen opnieuw zolang er iets openstaat, en zwijgt als alles groen
+        is.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 data-i18n="runTitle">Hoe een run eruitziet</h2>
+  <p data-i18n="runLede">De keten is expres kort: geen tientallen nodes, geen
+  externe diensten ertussen.</p>
+  <div class="chain">
+    <span>Schedule Trigger</span><i>→</i>
+    <span data-i18n-html="chain2">HTTP Request: <code>/api/outages</code></span><i>→</i>
+    <span data-i18n="chain3">Code: vergelijk met vorige run</span><i>→</i>
+    <span data-i18n="chain4">Telegram: alleen bij verschil</span>
+  </div>
+  <p data-i18n-html="runBody">De container bereikt de site via de docker-bridge op
+  <code>172.17.0.1:8080</code>, dus er hoeft geen publieke URL aan te pas te
+  komen. Wat hij de vorige run zag, bewaart hij in de workflow zelf; daarom
+  stuurt hij één melding per nieuwe of afgesloten storing in plaats van elke
+  kwartier hetzelfde bericht. Elke regel begint met het stoplicht van die
+  melding: rood voor een nieuwe storing, groen voor een afgesloten storing.</p>
+
+  <h2 data-i18n="manageTitle">Beheren</h2>
+  <p data-i18n-html="manageBody">De beheerpagina <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a>
+  toont de containerstatus, de workflows met hun trigger en volgende run, de
+  laatste uitvoeringen en de outage-kaarten. Daar kun je een workflow aan- of
+  uitzetten en het schema wijzigen.</p>
+  <p class="tag" data-i18n="manageNote">Die pagina hoort bij de site op de VPS en
+  vraagt voor schrijfacties een beheer-token; op deze statische pagina is niets
+  te bedienen.</p>
+
+  <div class="note">
+    <p><b data-i18n="noteTitle">Waarom geen live-cijfers hier?</b></p>
+    <p data-i18n-html="noteBody">Elke bezoeker die deze pagina opent zou dan een
+    verzoek doen aan de VPS. Dat is precies het API-verkeer dat omlaag moet. De
+    status staat daarom op <code>/n8n_front</code>, waar je hem zelf opvraagt, en
+    niet in de achtergrond op elke paginaweergave.</p>
+  </div>
+</main>
+
+<footer>
+  <span data-i18n="foot1">n8n op de EepsHub</span> ·
+  <a href="../" data-i18n="footLink">terug naar de landing</a>
+</footer>
+
+<script>
+  (function () {
+    var I18N = {
+      nl: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · workflows`,
+        h1: `n8n op de EepsHub`,
+        lede: `De EepsHub heeft één automatiseerder: n8n. Geen cron-bestand dat iemand ooit heeft geschreven en waar niemand meer naar kijkt, maar een workflow die je in de browser kunt openen, uitlezen en uitzetten. Op dit moment doet hij één ding goed: de radar in de gaten houden en alleen iets zeggen als er iets verandert.`,
+        source: `Deze pagina is een uitleg, geen dashboard. Cijfers en workflow-namen staan in de tekst en worden met de hand bijgehouden.`,
+        whatTitle: `Wat er draait`,
+        card1t: `Eén container`,
+        card1b: `n8n in Docker, versie gepind op <code>n8nio/n8n:2.46.4</code> — nooit <code>latest</code>. SQLite als opslag: geen Postgres, geen Redis, geen queue mode. Begrensd op 1,5 CPU en 1,5 GB geheugen, met een healthcheck op <code>/healthz</code> en logrotatie.`,
+        card2t: `Niet naar buiten`,
+        card2b: `De container luistert alleen op <code>127.0.0.1:5678</code>. Er komt geen poort open in de firewall; je komt er met een SSH-tunnel en dan <code>http://localhost:5678</code> in je eigen browser. Data staat in <code>/data/n8n/data</code>, de sleutel waarmee credentials versleuteld zijn in <code>/data/n8n/compose/.env</code>.`,
+        card3t: `Meldingen via Telegram`,
+        card3b: `Eén bot, één credential. Geen mailprovider, geen webhook naar buiten. Gaat er iets mis, dan komt het bericht in een privéchat, niet op een publiek kanaal.`,
+        card4t: `Back-up`,
+        card4b: `<code>/data/n8n</code> zit in de restic-back-up. De database wordt niet live gekopieerd maar via de sqlite-backup-API, zodat een run halverwege geen half bestand oplevert.`,
+        wfTitle: `De drie workflows`,
+        thWorkflow: `Workflow`, thWhen: `Wanneer`, thWhat: `Wat hij doet`,
+        wf1w: `elke 15 minuten`,
+        wf1d: `Haalt de open storingen op, vergelijkt ze met de vorige run en meldt alleen een <b>wijziging</b>: nieuw open of net opgelost. Ongewijzigd is stil.`,
+        wf2w: `dagelijks 08:00`,
+        wf2d: `Eén bericht per dag, ook als er niets veranderde: 24 uur nieuw en opgelost, hoeveel er open staan en het stoplicht per site.`,
+        wf3w: `elke 6 uur`,
+        wf3d: `Vangnet naast de 15-minutencheck. Meldt de open storingen opnieuw zolang er iets openstaat, en zwijgt als alles groen is.`,
+        runTitle: `Hoe een run eruitziet`,
+        runLede: `De keten is expres kort: geen tientallen nodes, geen externe diensten ertussen.`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code: vergelijk met vorige run`,
+        chain4: `Telegram: alleen bij verschil`,
+        runBody: `De container bereikt de site via de docker-bridge op <code>172.17.0.1:8080</code>, dus er hoeft geen publieke URL aan te pas te komen. Wat hij de vorige run zag, bewaart hij in de workflow zelf; daarom stuurt hij één melding per nieuwe of afgesloten storing in plaats van elke kwartier hetzelfde bericht. Elke regel begint met het stoplicht van die melding: rood voor een nieuwe storing, groen voor een afgesloten storing.`,
+        manageTitle: `Beheren`,
+        manageBody: `De beheerpagina <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> toont de containerstatus, de workflows met hun trigger en volgende run, de laatste uitvoeringen en de outage-kaarten. Daar kun je een workflow aan- of uitzetten en het schema wijzigen.`,
+        manageNote: `Die pagina hoort bij de site op de VPS en vraagt voor schrijfacties een beheer-token; op deze statische pagina is niets te bedienen.`,
+        noteTitle: `Waarom geen live-cijfers hier?`,
+        noteBody: `Elke bezoeker die deze pagina opent zou dan een verzoek doen aan de VPS. Dat is precies het API-verkeer dat omlaag moet. De status staat daarom op <code>/n8n_front</code>, waar je hem zelf opvraagt, en niet in de achtergrond op elke paginaweergave.`,
+        foot1: `n8n op de EepsHub`, footLink: `terug naar de landing`
+      },
+      en: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · workflows`,
+        h1: `n8n on the EepsHub`,
+        lede: `The EepsHub has exactly one automator: n8n. Not a cron file someone wrote once and nobody looks at any more, but a workflow you can open in the browser, read and switch off. Right now it does one thing well: watch the radar and speak up only when something changes.`,
+        source: `This page is an explanation, not a dashboard. Numbers and workflow names live in the text and are updated by hand.`,
+        whatTitle: `What runs`,
+        card1t: `One container`,
+        card1b: `n8n in Docker, version pinned to <code>n8nio/n8n:2.46.4</code> — never <code>latest</code>. SQLite for storage: no Postgres, no Redis, no queue mode. Capped at 1.5 CPU and 1.5 GB of memory, with a healthcheck on <code>/healthz</code> and log rotation.`,
+        card2t: `Not exposed`,
+        card2b: `The container listens on <code>127.0.0.1:5678</code> only. No port is opened in the firewall; you get in over an SSH tunnel and open <code>http://localhost:5678</code> in your own browser. Data lives in <code>/data/n8n/data</code>, the key that encrypts credentials in <code>/data/n8n/compose/.env</code>.`,
+        card3t: `Telegram alerts`,
+        card3b: `One bot, one credential. No mail provider, no outbound webhook. When something breaks, the message lands in a private chat, not on a public channel.`,
+        card4t: `Back-up`,
+        card4b: `<code>/data/n8n</code> is part of the restic back-up. The database is not copied live; it goes through the sqlite backup API, so a run halfway through never leaves half a file.`,
+        wfTitle: `The three workflows`,
+        thWorkflow: `Workflow`, thWhen: `When`, thWhat: `What it does`,
+        wf1w: `every 15 minutes`,
+        wf1d: `Fetches the open outages, compares them with the previous run and reports only a <b>change</b>: newly open or just resolved. Unchanged stays silent.`,
+        wf2w: `daily at 08:00`,
+        wf2d: `One message a day, even when nothing changed: new and resolved over 24 hours, how many are open and the traffic light per site.`,
+        wf3w: `every 6 hours`,
+        wf3d: `Safety net next to the 15-minute check. Repeats the open outages for as long as something is open, and stays quiet when everything is green.`,
+        runTitle: `What a run looks like`,
+        runLede: `The chain is deliberately short: no dozens of nodes, no external services in between.`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code: compare with previous run`,
+        chain4: `Telegram: only on a difference`,
+        runBody: `The container reaches the site over the docker bridge at <code>172.17.0.1:8080</code>, so no public URL is involved. What it saw on the previous run is stored in the workflow itself; that is why it sends one message per new or resolved outage instead of the same message every quarter of an hour. Every line starts with that message's traffic light: red for a new outage, green for one that closed.`,
+        manageTitle: `Managing it`,
+        manageBody: `The admin page <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> shows the container status, the workflows with their trigger and next run, the latest executions and the outage cards. There you can switch a workflow on or off and change the schedule.`,
+        manageNote: `That page belongs to the site on the VPS and asks for an admin token for writes; on this static page there is nothing to operate.`,
+        noteTitle: `Why no live numbers here?`,
+        noteBody: `Every visitor opening this page would send a request to the VPS. That is exactly the API traffic that has to come down. The status therefore lives on <code>/n8n_front</code>, where you ask for it yourself, and not in the background on every page view.`,
+        foot1: `n8n on the EepsHub`, footLink: `back to the landing`
+      },
+      de: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · Workflows`,
+        h1: `n8n auf der EepsHub`,
+        lede: `Die EepsHub hat genau einen Automatisierer: n8n. Keine cron-Datei, die jemand irgendwann geschrieben hat und in die niemand mehr schaut, sondern ein Workflow, den du im Browser öffnen, lesen und abschalten kannst. Im Moment macht er eine Sache gut: das Radar im Blick behalten und nur etwas sagen, wenn sich etwas ändert.`,
+        source: `Diese Seite ist eine Erklärung, kein Dashboard. Zahlen und Workflow-Namen stehen im Text und werden von Hand gepflegt.`,
+        whatTitle: `Was läuft`,
+        card1t: `Ein Container`,
+        card1b: `n8n in Docker, Version festgenagelt auf <code>n8nio/n8n:2.46.4</code> — nie <code>latest</code>. SQLite als Speicher: kein Postgres, kein Redis, kein Queue-Mode. Begrenzt auf 1,5 CPU und 1,5 GB Speicher, mit Healthcheck auf <code>/healthz</code> und Logrotation.`,
+        card2t: `Nicht nach außen`,
+        card2b: `Der Container lauscht nur auf <code>127.0.0.1:5678</code>. In der Firewall geht kein Port auf; du kommst über einen SSH-Tunnel hinein und öffnest <code>http://localhost:5678</code> im eigenen Browser. Die Daten liegen in <code>/data/n8n/data</code>, der Schlüssel für die verschlüsselten Credentials in <code>/data/n8n/compose/.env</code>.`,
+        card3t: `Meldungen über Telegram`,
+        card3b: `Ein Bot, ein Credential. Kein Mailprovider, kein Webhook nach außen. Geht etwas schief, landet die Nachricht in einem privaten Chat, nicht auf einem öffentlichen Kanal.`,
+        card4t: `Back-up`,
+        card4b: `<code>/data/n8n</code> ist im restic-Back-up. Die Datenbank wird nicht live kopiert, sondern über die sqlite-Backup-API, damit ein Lauf zur Hälfte keine halbe Datei hinterlässt.`,
+        wfTitle: `Die drei Workflows`,
+        thWorkflow: `Workflow`, thWhen: `Wann`, thWhat: `Was er tut`,
+        wf1w: `alle 15 Minuten`,
+        wf1d: `Holt die offenen Störungen, vergleicht sie mit dem letzten Lauf und meldet nur eine <b>Änderung</b>: neu offen oder gerade behoben. Unverändert bleibt still.`,
+        wf2w: `täglich 08:00`,
+        wf2d: `Eine Nachricht pro Tag, auch wenn sich nichts geändert hat: neu und behoben in 24 Stunden, wie viele offen sind und die Ampel pro Site.`,
+        wf3w: `alle 6 Stunden`,
+        wf3d: `Sicherheitsnetz neben dem 15-Minuten-Check. Meldet die offenen Störungen erneut, solange etwas offen ist, und schweigt, wenn alles grün ist.`,
+        runTitle: `Wie ein Lauf aussieht`,
+        runLede: `Die Kette ist absichtlich kurz: keine Dutzende Nodes, keine externen Dienste dazwischen.`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code: mit letztem Lauf vergleichen`,
+        chain4: `Telegram: nur bei Unterschied`,
+        runBody: `Der Container erreicht die Site über die Docker-Bridge auf <code>172.17.0.1:8080</code>, eine öffentliche URL ist also nicht nötig. Was er im letzten Lauf gesehen hat, merkt er sich im Workflow selbst; deshalb schickt er eine Nachricht pro neuer oder beendeter Störung statt alle Viertelstunde dieselbe. Jede Zeile beginnt mit der Ampel dieser Meldung: rot für eine neue Störung, grün für eine beendete.`,
+        manageTitle: `Verwalten`,
+        manageBody: `Die Verwaltungsseite <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> zeigt den Containerstatus, die Workflows mit Trigger und nächstem Lauf, die letzten Ausführungen und die Outage-Karten. Dort kannst du einen Workflow an- oder abschalten und den Zeitplan ändern.`,
+        manageNote: `Diese Seite gehört zur Site auf dem VPS und verlangt für Schreibzugriffe ein Admin-Token; auf dieser statischen Seite gibt es nichts zu bedienen.`,
+        noteTitle: `Warum hier keine Live-Zahlen?`,
+        noteBody: `Jeder Besucher dieser Seite würde eine Anfrage an den VPS schicken. Genau dieser API-Verkehr soll runter. Der Status steht deshalb auf <code>/n8n_front</code>, wo du ihn selbst abfragst, und nicht im Hintergrund bei jedem Seitenaufruf.`,
+        foot1: `n8n auf der EepsHub`, footLink: `zurück zur Landing`
+      },
+      bg: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · работни потоци`,
+        h1: `n8n в EepsHub`,
+        lede: `EepsHub има точно един автоматизатор: n8n. Не cron файл, който някой някога е писал и никой вече не поглежда, а работен поток, който отваряш в браузъра, четеш и изключваш. В момента той прави едно нещо добре: следи радара и казва нещо само когато се промени.`,
+        source: `Тази страница е обяснение, не табло. Числата и имената на потоците стоят в текста и се обновяват на ръка.`,
+        whatTitle: `Какво работи`,
+        card1t: `Един контейнер`,
+        card1b: `n8n в Docker, версия, закована на <code>n8nio/n8n:2.46.4</code> — никога <code>latest</code>. SQLite за хранилище: без Postgres, без Redis, без queue mode. Ограничен на 1,5 CPU и 1,5 GB памет, с healthcheck на <code>/healthz</code> и ротация на логовете.`,
+        card2t: `Не е отворен навън`,
+        card2b: `Контейнерът слуша само на <code>127.0.0.1:5678</code>. Във firewall-а не се отваря порт; влизаш през SSH тунел и отваряш <code>http://localhost:5678</code> в собствения си браузър. Данните са в <code>/data/n8n/data</code>, ключът, с който се криптират credentials, е в <code>/data/n8n/compose/.env</code>.`,
+        card3t: `Известия през Telegram`,
+        card3b: `Един бот, един credential. Без доставчик на имейл, без webhook навън. Ако нещо се обърка, съобщението отива в частен чат, не в публичен канал.`,
+        card4t: `Back-up`,
+        card4b: `<code>/data/n8n</code> е в restic back-up-а. Базата не се копира в движение, а през sqlite backup API, за да не остави прекъснат run половин файл.`,
+        wfTitle: `Трите работни потока`,
+        thWorkflow: `Поток`, thWhen: `Кога`, thWhat: `Какво прави`,
+        wf1w: `на всеки 15 минути`,
+        wf1d: `Изтегля отворените аварии, сравнява ги с предишния run и съобщава само <b>промяна</b>: ново отворено или току-що решено. Без промяна — мълчи.`,
+        wf2w: `всеки ден 08:00`,
+        wf2d: `Едно съобщение на ден, дори когато нищо не се е променило: нови и решени за 24 часа, колко са отворени и светофарът по сайт.`,
+        wf3w: `на всеки 6 часа`,
+        wf3d: `Предпазна мрежа до 15-минутната проверка. Повтаря отворените аварии, докато има отворено, и мълчи, когато всичко е зелено.`,
+        runTitle: `Как изглежда един run`,
+        runLede: `Веригата е умишлено къса: без десетки nodes, без външни услуги по средата.`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code: сравнение с предишния run`,
+        chain4: `Telegram: само при разлика`,
+        runBody: `Контейнерът стига до сайта през docker bridge на <code>172.17.0.1:8080</code>, така че публичен URL не е нужен. Какво е видял в предишния run помни в самия поток; затова праща едно съобщение за нова или приключила авария, вместо едно и също на всеки петнайсет минути. Всеки ред започва със светофара на съобщението: червено за нова авария, зелено за приключила.`,
+        manageTitle: `Управление`,
+        manageBody: `Админ страницата <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> показва статуса на контейнера, потоците с trigger и следващ run, последните изпълнения и outage картите. Там включваш или изключваш поток и променяш графика.`,
+        manageNote: `Тази страница е част от сайта на VPS и иска админ токен за запис; на тази статична страница няма какво да се управлява.`,
+        noteTitle: `Защо тук няма живи числа?`,
+        noteBody: `Всеки посетител на тази страница би отправил заявка към VPS. Точно този API трафик трябва да намалее. Затова статусът е на <code>/n8n_front</code>, където го питаш сам, а не във фонов режим при всяко отваряне на страница.`,
+        foot1: `n8n в EepsHub`, footLink: `обратно към landing`
+      },
+      pl: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · workflow`,
+        h1: `n8n na EepsHub`,
+        lede: `EepsHub ma dokładnie jednego automatyzatora: n8n. Nie plik cron, który ktoś kiedyś napisał i do którego nikt już nie zagląda, tylko workflow, który otworzysz w przeglądarce, przeczytasz i wyłączysz. Na razie robi dobrze jedną rzecz: pilnuje radaru i odzywa się dopiero, gdy coś się zmieni.`,
+        source: `Ta strona to wyjaśnienie, nie dashboard. Liczby i nazwy workflow są w tekście i uzupełniane ręcznie.`,
+        whatTitle: `Co działa`,
+        card1t: `Jeden kontener`,
+        card1b: `n8n w Dockerze, wersja przypięta na <code>n8nio/n8n:2.46.4</code> — nigdy <code>latest</code>. SQLite jako magazyn: bez Postgresa, bez Redisa, bez queue mode. Ograniczony do 1,5 CPU i 1,5 GB pamięci, z healthcheckiem na <code>/healthz</code> i rotacją logów.`,
+        card2t: `Niewystawiony na świat`,
+        card2b: `Kontener nasłuchuje tylko na <code>127.0.0.1:5678</code>. W firewallu nie otwiera się żaden port; wchodzisz przez tunel SSH i otwierasz <code>http://localhost:5678</code> we własnej przeglądarce. Dane leżą w <code>/data/n8n/data</code>, klucz szyfrujący credentials w <code>/data/n8n/compose/.env</code>.`,
+        card3t: `Powiadomienia przez Telegram`,
+        card3b: `Jeden bot, jeden credential. Żadnego dostawcy maili, żadnego webhooka na zewnątrz. Gdy coś się psuje, wiadomość trafia na prywatny czat, nie na publiczny kanał.`,
+        card4t: `Back-up`,
+        card4b: `<code>/data/n8n</code> jest w back-upie restic. Baza nie jest kopiowana na żywo, tylko przez sqlite backup API, żeby przerwany run nie zostawił połowy pliku.`,
+        wfTitle: `Trzy workflow`,
+        thWorkflow: `Workflow`, thWhen: `Kiedy`, thWhat: `Co robi`,
+        wf1w: `co 15 minut`,
+        wf1d: `Pobiera otwarte awarie, porównuje z poprzednim runem i zgłasza tylko <b>zmianę</b>: nowa otwarta albo właśnie rozwiązana. Bez zmian — cisza.`,
+        wf2w: `codziennie 08:00`,
+        wf2d: `Jedna wiadomość dziennie, nawet gdy nic się nie zmieniło: nowe i rozwiązane w ciągu 24 godzin, ile jest otwartych i sygnalizacja świetlna na stronę.`,
+        wf3w: `co 6 godzin`,
+        wf3d: `Siatka bezpieczeństwa obok kontroli co 15 minut. Powtarza otwarte awarie, dopóki coś jest otwarte, i milczy, gdy wszystko jest zielone.`,
+        runTitle: `Jak wygląda run`,
+        runLede: `Łańcuch jest celowo krótki: żadnych dziesiątek nodes, żadnych zewnętrznych usług pośrodku.`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code: porównanie z poprzednim runem`,
+        chain4: `Telegram: tylko przy różnicy`,
+        runBody: `Kontener dociera do strony przez docker bridge na <code>172.17.0.1:8080</code>, więc publiczny URL nie jest potrzebny. To, co widział w poprzednim runie, pamięta w samym workflow; dlatego wysyła jedną wiadomość na nową lub zamkniętą awarię, zamiast co kwadrans tej samej. Każdy wiersz zaczyna się od sygnalizacji tej wiadomości: czerwony dla nowej awarii, zielony dla zamkniętej.`,
+        manageTitle: `Zarządzanie`,
+        manageBody: `Strona administracyjna <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> pokazuje status kontenera, workflow z triggerem i następnym runem, ostatnie wykonania i karty outage. Tam włączasz lub wyłączasz workflow i zmieniasz harmonogram.`,
+        manageNote: `Ta strona należy do serwisu na VPS i wymaga tokenu administratora do zapisu; na tej statycznej stronie nie ma czym sterować.`,
+        noteTitle: `Dlaczego nie ma tu liczb na żywo?`,
+        noteBody: `Każdy odwiedzający tę stronę wysłałby żądanie do VPS. To dokładnie ten ruch API, który ma zmaleć. Dlatego status jest na <code>/n8n_front</code>, gdzie sam go odpytujesz, a nie w tle przy każdym wyświetleniu strony.`,
+        foot1: `n8n na EepsHub`, footLink: `powrót do landing`
+      },
+      zh: {
+        pageTitle: `n8n · Eeps Site`,
+        kicker: `EepsHub · 工作流`,
+        h1: `EepsHub 上的 n8n`,
+        lede: `EepsHub 只有一个自动化工具：n8n。不是某个曾经写过、再也没人看的 cron 文件，而是一条可以在浏览器里打开、读懂、关掉的工作流。眼下它把一件事做好：盯着雷达，只在有变化时才出声。`,
+        source: `这一页是说明，不是仪表盘。数字和工作流名称写在正文里，靠手工更新。`,
+        whatTitle: `跑着什么`,
+        card1t: `一个容器`,
+        card1b: `n8n 跑在 Docker 里，版本钉死在 <code>n8nio/n8n:2.46.4</code>，从不用 <code>latest</code>。存储用 SQLite：没有 Postgres、没有 Redis、没有 queue mode。限制在 1.5 CPU 和 1.5 GB 内存，带 <code>/healthz</code> 健康检查和日志轮转。`,
+        card2t: `不对外开放`,
+        card2b: `容器只监听 <code>127.0.0.1:5678</code>。防火墙不开端口；用 SSH 隧道进去，在本地浏览器打开 <code>http://localhost:5678</code>。数据在 <code>/data/n8n/data</code>，加密凭据的密钥在 <code>/data/n8n/compose/.env</code>。`,
+        card3t: `通过 Telegram 通知`,
+        card3b: `一个 bot，一份凭据。没有邮件服务商，没有对外的 webhook。出事时消息进私聊，不进公开频道。`,
+        card4t: `备份`,
+        card4b: `<code>/data/n8n</code> 在 restic 备份里。数据库不是实时复制，而是走 sqlite backup API，这样跑到一半也不会留下半个文件。`,
+        wfTitle: `三条工作流`,
+        thWorkflow: `工作流`, thWhen: `何时`, thWhat: `做什么`,
+        wf1w: `每 15 分钟`,
+        wf1d: `拉取未解决的故障，与上一次运行比较，只报告<b>变化</b>：新出现或刚刚解决。没变化就不出声。`,
+        wf2w: `每天 08:00`,
+        wf2d: `每天一条消息，即使什么都没变：24 小时内新增和解决、当前多少未解决，以及每个站点的红绿灯。`,
+        wf3w: `每 6 小时`,
+        wf3d: `15 分钟检查之外的保险。只要还有未解决的故障就重复报告，全绿时保持安静。`,
+        runTitle: `一次运行长什么样`,
+        runLede: `链条故意很短：没有几十个节点，中间没有第三方服务。`,
+        chain2: `HTTP Request: <code>/api/outages</code>`,
+        chain3: `Code：与上次运行对比`,
+        chain4: `Telegram：只在有差异时`,
+        runBody: `容器通过 docker bridge 上的 <code>172.17.0.1:8080</code> 访问站点，所以不需要公网 URL。上次看到的内容存在工作流自己里；因此每条新出现或已结束的故障只发一次，而不是每刻钟重复一遍。每一行都以这条消息的红绿灯开头：红色表示新故障，绿色表示已结束。`,
+        manageTitle: `管理`,
+        manageBody: `管理页 <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front">/n8n_front</a> 显示容器状态、各工作流的触发器和下次运行、最近的执行以及 outage 卡片。在那里可以开关工作流、改时间表。`,
+        manageNote: `那一页属于 VPS 上的站点，写操作需要管理员 token；这个静态页面上没有可操作的东西。`,
+        noteTitle: `为什么这里没有实时数字？`,
+        noteBody: `每个打开这一页的访客都会向 VPS 发一个请求。那正是要压下去的 API 流量。所以状态放在 <code>/n8n_front</code>，由你自己去问，而不是在每次页面浏览时后台拉取。`,
+        foot1: `EepsHub 上的 n8n`, footLink: `返回首页`
+      }
+    };
+
+    var current = 'nl';
+
+    function t(key) {
+      var lang = I18N[current] || I18N.nl;
+      var val = lang[key];
+      if (val === undefined || val === null) { val = I18N.nl[key]; }
+      return val === undefined || val === null ? '' : val;
+    }
+
+    function applyLang(lang) {
+      current = I18N[lang] ? lang : 'nl';
+      document.documentElement.lang = current;
+      document.title = t('pageTitle');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-html]'), function (el) {
+        el.innerHTML = t(el.getAttribute('data-i18n-html'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.lang-btn'), function (btn) {
+        btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === current));
+      });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.lang-btn'), function (btn) {
+      btn.addEventListener('click', function () { applyLang(btn.getAttribute('data-lang')); });
+    });
+
+    /* taalkeuzemenu: één knopje, klapt open en sluit bij een klik ernaast */
+    (function taalMenu() {
+      var bar = document.getElementById('langbar');
+      var knop = document.getElementById('langToggle');
+      if (!bar || !knop) return;
+      function zet(open) {
+        bar.classList.toggle('open', open);
+        knop.setAttribute('aria-expanded', String(open));
+      }
+      knop.addEventListener('click', function (e) {
+        e.stopPropagation();
+        zet(!bar.classList.contains('open'));
+      });
+      Array.prototype.forEach.call(bar.querySelectorAll('.lang-btn'), function (btn) {
+        btn.addEventListener('click', function () { zet(false); });
+      });
+      document.addEventListener('click', function (e) {
+        if (!bar.contains(e.target)) zet(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && bar.classList.contains('open')) zet(false);
+      });
+    })();
+
+    applyLang('nl');
+  })();
+</script>
+</body>
+</html>
