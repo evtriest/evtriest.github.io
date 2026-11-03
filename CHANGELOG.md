@@ -1,9 +1,18 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.33.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.34.0` · **Laatst bijgewerkt:** 2026-11-03
 
-## 🟩 1.33.0 — 2026-11-03 — kleine lettertjes en een dode link
+## 🟩 1.34.0 — 2026-11-03 — gereedschap in een eigen tab
+
+- **Footer-links**: `Tekst-editor`, `n8n` en `API` openen in een nieuw tabblad
+  (`target="_blank" rel="noopener"`), zodat een bezoeker de pagina waar hij
+  stond niet kwijt is. Geldt voor de landingspagina's en de wildpluk-voorpagina.
+- **`radar.html` / `site-concept.html` / `html-editor.html`** hadden geen
+  footer; die hebben nu dezelfde kleine, gedempte rij onderaan.
+- **`__version__`** → `1.34.0`.
+
+ — 2026-11-03 — kleine lettertjes en een dode link
 
 - **Footer**: de rij `Tekst-editor · n8n · API` staat nu opzettelijk klein en
   gedempt (`.foot-tools`, 0.7rem, `opacity:.7`, hover licht op), zodat hij

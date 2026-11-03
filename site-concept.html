@@ -171,6 +171,13 @@
     .lijst{border-right:0;border-bottom:1px solid var(--line)}
     .teller{margin-left:0}
   }
+  /* gereedschap onderaan: klein en gedempt */
+  footer{margin-top:2rem;padding:1rem 18px 1.4rem;text-align:center;font-size:.72rem;
+    color:var(--faint,#a9a291);border-top:1px solid rgba(232,220,192,.14)}
+  footer a{color:var(--sand,inherit)}
+  footer .foot-tools{margin:0;font-size:.7rem;letter-spacing:.03em;opacity:.7}
+  footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  footer .foot-tools a:hover{opacity:1;text-decoration-thickness:2px}
 </style>
 </head>
 <body>
@@ -561,5 +568,13 @@
   if (bestaand) laadLijst();
 })();
 </script>
+<footer>
+  <p class="foot-tools">
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/html-editor.html" target="_blank" rel="noopener">✏️ Tekst-editor</a> ·
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front" target="_blank" rel="noopener">⚡ n8n</a> ·
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/api_page" target="_blank" rel="noopener">🔌 API</a>
+  </p>
+</footer>
+
 </body>
 </html>
