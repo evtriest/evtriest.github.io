@@ -12,7 +12,7 @@
   footer; die hebben nu dezelfde kleine, gedempte rij onderaan.
 - **`__version__`** → `1.34.0`.
 
- — 2026-11-03 — kleine lettertjes en een dode link
+## 🟩 1.33.0 — 2026-11-03 — kleine lettertjes en een dode link
 
 - **Footer**: de rij `Tekst-editor · n8n · API` staat nu opzettelijk klein en
   gedempt (`.foot-tools`, 0.7rem, `opacity:.7`, hover licht op), zodat hij
