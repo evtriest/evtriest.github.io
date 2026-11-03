@@ -1,7 +1,17 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.34.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.34.1` · **Laatst bijgewerkt:** 2026-11-03
+
+## 🟩 1.34.1 — 2026-11-03 — footer op de vaste-hoogtepagina's
+
+- **`radar.html`, `site-concept.html`, `html-editor.html`**: die pagina's
+  zetten `html,body` op `height:100%` met `overflow:hidden`, waardoor de
+  footer in de normale flow buiten beeld viel (en bij de twee
+  flex-kolommen de layout zou indrukken). De rij staat daar nu als kleine
+  vaste overlay midden onderaan (`position:fixed`, `bottom:8px`,
+  `opacity:.5`, hover `.9`).
+- **`__version__`** → `1.34.1`.
 
 ## 🟩 1.34.0 — 2026-11-03 — gereedschap in een eigen tab
 

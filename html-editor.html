@@ -179,13 +179,15 @@
     select{max-width:44vw}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-  /* gereedschap onderaan: klein en gedempt */
-  footer{margin-top:2rem;padding:1rem 18px 1.4rem;text-align:center;font-size:.72rem;
-    color:var(--faint,#a9a291);border-top:1px solid rgba(232,220,192,.14)}
-  footer a{color:var(--sand,inherit)}
-  footer .foot-tools{margin:0;font-size:.7rem;letter-spacing:.03em;opacity:.7}
+  /* gereedschap onderaan: klein, gedempt en buiten de lay-out — deze
+     pagina's hebben een vaste hoogte met overflow:hidden */
+  footer{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:15;
+    margin:0;padding:0;border:0;background:transparent;font-size:.68rem;
+    letter-spacing:.03em;color:inherit;opacity:.5;pointer-events:auto}
+  footer:hover{opacity:.9}
+  footer .foot-tools{margin:0;font-size:.68rem}
   footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-  footer .foot-tools a:hover{opacity:1;text-decoration-thickness:2px}
+  footer .foot-tools a:hover{text-decoration-thickness:2px}
 </style>
 </head>
 <body>
