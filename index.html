@@ -538,6 +538,28 @@
   footer .foot-tools{margin-top:1rem;font-size:.7rem;letter-spacing:.03em;opacity:.7}
   footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   footer .foot-tools a:hover{opacity:1;text-decoration-thickness:2px}
+  /* storingsbalk: machine in cooldown — rood, direct onder de ticker */
+  .cooldown{
+    position:relative;z-index:80;flex:none;margin:0;padding:.7rem 1rem .8rem;
+    background:#8b1111;border-bottom:3px solid #ff4d4d;
+    color:#fff;font-family:var(--sans);
+    box-shadow:0 6px 22px rgba(0,0,0,.55);
+  }
+  .cooldown-head{margin:0;font-size:.92rem;line-height:1.45;font-weight:700;letter-spacing:.01em}
+  .cooldown-head time{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cooldown-nl{font-weight:600;color:#ffd9d9;white-space:nowrap}
+  .cooldown-json{
+    margin:.55rem 0 0;padding:.55rem .7rem;overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.74rem;line-height:1.5;
+    background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.55);border-radius:6px;
+    color:#ffecec;white-space:pre-wrap;word-break:break-word;
+  }
+  @media(max-width:560px){
+    .cooldown-head{font-size:.84rem}
+    .cooldown-json{font-size:.68rem}
+    .cooldown-nl{display:block;white-space:normal}
+  }
 </style>
 </head>
 <body>
@@ -558,6 +580,11 @@
   <div class="ticker-viewport">
     <div class="ticker-track" id="ticker-track"><span class="ticker-item">laden…</span></div>
   </div>
+</div>
+<!-- machine in cooldown: melding bovenaan, in het rood -->
+<div class="cooldown" role="alert" aria-live="assertive">
+  <p class="cooldown-head">⚠️ Machine is cooling down until <time datetime="2026-11-04T03:11:04Z">2026-11-04T03:11:04Z</time> <span class="cooldown-nl">· Nederlandse tijd: 04:11:04 CET (2026-11-04, UTC+1)</span></p>
+  <pre class="cooldown-json">{"error":{"code":"machine_cooldown","message":"machine is cooling down until 2026-11-04T03:11:04Z","requestId":"","retryable":true,"operationId":null,"docs_url":"https://instabox.sh/docs/errors#machine-cooldown","retryAfterSeconds":7407}}</pre>
 </div>
 <nav class="langbar" id="langbar" aria-label="Taal">
   <button class="lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" title="Taal / language" aria-label="Kies een taal"><span aria-hidden="true">🌐</span></button>
