@@ -212,10 +212,40 @@
     .flag{width:48px;height:48px}
     .chat-log{max-height:40vh}
   }
-  .tag-list{display:flex;flex-wrap:wrap;gap:.45rem .6rem;margin:0 auto 1.4rem;max-width:880px;width:100%;padding:0 20px;box-sizing:border-box}
-  .tag{font-size:.6rem;letter-spacing:.06em;padding:.3em .65em;border-radius:999px;
-    background:rgba(230,162,60,.14);border:1px solid rgba(255,200,97,.35);color:var(--brass-bright);text-decoration:none;cursor:pointer}
-  .tag:hover{background:rgba(230,162,60,.22);border-color:rgba(255,200,97,.55)}
+  /* zoekbalk bovenaan: dezelfde vorm als op de radarpagina */
+  .scan-bar{display:flex;flex-direction:column;align-items:center;gap:.35rem;margin:0 auto 1.4rem;max-width:880px;width:100%;padding:0 20px;box-sizing:border-box}
+  .scan-input-wrap{
+    width:min(520px,100%);display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;
+    border:1px solid rgba(255,200,97,.35);background:rgba(4,10,16,.72);
+    box-shadow:0 0 18px rgba(230,162,60,.12);backdrop-filter:blur(4px);
+  }
+  .scan-input-wrap::before{content:"\203A";color:var(--brass);opacity:.8}
+  .scan-input{
+    flex:1;min-width:0;background:0;border:0;outline:none;color:var(--ink);
+    font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.88rem;letter-spacing:.06em;
+  }
+  .scan-input::placeholder{color:rgba(255,200,97,.38);letter-spacing:.08em}
+  .scan-input-wrap:focus-within{border-color:rgba(255,200,97,.7);box-shadow:0 0 22px rgba(255,200,97,.25)}
+  .scan-count{font-size:.68rem;letter-spacing:.12em;color:rgba(255,200,97,.7);white-space:nowrap}
+  .scan-results{
+    width:min(520px,100%);border:1px solid rgba(232,220,192,.25);background:rgba(4,12,16,.94);
+    max-height:min(40vh,260px);overflow-y:auto;scrollbar-width:thin;
+  }
+  .scan-results[hidden]{display:none}
+  .scan-hit{
+    display:flex;align-items:baseline;gap:.8rem;width:100%;padding:.45rem .8rem;
+    background:0;border:0;border-bottom:1px solid rgba(232,220,192,.08);
+    color:#efece2;font:inherit;font-size:.78rem;text-align:left;cursor:pointer;
+  }
+  .scan-hit:last-child{border-bottom:0}
+  .scan-hit:hover,.scan-hit.is-active{background:rgba(230,162,60,.14);color:var(--brass-bright)}
+  .scan-hit-name{flex:1;letter-spacing:.06em}
+  .scan-hit-value{font-size:.7rem;color:rgba(232,220,192,.55)}
+  .scan-empty{margin:0;padding:.5rem .8rem;font-size:.72rem;letter-spacing:.1em;color:var(--brass-bright)}
+  .scan-flash{animation:scan-flash 1.6s ease}
+  @keyframes scan-flash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 3px rgba(255,200,97,.75)}}
+  @media(max-width:520px){.scan-bar{align-items:stretch}}
   /* password overlay */
   .auth-overlay{position:fixed;inset:0;z-index:1000;background:rgba(4,10,16,.92);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
   .auth-box{background:rgba(10,18,26,.95);border:1px solid rgba(232,220,192,.2);border-radius:14px;padding:2rem;max-width:400px;width:90%;text-align:center}
@@ -235,12 +265,13 @@
 <body>
 <nav class="pagebar" aria-label="Pagina's">
   <div class="pagebar-inner">
-    <a href="natuur.html">🌿 Natuur</a>
+    <a href="index.html" title="EepsHub — landing"><img src="japan-flag.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">EepsHub</a>
     <a href="radar.html">📡 Radar</a>
     <a href="crew.html">⚓ Crew</a>
     <a href="bookmarks.html">📚 Bookmarks</a>
     <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/site-concept.html">📝 Concept</a>
     <a href="n8n.html">🤖 n8n-uitleg</a>
+    <a href="natuur.html">🌿 Natuur</a>
   </div>
 </nav>
 <div class="auth-overlay" id="authOverlay">
@@ -254,7 +285,13 @@
 </div>
 
 <main>
-  <div class="tag-list" id="tag-list"></div>
+  <div class="scan-bar" role="search">
+    <label class="scan-input-wrap" for="scan-input">
+      <input class="scan-input" id="scan-input" type="search" placeholder="zoek: kapitein, iva, vogel, agenda…" autocomplete="off" spellcheck="false" aria-label="Zoek fuzzy in de crew en hun kaartjes" aria-controls="scan-results" aria-autocomplete="list">
+      <span class="scan-count" id="scan-count" aria-live="polite">--/--</span>
+    </label>
+    <div class="scan-results" id="scan-results" role="listbox" aria-label="Zoekresultaten" hidden></div>
+  </div>
 
   <section class="hero">
     <img class="flag" src="pirate-flag.svg" width="58" height="58" alt="Solovlag">
@@ -781,51 +818,198 @@
     agentPaneel({ sectie: 'sectie-vogelgids', agent: 'vogelgids', titel: 'Vogelgeluiden' });
     agentPaneel({ sectie: 'sectie-admin', agent: 'admin', titel: 'Admin' });
 
-    /* ── Taglijst uit de agenda van de kapitein ── */
-    (function laadTags() {
-      var lijst = document.getElementById('tag-list');
-      if (!lijst) return;
-      fetch(API + '/api/agents/kapitein/agenda', { mode: 'cors' })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          var tekst = (d && d.tekst) || '';
-          if (!tekst.trim()) return;
-          var tags = [];
-          tekst.split('\n').forEach(function (regel) {
-            var l = regel.trim();
-            if (/^#{1,2}\s/.test(l)) {
-              l = l.replace(/^#{1,2}\s+/, '').trim();
-            } else if (/^-\s/.test(l)) {
-              l = l.replace(/^-\s+/, '').trim();
-            } else {
-              return;
-            }
-            if (l && tags.indexOf(l) === -1) tags.push(l);
-            if (tags.length >= 24) return;
+    /* ── Zoekbalk: dezelfde fuzzy zoek als op de radarpagina, maar over de
+       crew zelf — elke chatbox en de kaartjes die eronder staan. ── */
+    (function crewZoeker() {
+      var input = document.getElementById('scan-input');
+      var results = document.getElementById('scan-results');
+      var count = document.getElementById('scan-count');
+      if (!input || !results || !count) return;
+      var activeHit = -1;
+
+      /* fuzzy-helpers:start */
+      function normalise(s) {
+        return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+      function editDistance(a, b) {
+        var prev = [], i, j;
+        for (j = 0; j <= b.length; j++) prev[j] = j;
+        for (i = 1; i <= a.length; i++) {
+          var cur = [i];
+          for (j = 1; j <= b.length; j++) {
+            cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+          }
+          prev = cur;
+        }
+        return prev[b.length];
+      }
+      function fuzzyScore(query, text) {
+        var q = normalise(query).trim();
+        var t = normalise(text);
+        if (!q || !t) return 0;
+        var idx = t.indexOf(q);
+        if (idx === 0) return 1000;
+        if (idx > 0) return 800 - Math.min(idx * 4, 200);
+        /* korte zoektermen alleen op echte deelwoorden laten matchen, anders wordt het ruis */
+        if (q.length < 4) return 0;
+        var ti = 0, run = 0, score = 0;
+        for (var k = 0; k < q.length; k++) {
+          var found = t.indexOf(q.charAt(k), ti);
+          if (found === -1) { score = 0; break; }
+          var boundary = found === 0 || !/[a-z0-9]/.test(t.charAt(found - 1));
+          score += 12 + (boundary ? 18 : 0) + Math.min(run, 4) * 6;
+          run = found === ti ? run + 1 : 1;
+          ti = found + 1;
+        }
+        if (score > 0) return score + 60 - Math.min(t.length, 40);
+        var words = t.split(/[^a-z0-9]+/).filter(function (w) { return w.length > 2; });
+        var maxDist = q.length >= 6 ? 2 : 1;
+        var best = 0;
+        for (var w = 0; w < words.length; w++) {
+          if (Math.abs(words[w].length - q.length) > maxDist) continue;
+          var d = editDistance(q, words[w]);
+          if (d === maxDist && d > 1 && words[w].charAt(0) !== q.charAt(0)) continue;
+          if (d <= maxDist) best = Math.max(best, 320 - d * 80);
+        }
+        return best;
+      }
+      /* fuzzy-helpers:end */
+
+      /* De index komt uit de pagina zelf, zodat de kaartjes die later laden
+         meteen meetellen. */
+      function crewDelen() {
+        var delen = [];
+        document.querySelectorAll('section.chat[id]').forEach(function (sectie) {
+          var kop = sectie.querySelector('h2');
+          var tekst = [];
+          sectie.querySelectorAll('.msg, .chat-note').forEach(function (el) {
+            tekst.push(el.textContent.trim());
           });
-          if (!tags.length) return;
-          lijst.innerHTML = '';
-          var crewLinks = {
-            'iva': 'https://evtriest.github.io/crew.html#sectie-bulgaars',
-            'natuurgids': 'https://evtriest.github.io/crew.html#sectie-natuurgids',
-            'vogelgeluiden': 'https://evtriest.github.io/crew.html#sectie-vogelgids',
-            'kapitein': 'https://evtriest.github.io/crew.html#sectie-kapitein',
-            'admin': 'https://evtriest.github.io/crew.html#sectie-admin'
-          };
-          tags.forEach(function (t) {
-            var a = document.createElement('a');
-            a.className = 'tag';
-            var key = t.toLowerCase();
-            if (crewLinks[key]) {
-              a.href = crewLinks[key];
-            } else {
-              a.href = 'https://evtriest.github.io/crew.html';
-            }
-            a.textContent = t;
-            lijst.appendChild(a);
+          delen.push({
+            id: sectie.id,
+            naam: kop ? kop.textContent.trim() : sectie.id,
+            tekst: tekst.join(' '),
+            soort: 'crew'
           });
-        })
-        .catch(function () { /* tags zijn niet kritisch */ });
+        });
+        document.querySelectorAll('.kaarten-wrap[data-agent]').forEach(function (wrap) {
+          var agent = wrap.getAttribute('data-agent');
+          var kaarten = [];
+          wrap.querySelectorAll('.kaart').forEach(function (k) { kaarten.push(k.textContent.trim()); });
+          if (!kaarten.length) return;
+          delen.push({
+            id: 'sectie-' + agent,
+            naam: 'Kaartjes · ' + agent,
+            tekst: kaarten.join(' '),
+            soort: 'kaartje'
+          });
+        });
+        return delen;
+      }
+
+      function deelScore(query, deel) {
+        var best = Math.max(fuzzyScore(query, deel.naam) * 2, fuzzyScore(query, deel.tekst));
+        deel.tekst.split(/[^A-Za-z0-9\u00c0-\u024f-]+/).forEach(function (w) {
+          if (w.length < 3) return;
+          var sc = fuzzyScore(query, w);
+          if (sc > best) best = sc;
+        });
+        return best;
+      }
+
+      function toonDeel(deel) {
+        var doel = document.getElementById(deel.id);
+        if (doel) {
+          doel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          doel.classList.remove('scan-flash');
+          void doel.offsetWidth;
+          doel.classList.add('scan-flash');
+          doel.addEventListener('animationend', function () {
+            doel.classList.remove('scan-flash');
+          }, { once: true });
+        }
+        input.value = '';
+        applySearch();
+        input.focus();
+      }
+
+      function setActiveHit(i) {
+        var hits = results.querySelectorAll('.scan-hit');
+        if (!hits.length) { activeHit = -1; return; }
+        activeHit = (i + hits.length) % hits.length;
+        for (var k = 0; k < hits.length; k++) {
+          hits[k].classList.toggle('is-active', k === activeHit);
+          hits[k].setAttribute('aria-selected', String(k === activeHit));
+        }
+      }
+
+      function applySearch() {
+        var q = input.value.trim();
+        var delen = crewDelen();
+        var matched = [];
+        delen.forEach(function (deel) {
+          deel.score = q ? deelScore(q, deel) : 0;
+          if (q && deel.score > 0) matched.push(deel);
+        });
+        matched.sort(function (a, b) { return b.score - a.score; });
+        count.textContent = q ? matched.length + ' TREFFERS' : delen.length + ' PLEKKEN';
+
+        results.innerHTML = '';
+        if (!q) { results.hidden = true; activeHit = -1; return; }
+        if (!matched.length) {
+          var none = document.createElement('p');
+          none.className = 'scan-empty';
+          none.textContent = 'GEEN TREFFER';
+          results.appendChild(none);
+          results.hidden = false;
+          activeHit = -1;
+          return;
+        }
+        matched.slice(0, 6).forEach(function (deel) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'scan-hit';
+          btn.setAttribute('role', 'option');
+          var name = document.createElement('span');
+          name.className = 'scan-hit-name';
+          name.textContent = deel.naam;
+          var val = document.createElement('span');
+          val.className = 'scan-hit-value';
+          val.textContent = deel.soort;
+          btn.appendChild(name);
+          btn.appendChild(val);
+          btn.addEventListener('click', function () { toonDeel(deel); });
+          results.appendChild(btn);
+        });
+        results.hidden = false;
+        setActiveHit(0);
+      }
+
+      count.textContent = crewDelen().length + ' PLEKKEN';
+      input.addEventListener('input', applySearch);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          input.value = '';
+          applySearch();
+          return;
+        }
+        if (e.key === 'ArrowDown') { e.preventDefault(); setActiveHit(activeHit + 1); return; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); setActiveHit(activeHit - 1); return; }
+        if (e.key !== 'Enter') return;
+        var hits = results.querySelectorAll('.scan-hit');
+        var pick = hits[activeHit >= 0 ? activeHit : 0];
+        if (pick) { e.preventDefault(); pick.click(); }
+      });
+      /* de kaartjes laden na deze IIFE: de teller telt ze mee zodra er een
+         zoekopdracht binnenkomt, dit is alleen de eerste stand. */
+      var eersteKaarten = crewDelen().length;
+      document.querySelectorAll('.kaarten-wrap').forEach(function (wrap) {
+        new MutationObserver(function () {
+          if (!input.value.trim()) count.textContent = crewDelen().length + ' PLEKKEN';
+          else applySearch();
+        }).observe(wrap, { childList: true });
+      });
+      count.textContent = eersteKaarten + ' PLEKKEN';
     })();
 
     /* ── Kaartjes laden per agent ── */

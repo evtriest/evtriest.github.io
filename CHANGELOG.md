@@ -1,7 +1,53 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.35.0` · **Laatst bijgewerkt:** 2026-11-03
+**Huidige versie:** `1.37.0` · **Laatst bijgewerkt:** 2026-11-04
+
+## 🟩 1.37.0 — 2026-11-04 — zoekbalk op de crew-pagina
+
+- **`landing/crew.html` — zoekbalk in plaats van tags**: de taglijst boven de
+  pagina (koppen uit de agenda van de kapitein, elk met een link naar een
+  chatbox) is vervangen door de **zoekbalk van de radarpagina** — `›`-prefix,
+  gecentreerd op `min(520px, 100%)`, monospace invoer met glow bij focus en de
+  teller rechts (`6 PLEKKEN`, of `N TREFFERS` tijdens het zoeken). De kleuren
+  volgen de crew-pagina (brass op donker), niet het groen van de radar.
+- **Wat hij doorzoekt**: de vijf chatboxen (kapitein, Iva, natuurgids,
+  vogelgeluiden, admin) inclusief hun bubbels en notities, plus de kaartjes die
+  per agent laden — die komen via een `MutationObserver` meteen in de index.
+  Dezelfde fuzzy-score als de radar (`fuzzy-helpers`-blok, overgenomen),
+  inclusief bijna-goede spelling.
+- **Klikken of Enter**: de pagina scrolt naar die chatbox, licht hem ~1,6 s
+  op (`.scan-flash`) en leegt de balk. Pijltjes kiezen een treffer, Escape
+  wist het zoekveld — net als op de radar.
+- **`build.py`**: de Pages-versie `landing-gh/site/crew.html` is opnieuw
+  gegenereerd; de oude `laadTags()`-fetch naar `/api/agents/kapitein/agenda`
+  is weg, dus de pagina doet bij het laden geen enkel verzoek meer voor de
+  tags.
+- **`__version__`** → `1.37.0`.
+
+## 🟩 1.36.0 — 2026-11-03 — eigenaar per outage-kaart, wie deed de stap
+
+- **`outages`-tabel**: drie kolommen erbij — `eigenaar` (agent-slug, leeg =
+  niemand), `mens_door` en `akkoord_door`. Bestaande databases krijgen ze via
+  `ALTER TABLE` in `_outage_db()`; `CREATE TABLE IF NOT EXISTS` laat een
+  bestaande tabel immers ongemoeid.
+- **Eigenaar kiezen**: `POST /api/outages` accepteert `eigenaar`, en
+  `POST /api/outages/<id>/eigenaar` zet of wisselt hem (leeg maakt de kaart
+  eigenaarloos). Alleen een slug uit `agents/` met een `AGENTS.md` is geldig;
+  iets anders geeft 400.
+- **Naam, geen slug in beeld**: `_agent_naam()` leest de kop van
+  `agents/<slug>/AGENTS.md` — `# AGENTS.md — Marta (secretaresse)` wordt
+  `Marta`. De payload krijgt er `eigenaar_naam`, `mens_door_naam` en
+  `akkoord_door_naam` bij; de slug blijft de opgeslagen waarheid.
+- **Wie deed de stap**: de mens- en akkoord-stap nemen een `door` mee (anders
+  de eigenaar van de kaart) en bewaren die in `mens_door`/`akkoord_door`.
+  Bij akkoord = nee gaan `mens` en `mens_door` weer leeg, net als voorheen.
+- **`n8n_front`**: elke kaart toont "eigenaar Marta" in de metaregel, de
+  stappenregel laat zien wie de mens-stap deed en wie akkoord gaf, er is een
+  keuzeveld + "Opslaan" per kaart, een "Namens"-veld boven de lijst
+  (bewaard in localStorage) en een eigenaarskeuze in het formulier voor een
+  nieuwe kaart.
+- **`__version__`** → `1.36.0`.
 
 ## 🟩 1.35.0 — 2026-11-03 — radarachtergrond hersteld, mobiele controles
 
