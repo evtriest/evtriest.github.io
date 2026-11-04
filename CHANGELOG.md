@@ -1,7 +1,40 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.37.0` · **Laatst bijgewerkt:** 2026-11-04
+**Huidige versie:** `1.37.3` · **Laatst bijgewerkt:** 2026-11-04
+
+## 🟩 1.37.3 — 2026-11-04 — tweede cooldown-melding op EepsHub
+
+- **`landing/index.html`**: onder de bestaande rode storingsbalk staat nu een
+  **tweede melding** in precies dezelfde vorm, met de nieuwe gegevens uit de
+  Instabox-fout: `machine is cooling down until 2026-11-04T13:26:48Z`
+  (`retryAfterSeconds`: 7896 = 2 u 11 min 36 s) plus de Nederlandse tijd —
+  **14:26:48 CET**. De tijd komt uit het `message`-veld van de JSON, niet uit
+  `retryAfterSeconds`.
+- De Pages-kopie (`landing-gh/site/`) is met `build.py` opnieuw gegenereerd.
+- **`__version__`** → `1.37.3`.
+
+## 🟩 1.37.2 — 2026-11-04 — natuurgids-chat van de startpagina af, App en APK achteraan
+
+- **Startpagina (`templates/index.html`)**: de **natuurgids-sectie** met de
+  ingebedde chat is weer weg. Die chat hoorde daar niet: hij stond als tweede
+  chat boven de plukagenda, terwijl de site al de zwevende knop **🌿 Vraag het
+  de gids** rechtsonder heeft (`/api/chat`, agent natuurgids). De bijbehorende
+  JS (`sendNatuurgids`, `natuurgidsHistory`) is mee verwijderd; de chat zelf
+  blijft ongewijzigd werken, ook op de crew-pagina.
+- **Menu**: **📱 App** en **⬇️ Android-app (APK)** staan nu achteraan in de
+  balk, na *Soorten in de buurt*. De plukagenda opent de rij.
+- **`__version__`** → `1.37.2`.
+
+## 🟩 1.37.1 — 2026-11-04 — landing vooraan in de paginabalk, natuur achteraan
+
+- **Paginabalk** op alle negen pagina's in `landing/` (dus op de VPS onder
+  `/static/piracy/` én in de Pages-kopie): de landing staat er nu als eerste
+  item bij, met het favicon (`japan-flag.svg`) als icoon in plaats van een
+  emoji. Natuur is van de eerste naar de laatste plek geschoven.
+- De volgorde is nu: **EepsHub** (favicon) · Radar · Crew · Bookmarks ·
+  Concept · n8n-uitleg · Natuur.
+- **`__version__`** → `1.37.1`.
 
 ## 🟩 1.37.0 — 2026-11-04 — zoekbalk op de crew-pagina
 
