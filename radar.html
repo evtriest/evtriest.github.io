@@ -329,6 +329,19 @@
     </details>
   </div>
 
+  <!-- 2b: OVHcloud VPS (extern bewaakt vanaf de Stratoxbox) -->
+  <div class="cat">
+    <h3>🌍 OVHcloud VPS</h3>
+    <p><span class="state" id="lamp-ovh"></span><b>OVHcloud VPS</b> — <span id="ovh-sub">status laden…</span></p>
+    <p><b>Workflow:</b> <span id="ovh-wf">—</span></p>
+    <details>
+      <summary>Details</summary>
+      <p class="outage" id="ovh-detail">Nog geen melding ontvangen.</p>
+      <p><b>Laatste melding:</b> <span id="ovh-when">—</span></p>
+      <p><b>Bron:</b> n8n-watch op de Stratoxbox VPS, elke 5 minuten</p>
+    </details>
+  </div>
+
   <!-- 3: GitHub -->
   <div class="cat">
     <h3>🐙 GitHub</h3>
@@ -815,6 +828,68 @@ function initScanSearch(){
   });
   loadLandingText();
 }
+/* ---- OVHcloud VPS: extern bewaakt door de n8n-workflow op de Stratoxbox ----
+   De workflow post elke 5 minuten naar /api/watch; blijft die melding langer
+   dan 15 minuten weg, dan zegt de API zelf "unknown". */
+var watchState = { item: null, error: '', opgehaald: 0 };
+
+async function loadWatch(){
+  try {
+    var res = await fetch(OUTAGE_API + '/api/watch', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    watchState.item = (data.watches || []).filter(function (w) {
+      return w.id === 'ovhcloud';
+    })[0] || null;
+    watchState.opgehaald = Date.now();
+    watchState.error = '';
+  } catch (err) {
+    watchState.error = err.message;
+  }
+  renderWatch();
+}
+
+function watchAge(sec){
+  if (sec == null || isNaN(sec)) return '—';
+  sec = Math.max(0, Math.round(sec));
+  if (sec < 120) return sec + ' s';
+  if (sec < 7200) return Math.round(sec / 60) + ' min';
+  return Math.round(sec / 3600) + ' uur';
+}
+
+function renderWatch(){
+  var lamp = document.getElementById('lamp-ovh');
+  if (!lamp) return;
+  var sub = document.getElementById('ovh-sub');
+  var wf = document.getElementById('ovh-wf');
+  var detail = document.getElementById('ovh-detail');
+  var when = document.getElementById('ovh-when');
+  var w = watchState.item;
+
+  if (watchState.error || !w){
+    lamp.className = 'state warning';
+    sub.textContent = watchState.error ? 'bewaking onbereikbaar' : 'geen melding';
+    wf.textContent = '—';
+    detail.textContent = watchState.error
+      ? 'De radar-API is niet bereikbaar (' + watchState.error + ').'
+      : 'De workflow heeft zich nog niet gemeld.';
+    when.textContent = '—';
+    return;
+  }
+
+  /* age_s is de leeftijd op het moment van ophalen; tel de sessietijd erbij */
+  var leeftijd = (w.age_s || 0) + (Date.now() - watchState.opgehaald) / 1000;
+  var vers = w.status === 'up';
+  var onbekend = w.status === 'unknown';
+  lamp.className = 'state ' + (onbekend ? 'warning' : (vers ? 'ok' : 'critical'));
+  sub.textContent = onbekend
+    ? 'geen verse melding (' + watchAge(leeftijd) + ' geleden)'
+    : (vers ? 'online' : 'onbereikbaar') + ' · ' + watchAge(leeftijd) + ' geleden';
+  wf.textContent = w.workflow || '—';
+  detail.textContent = w.detail || '—';
+  when.textContent = outageFmtTime(w.last_report) + ' · ' + watchAge(leeftijd) + ' geleden';
+}
+
 /* ---- outages: stoplicht voor Wildpluk, driestaps afsluiting ---- */
 var OUTAGE_API = location.hostname.indexOf('github.io') !== -1
   ? 'https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech'
@@ -1156,6 +1231,8 @@ window.addEventListener('DOMContentLoaded', function () {
   init();
   initScanSearch();
   loadOutages();
+  loadWatch();
+  setInterval(loadWatch, 60000);
   wireOutages();
   loadVisits();
   loadVisitIndex();

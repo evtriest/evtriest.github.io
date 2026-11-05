@@ -1,7 +1,158 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.37.3` · **Laatst bijgewerkt:** 2026-11-04
+**Huidige versie:** `1.38.0` · **Laatst bijgewerkt:** 2026-11-05
+
+## 🟩 1.38.0 — 2026-11-05 — /api/watch: de Stratoxbox bewaakt de OVH-VPS
+
+- **`/api/watch`** (nieuw, GET + POST): een klein rapportagepunt waar een
+  externe wachter zijn uitslag achterlaat. Nu één ingang, `ovhcloud`
+  ("OVHcloud VPS"), met `status` (`up`/`down`), `detail` en `workflow`. De
+  uitslag staat in de tabel `watch_status`; na `WATCH_TTL` (900 s) zonder nieuwe
+  melding zegt de API `unknown` in plaats van een oude `up` te blijven tonen.
+- **CORS** is op dit endpoint toegestaan voor `https://evtriest.github.io`,
+  zodat de radar daar de lamp kan zetten. Een onbekende `id` of een andere
+  `status` dan `up`/`down` geeft 400.
+- **Waarom:** de bewaking op de laptop (laag 3) kijkt alleen als de laptop
+  wakker is. De Stratoxbox staat altijd aan en draait daarvoor een eigen
+  n8n-instance `n8n-watch` met de workflow `OVHcloudVPSwatch`, die elke 5
+  minuten `/healthz` op de hostnaam en de homepage op het IP opvraagt.
+- **`__version__`** → `1.38.0`.
+
+## 🟩 1.37.12 — 2026-11-04 — menu-items n8n overzicht en blocked naar de OVH-VPS
+
+- **Menu**: `n8n overzicht` en `Blocked` zijn uit het menu van deze site
+  gehaald. Ze staan nu als menu-item op de homepage van de OVH-VPS
+  (`https://15.235.249.177/`), waar ze ook horen: n8n en de blocked-service
+  draaien daar. Op deze site blijft `/blocked` bestaan als doorverwijzing.
+- **`/n8noverzicht`** is verhuisd naar de OVH-VPS als statische pagina
+  (`/var/www/eephub.com/public/n8noverzicht.html`, bron
+  `VPS_instabox/website/ovh/n8noverzicht.html`, geïnstalleerd door
+  `run11.sh`). De Flask-route en `n8n_overview.py` zijn weg; één exemplaar is
+  genoeg, en het staat nu op de machine waar het over gaat.
+- **`__version__`** → `1.37.12`.
+
+## 🟩 1.37.11 — 2026-11-04 — blocked-service draait als systemd-unit
+
+- **`/n8noverzicht`**: de blocked-sectie vertelt dat de service sinds
+  4 november 2026 als `blocked.service` draait (`Restart=always`, log in
+  `~/blocked/blocked.log`) en dat de oude cronstart weg is; beheren met
+  `systemctl {status,restart,stop} blocked.service`. De paragraaf over root-werk
+  noemt ook `sudo ~/run8.sh`, en bij "kijken of het loopt" staat
+  `systemctl status blocked.service` in plaats van alleen de losse log.
+- **`__version__`** → `1.37.11`.
+
+## 🟩 1.37.10 — 2026-11-04 — /n8noverzicht klopt weer met de publieke /blocked
+
+
+- **`/n8noverzicht`**: de tabelrij van `/blocked` noemt nu de twee eigen
+  nginx-locations (`location = /blocked` en `location ^~ /api/blocked`, vóór
+  `location /`) en zegt dat de editor-login op `/` blijft staan; de
+  blocked-sectie vertelt dat `run7.sh` op 4 november 2026, 18:43 is gedraaid,
+  inclusief de gemeten statuscodes (`/blocked`, `/api/blocked`, `/healthz`
+  200, `/` 401).
+- **`/n8noverzicht`**: de paragraaf over root-werk legt uit waarom dat via een
+  script gaat (geen wachtwoordloos `sudo` voor `ai-agents`) en dat `run7.sh`
+  idempotent is.
+- **`__version__`** → `1.37.10`.
+
+## 🟩 1.37.9 — 2026-11-04 — /n8noverzicht beschrijft de opzet op de OVH-VPS
+
+- **`/n8noverzicht`** (`n8n_overview.py`) is herschreven voor n8n **op de
+  OVH-VPS** in plaats van de opgeruimde Docker-container: waar n8n staat
+  (`vps-c73922e3.vps.ovh.ca`, npm-install 2.35.7, `127.0.0.1:5678`, data in
+  `~/.n8n/.n8n`, start via `~/n8n/start.sh`), een tabel met waar je wat vindt
+  (editor achter basic auth, publieke `/webhook/` en `/healthz`, netdata op
+  `:8443`, `/blocked`, deze site, `n8n.md` in de repo), de SSH-tunnelprocedure
+  (editor op `localhost:5678`, netdata op `localhost:19999`), alle vijf
+  workflows met hun trigger, de blocked-keten nu volledig lokaal, importeren en
+  activeren via de CLI, en de valkuilen (geen Local File Trigger, bestandstoegang
+  via `N8N_RESTRICT_FILE_ACCESS_TO`, `active=1` wordt genegeerd,
+  `N8N_USER_FOLDER` vergeten).
+- **Menu**: het item `n8n` heet nu **`n8n overzicht`**; de bestemming
+  (`/n8noverzicht`) blijft gelijk.
+- **`__version__`** → `1.37.9`.
+
+## 🟩 1.37.8 — 2026-11-04 — /blocked staat op de OVH-VPS
+
+- **De hele keten staat nu op de OVH-VPS**: fail2ban bant, de workflow
+  *Blocked IP* draait daar, en de pagina met de blokkades ook. De pagina en de
+  opslag zijn `~/blocked/blocked-service.py` (alleen de standaardbibliotheek,
+  `127.0.0.1:8099`, SQLite-bestand `blocked.db` naast het script), publiek via
+  nginx op `https://vps-c73922e3.vps.ovh.ca/blocked`. De workflow post naar
+  `http://127.0.0.1:8099/api/blocked` en hoeft dus niet meer over het publieke
+  internet naar deze site.
+- **`/blocked` hier is een doorverwijzing** (302) naar die pagina, zodat het
+  menu-item en oude links blijven werken. `blocked_page.py` is daarmee een
+  klein module: `GET`/`POST /api/blocked` op deze site zijn vervallen. De rijen
+  die hier tot 1.37.7 in `wildpluk.db` stonden (tabel `blocked_ip`) zijn niet
+  verwijderd, maar worden niet meer bijgewerkt.
+- **`__version__`** → `1.37.8`.
+
+## 🟩 1.37.7 — 2026-11-04 — CPU, RAM en DISK uit de topbalk
+
+- **Topbalk**: de drie meetwaarden (`CPU 23% · 0.41`, `RAM 1,2 / 3,8 GB`,
+  `DISK 12 / 40 GB`) staan niet meer op de startpagina. Alleen de klok blijft
+  rechtsboven. De server-side waarden, de `#vpsCpu`/`#vpsRam`/`#vpsDisk`-
+  spans, hun CSS en de `loadVps()`-ververser (elke minuut naar `/api/vps`) zijn
+  weg; `index()` geeft `vps` niet meer mee aan de template.
+- **`/api/vps` blijft bestaan**: het endpoint is onafhankelijk van deze balk en
+  wordt elders nog gebruikt.
+- **`__version__`** → `1.37.7`.
+
+## 🟩 1.37.6 — 2026-11-04 — /n8n_front wijst naar n8n op de OVH-VPS
+
+- **n8n verhuisd**: de container op EepsHub is opgeruimd en n8n draait sinds
+  4 november 2026 als zelfstandige installatie op de OVH-VPS. **`/n8n_front`**
+  (`n8n_front.py`) is daarom geen beheerpaneel meer maar een korte verwijzing:
+  waar de editor staat (achter een login), wat publiek blijft (`/webhook/` en
+  `/healthz`), waar netdata hangt en waar de blokkades staan (`/blocked`).
+- **Vervallen endpoints**: `state`, `logs`, `workflows/<id>/active`,
+  `workflows/<id>/schedule` en `blocked/<ip>/unban` leunden alle op de
+  verdwenen container en zijn weg. De data van die container staat er nog
+  (`/data/n8n/data`), maar niets leest hem meer.
+- **`__version__`** → `1.37.6`.
+
+## 🟩 1.37.5 — 2026-11-04 — bans vrijgeven op /n8n_front, 401/429 in de filter
+
+- **`/n8n_front`** (`n8n_front.py`): nieuwe sectie **Geblokkeerde IP's** met de
+  rijen uit `blocked_ip` — IP, jail, hoe vaak, laatste keer, wanneer de ban
+  verloopt en of hij loopt. Elke actieve ban heeft een knop **Vrijgeven** die
+  `sudo fail2ban-client set <jail> unbanip <ip>` uitvoert, de ban dus echt uit
+  de firewall haalt, en de rij op verlopen zet; de geschiedenis blijft op
+  `/blocked`. Het nieuwe endpoint `POST /n8n_front/api/blocked/<ip>/unban`
+  vraagt het beheer-token, weigert een ongeldig IP en houdt het aantal
+  CLI-acties achter dezelfde lock als import/publish.
+- **Filter** (`/etc/fail2ban/filter.d/wildpluk.conf`): herkent nu ook **401** en
+  **429** naast 400/403/404, zodat herhaald API-misbruik (geweigerde tokens,
+  rate-limit) bij `maxretry` meetelt en tot een ban leidt.
+- **Workflow `Blocked IP`**: na `POST /api/blocked` gaat er een
+  **Telegram-bericht** uit (bot `eepn8n_bot`, credential `eepn8nbotcred01`) met
+  het IP, de jail, de reden, het aantal keer, de banduur en de link naar
+  `/blocked`.
+- **`__version__`** → `1.37.5`.
+
+## 🟩 1.37.4 — 2026-11-04 — /blocked en /n8noverzicht in het menu
+
+- **`/blocked`** (`blocked_page.py`): nieuwe pagina met de IP-adressen die de
+  firewall van EepsHub heeft geblokkeerd — IP, jail, reden, hoe vaak, eerste en
+  laatste keer, wanneer de ban verloopt en of hij nu actief is. De rijen komen
+  uit de nieuwe tabel `blocked_ip` in `wildpluk.db` en worden gevuld door
+  `POST /api/blocked` (beheer-token in `X-N8N-Token`, zelfde als
+  `/api/tekst`). `GET /api/blocked` geeft dezelfde lijst als JSON. De pagina
+  ververst zichzelf elke minuut.
+- **`/n8noverzicht`** (`n8n_overview.py`): uitlegpagina over n8n op deze site —
+  wat de container is, waar de data staat, inloggen via SSH-tunnel, beheer via
+  `/n8n_front`, welke workflows draaien, de keten van fail2ban-ban naar
+  `/blocked`, en hoe je zelf een workflow maakt, importeert en publiceert.
+- **Menu**: de startpagina heeft er twee items bij, `n8n` en `Blocked`, direct
+  na *Soorten in de buurt* (dus vóór de App- en APK-links, die achteraan
+  blijven).
+- **Keten**: de fail2ban-actie `n8n-blocked` roept bij elke nieuwe ban de
+  webhook `POST /webhook/blocked-ip` aan; de n8n-workflow *Blocked IP* zet de
+  melding op `/api/blocked`. De webhook antwoordt direct, zodat een trage site
+  een ban niet ophoudt.
+- **`__version__`** → `1.37.4`.
 
 ## 🟩 1.37.3 — 2026-11-04 — tweede cooldown-melding op EepsHub
 
