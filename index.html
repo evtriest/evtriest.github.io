@@ -200,12 +200,6 @@
   }
   .launch time{font-variant-numeric:tabular-nums}
   .uptime{margin:-4px 0 6px;font-family:var(--sans);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--sand);opacity:.78}
-  h1{
-    margin:0;font-family:var(--serif);font-weight:700;
-    font-size:clamp(2.35rem,7.4vw,4.6rem);line-height:1.02;letter-spacing:.01em;
-    text-shadow:0 2px 4px rgba(0,0,0,.7),0 10px 40px rgba(0,0,0,.85);
-  }
-  h1 .the{display:block;font-size:.32em;letter-spacing:.30em;text-transform:uppercase;opacity:.78;margin-bottom:.55em;font-family:var(--sans);font-weight:600;text-indent:.30em}
   .lede{
     margin:1.15rem auto 0;max-width:34rem;font-size:clamp(.95rem,2.4vw,1.1rem);
     line-height:1.66;color:var(--ink);text-shadow:0 1px 3px rgba(0,0,0,.9),0 6px 26px rgba(0,0,0,.75);
@@ -602,7 +596,6 @@
     <p class="kicker" data-i18n="kicker">Den Helder · Marsdiep · voor anker sinds 1667</p>
     <p class="launch"><span data-i18n="launchLabel">Tewaterlating</span> · <time id="launch-date">…</time></p>
     <p class="uptime"><span data-i18n="uptimeLabel">Uptime</span> · <span id="uptime-status">…</span></p>
-    <h1><span class="the">Eeps</span>Site</h1>
     <p class="lede" data-i18n-html="lede">
       Een vlag, een schip en een getijdenkaart. Vanaf deze rede enter je het echte werk:
       de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
@@ -676,7 +669,7 @@
 <!-- bezoekers: scrollbox met de laatste bezoeken van de site -->
 <div class="radar-inner" style="max-width:560px;margin:1.3rem auto 0;padding:0 20px">
   <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
-  <details class="visits-wrap">
+  <details class="visits-wrap" id="bezoeken">
     <summary><span class="visits-label" data-i18n="visitsSummary">Toon bezoeken</span><span class="visits-count" id="visits-count"></span></summary>
     <div class="visits-filter">
       <label><input type="checkbox" id="visits-first"><span data-i18n="visitsFirst">alleen eerste bezoek</span></label>
