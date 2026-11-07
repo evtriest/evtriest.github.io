@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EepsHub</title>
+<title>GITHUB Eep van Triest</title>
 <meta name="description" content="EepsHub — het voorportaal naar de wildpluk-site langs de Waddenkust, met het getij van Den Helder op de achtergrond.">
 <meta name="theme-color" content="#0b0b0b">
 <script>(function(){try{var t=localStorage.getItem("eeps-theme");if(t&&/^[a-z-]{1,32}$/.test(t))document.documentElement.dataset.theme=t;var b={"ship-at-sea":"#081018","tokyo-night":"#16161e","catppuccin":"#11111b",gruvbox:"#1d2021",nord:"#242933",everforest:"#272e33",kanagawa:"#16161d","rose-pine-moon":"#1f1d2e","matte-black":"#0f0f0f","radar":"#04120b"};var m=document.querySelector('meta[name="theme-color"]');if(m&&b[document.documentElement.dataset.theme])m.content=b[document.documentElement.dataset.theme];}catch(e){}})();</script>
@@ -261,17 +261,21 @@
   .haiku-new:disabled{opacity:.55;cursor:progress}
   .haiku-status{margin:.5rem 0 0;font-size:.64rem;letter-spacing:.04em;color:var(--brass)}
   .haiku-status[hidden]{display:none}
+  .hero-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:1.2rem}
+  .hero-row .cards{flex:1 1 280px;margin-top:0}
+  .hero-row .musings-row{flex:1 1 320px;margin:0;padding:0}
+  .hero-row .musings{margin:0}
   .cards{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:10px;
-    margin:2.4rem auto 0;max-width:640px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(min(110px,100%),1fr));gap:8px;
+    margin:1.2rem 0 0;max-width:340px;
   }
   .card{
-    padding:.85rem 1rem;border-radius:12px;text-align:left;
+    padding:.55rem .7rem;border-radius:10px;text-align:left;
     background:color-mix(in srgb,var(--panel) 62%,transparent);border:1px solid color-mix(in srgb,var(--sand) 16%,transparent);
     backdrop-filter:blur(4px);
   }
-  .card b{display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:.25rem}
-  .card span{font-size:.86rem;color:var(--ink-2);line-height:1.4}
+  .card b{display:block;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:.25rem}
+  .card span{font-size:.74rem;color:var(--ink-2);line-height:1.4}
   .radar{
     position:relative;z-index:1;padding:2.2rem 20px 2.8rem;
     border-top:1px solid color-mix(in srgb,var(--sand) 14%,transparent);
@@ -475,7 +479,8 @@
   @media(max-width:520px){
     body{background-attachment:scroll}
     .flag{width:48px;height:48px}
-    .cards{margin-top:1.8rem}
+    .hero-row{flex-direction:column}
+    .hero-row .cards{max-width:100%}
     .visit{grid-template-columns:1fr}
   }
   .cta-wrap{text-align:center}
@@ -533,7 +538,7 @@
 <nav class="pagebar" aria-label="Pagina's">
   <div class="pagebar-inner">
     <a href="index.html" title="EepsHub — landing"><img src="japan-flag.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">EepsHub</a>
-    <a href="https://vps-c73922e3.vps.ovh.ca/">🖥️ Dashboard VPS Eep</a>
+    <a href="https://vps-c73922e3.vps.ovh.ca/"><img src="vps-favicon.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">Dashboard VPS Eep</a>
     <a href="radar.html">📡 Radar</a>
     <a href="crew.html">⚓ Crew</a>
     <a href="bookmarks.html">📚 Bookmarks</a>
@@ -603,42 +608,12 @@
       de <strong>wildpluk-site</strong> langs de Waddenkust — waar je ziet wat er nú te
       vinden is, waar, en of het water mee- of tegenzit.
     </p>
+    <div class="hero-row">
     <div class="cards">
       <div class="card"><b data-i18n="card1">Buit</b><span data-i18n="card1s">schelpen, zeewier en één krab met een mening</span></div>
       <div class="card"><b data-i18n="card2">Vloot</b><span data-i18n="card2s">1 schip (geleend) · 0 kanonnen (belasting)</span></div>
       <div class="card"><b data-i18n="card3">Getij</b><span data-i18n="card3s">elke 10 minuten vers, recht uit Rijkswaterstaat</span></div>
     </div>
-
-    <div class="cta-wrap">
-      <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
-      <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
-    </div>
-  </section>
-
-</main>
-
-<!-- bezoekers: scrollbox met de laatste bezoeken van de site -->
-<div class="radar-inner" style="max-width:560px;margin:1.3rem auto 0;padding:0 20px">
-  <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
-  <details class="visits-wrap">
-    <summary><span class="visits-label" data-i18n="visitsSummary">Toon bezoeken</span><span class="visits-count" id="visits-count"></span></summary>
-    <div class="visits-filter">
-      <label><input type="checkbox" id="visits-first"><span data-i18n="visitsFirst">alleen eerste bezoek</span></label>
-      <input type="search" id="visits-ip" placeholder="filter ip…" data-i18n-placeholder="visitsIp" autocomplete="off" spellcheck="false" aria-label="Filter op IP">
-    </div>
-    <ul class="visits" id="visits">
-      <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
-    </ul>
-  </details>
-  <p class="radar-meta" id="visits-meta"></p>
-</div>
-    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
-      <a href="https://evtriest.github.io/natuur.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
-        🌿 Natuur
-      </a>
-    </p>
-
-<!-- haiku-vierkant: onder de paginalinks, één blok voor alle vier de bemanningsleden -->
 <div class="musings-row">
   <section class="musings">
     <div class="haiku-tabs" role="group" aria-label="Kies een haiku">
@@ -687,6 +662,37 @@
     </div>
   </section>
 </div>
+
+    </div>
+
+    <div class="cta-wrap">
+      <a class="cta" href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/"><span aria-hidden="true">🔭</span><span data-i18n="cta">Enter de Wildpluk-site</span></a>
+      <p class="fineprint" data-i18n="fineprint">Geen inloggen, geen schatkaart nodig — het getij staat al achter je.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- bezoekers: scrollbox met de laatste bezoeken van de site -->
+<div class="radar-inner" style="max-width:560px;margin:1.3rem auto 0;padding:0 20px">
+  <p class="radar-note" data-i18n="radarNote">Bezoekers</p>
+  <details class="visits-wrap">
+    <summary><span class="visits-label" data-i18n="visitsSummary">Toon bezoeken</span><span class="visits-count" id="visits-count"></span></summary>
+    <div class="visits-filter">
+      <label><input type="checkbox" id="visits-first"><span data-i18n="visitsFirst">alleen eerste bezoek</span></label>
+      <input type="search" id="visits-ip" placeholder="filter ip…" data-i18n-placeholder="visitsIp" autocomplete="off" spellcheck="false" aria-label="Filter op IP">
+    </div>
+    <ul class="visits" id="visits">
+      <li class="visit visit-note" data-i18n="radarLoading">Radar warmt op…</li>
+    </ul>
+  </details>
+  <p class="radar-meta" id="visits-meta"></p>
+</div>
+    <p class="crew-link" style="text-align:center;margin-top:1.2rem">
+      <a href="https://evtriest.github.io/natuur.html" style="color:var(--sand);text-decoration:none;border-bottom:1px solid rgba(232,220,192,.35);padding-bottom:1px">
+        🌿 Natuur
+      </a>
+    </p>
 
 <details class="aboard panel">
   <summary>
@@ -755,7 +761,7 @@
   (function () {
     var I18N = {
       nl: {
-        pageTitle: `GITHUB`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `Den Helder · Marsdiep · voor anker sinds 1667`,
         launchLabel: `Tewaterlating`,
         haikuThinking: `De gids denkt na…`, haikuError: `De gids is even stil.`,
@@ -806,7 +812,7 @@
         logbookError: `logboek even niet bereikbaar`
       },
       en: {
-        pageTitle: `GITHUB`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `Den Helder · Marsdiep · at anchor since 1667`,
         launchLabel: `Launch`,
         haikuThinking: `The guide is thinking…`, haikuError: `The guide is quiet for a moment.`,
@@ -857,7 +863,7 @@
         logbookError: `logbook unavailable right now`
       },
       de: {
-        pageTitle: `Eeps Piraten-Site`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `Den Helder · Marsdiep · vor Anker seit 1667`,
         launchLabel: `Stapellauf`,
         haikuThinking: `Der Guide denkt nach…`, haikuError: `Der Guide schweigt einen Moment.`,
@@ -908,7 +914,7 @@
         logbookError: `Logbuch gerade nicht erreichbar`
       },
       pl: {
-        pageTitle: `Eeps Piracki Port`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `Den Helder · Marsdiep · na kotwicy od 1667`,
         launchLabel: `Wodowanie`,
         haikuThinking: `Przewodnik się zastanawia…`, haikuError: `Przewodnik na chwilę milczy.`,
@@ -959,7 +965,7 @@
         logbookError: `dziennik chwilowo niedostępny`
       },
       bg: {
-        pageTitle: `Eeps пиратски сайт`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `Ден Хелдер · Марсдип · на котва от 1667`,
         launchLabel: `Спускане на вода`,
         haikuThinking: `Гидът се замисля…`, haikuError: `Гидът за момент млъкна.`,
@@ -1010,7 +1016,7 @@
         logbookError: `дневникът е недостъпен в момента`
       },
       zh: {
-        pageTitle: `Eeps 海盗站`,
+        pageTitle: `GITHUB Eep van Triest`,
         kicker: `登海尔德 · 马斯迪普 · 自 1667 年起抛锚`,
         launchLabel: `下水`,
         haikuThinking: `向导正在思考…`, haikuError: `向导暂时沉默了。`,
