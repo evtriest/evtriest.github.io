@@ -538,28 +538,6 @@
   footer .foot-tools{margin-top:1rem;font-size:.7rem;letter-spacing:.03em;opacity:.7}
   footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
   footer .foot-tools a:hover{opacity:1;text-decoration-thickness:2px}
-  /* storingsbalk: machine in cooldown — rood, direct onder de ticker */
-  .cooldown{
-    position:relative;z-index:80;flex:none;margin:0;padding:.7rem 1rem .8rem;
-    background:#8b1111;border-bottom:3px solid #ff4d4d;
-    color:#fff;font-family:var(--sans);
-    box-shadow:0 6px 22px rgba(0,0,0,.55);
-  }
-  .cooldown-head{margin:0;font-size:.92rem;line-height:1.45;font-weight:700;letter-spacing:.01em}
-  .cooldown-head time{font-variant-numeric:tabular-nums;white-space:nowrap}
-  .cooldown-nl{font-weight:600;color:#ffd9d9;white-space:nowrap}
-  .cooldown-json{
-    margin:.55rem 0 0;padding:.55rem .7rem;overflow-x:auto;
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    font-size:.74rem;line-height:1.5;
-    background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.55);border-radius:6px;
-    color:#ffecec;white-space:pre-wrap;word-break:break-word;
-  }
-  @media(max-width:560px){
-    .cooldown-head{font-size:.84rem}
-    .cooldown-json{font-size:.68rem}
-    .cooldown-nl{display:block;white-space:normal}
-  }
 </style>
 </head>
 <body>
@@ -573,6 +551,7 @@
     <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/site-concept.html">📝 Concept</a>
     <a href="n8n.html">🤖 n8n-uitleg</a>
     <a href="natuur.html">🌿 Natuur</a>
+    <a href="https://vps-c73922e3.vps.ovh.ca/">🖥️ Dashboard VPS Eep</a>
   </div>
 </nav>
 <!-- ticker: laatste update, laatste vogelgeluid, laatste outage -->
@@ -581,16 +560,6 @@
   <div class="ticker-viewport">
     <div class="ticker-track" id="ticker-track"><span class="ticker-item">laden…</span></div>
   </div>
-</div>
-<!-- machine in cooldown: melding bovenaan, in het rood -->
-<div class="cooldown" role="alert" aria-live="assertive">
-  <p class="cooldown-head">⚠️ Machine is cooling down until <time datetime="2026-11-04T03:11:04Z">2026-11-04T03:11:04Z</time> <span class="cooldown-nl">· Nederlandse tijd: 04:11:04 CET (2026-11-04, UTC+1)</span></p>
-  <pre class="cooldown-json">{"error":{"code":"machine_cooldown","message":"machine is cooling down until 2026-11-04T03:11:04Z","requestId":"","retryable":true,"operationId":null,"docs_url":"https://instabox.sh/docs/errors#machine-cooldown","retryAfterSeconds":7407}}</pre>
-</div>
-<!-- tweede melding: de volgende cooldown, met de tijd uit de JSON -->
-<div class="cooldown" role="alert" aria-live="assertive">
-  <p class="cooldown-head">⚠️ Machine is cooling down until <time datetime="2026-11-04T13:26:48Z">2026-11-04T13:26:48Z</time> <span class="cooldown-nl">· Nederlandse tijd: 14:26:48 CET (2026-11-04, UTC+1)</span></p>
-  <pre class="cooldown-json">{"error":{"code":"machine_cooldown","message":"machine is cooling down until 2026-11-04T13:26:48Z","requestId":"","retryable":true,"operationId":null,"docs_url":"https://instabox.sh/docs/errors#machine-cooldown","retryAfterSeconds":7896}}</pre>
 </div>
 <nav class="langbar" id="langbar" aria-label="Taal">
   <button class="lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" title="Taal / language" aria-label="Kies een taal"><span aria-hidden="true">🌐</span></button>
@@ -823,7 +792,7 @@
   (function () {
     var I18N = {
       nl: {
-        pageTitle: `Eeps Site`,
+        pageTitle: `GITHUB`,
         kicker: `Den Helder · Marsdiep · voor anker sinds 1667`,
         launchLabel: `Tewaterlating`,
         haikuThinking: `De gids denkt na…`, haikuError: `De gids is even stil.`,
@@ -877,7 +846,7 @@
         logbookError: `logboek even niet bereikbaar`
       },
       en: {
-        pageTitle: `Eeps Site`,
+        pageTitle: `GITHUB`,
         kicker: `Den Helder · Marsdiep · at anchor since 1667`,
         launchLabel: `Launch`,
         haikuThinking: `The guide is thinking…`, haikuError: `The guide is quiet for a moment.`,
@@ -1502,7 +1471,7 @@
        vervangt de oude haiku en wordt bewaard, zodat het bij een volgend
        bezoek gewoon blijft staan. */
     var HAIKU_KEY = 'eeps-haiku-';
-    var HAIKU_VRAAG = 'Schrijf een haiku over jezelf als bemanningslid van de Eeps Site. Antwoord in exact dit formaat, drie korte regels, verder niets:\nREGEL1\nREGEL2\nREGEL3';
+    var HAIKU_VRAAG = 'Schrijf een haiku over jezelf als bemanningslid van de GITHUB. Antwoord in exact dit formaat, drie korte regels, verder niets:\nREGEL1\nREGEL2\nREGEL3';
     var HAIKU_POGINGEN = 2;
     var EMOJI_RE = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu;
 
