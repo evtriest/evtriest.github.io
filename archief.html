@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<!-- BOUWERS: deze pagina is bewust statisch: geen polling, geen live API-calls.
+     Ze beschrijft het Telegram-archief zoals het op de OVH-VPS draait; cijfers
+     en paden staan in de tekst en worden met de hand bijgewerkt. -->
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Telegram-archief · GITHUB</title>
+<meta name="description" content="Hoe het Telegram-archief op de EepsHub werkt: de pagina via de SSH-tunnel, zoeken, albums, verwijderen naar de prullenbak en de bewaking.">
+<meta name="theme-color" content="#081018">
+<link rel="icon" type="image/svg+xml" href="japan-flag.svg">
+<style>
+  :root{
+    --ink:#f4f1e8;--ink-2:#e7e2d4;--muted:#c9c3b4;--faint:#a9a291;
+    --sand:#e8dcc0;--brass:#e6a23c;--brass-bright:#ffc861;
+    --sea:#081018;--panel:#0a121a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);
+    background:var(--sea) url("tide-bg.jpg") center/cover no-repeat fixed;
+    display:flex;flex-direction:column;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(115% 85% at 50% 32%,rgba(4,10,16,.14) 0%,rgba(4,10,16,.45) 55%,rgba(4,10,16,.82) 100%),
+      linear-gradient(to bottom,rgba(4,10,16,.45),rgba(4,10,16,.08) 40%,rgba(4,10,16,.78));
+  }
+  a{color:var(--brass-bright)}
+  /* paginanavigatie bovenaan */
+  .pagebar{position:relative;z-index:2;padding:14px 16px 0;display:flex;justify-content:center}
+  .pagebar-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:880px}
+  .pagebar a{
+    font-size:.72rem;letter-spacing:.05em;text-decoration:none;padding:.38em .82em;border-radius:999px;
+    color:var(--ink-2);border:1px solid color-mix(in srgb,var(--sand) 22%,transparent);
+    background:color-mix(in srgb,var(--sand) 6%,transparent);
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .pagebar a:hover{color:var(--brass-bright);border-color:color-mix(in srgb,var(--brass-bright) 65%,transparent);background:color-mix(in srgb,var(--brass) 14%,transparent)}
+  .pagebar a:focus-visible{outline:2px solid var(--brass-bright);outline-offset:2px}
+  main{position:relative;z-index:1;width:min(1080px,100%);margin:0 auto;padding:2rem 18px 3rem;flex:1}
+  .kicker{margin:0 0 .35rem;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass)}
+  h1{margin:0 0 .6rem;font-family:var(--serif);font-weight:700;font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.05}
+  .lede{margin:0;max-width:46rem;font-size:.95rem;line-height:1.65;color:var(--ink-2)}
+  .source{margin:.7rem 0 0;font-size:.72rem;color:var(--faint);letter-spacing:.02em}
+  h2{
+    margin:2.2rem 0 .9rem;font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--ink);
+    padding-bottom:.4rem;border-bottom:1px solid rgba(232,220,192,.16);
+  }
+  h3{margin:0 0 .35rem;font-size:.95rem;color:var(--brass-bright);font-family:var(--sans)}
+  p{margin:.5rem 0;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+  ul,ol{margin:.5rem 0;padding-left:1.25rem;color:var(--ink-2);font-size:.88rem;line-height:1.7}
+  li{margin:.2rem 0}
+  li::marker{color:var(--brass)}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{
+    padding:.95rem 1.05rem;border-radius:12px;border:1px solid rgba(232,220,192,.16);
+    background:rgba(8,16,24,.72);backdrop-filter:blur(6px);
+  }
+  .card p{font-size:.82rem;color:var(--muted);margin:.2rem 0}
+  .tag{font-size:.72rem;letter-spacing:.04em;color:var(--faint)}
+  table{
+    width:100%;border-collapse:collapse;background:rgba(8,16,24,.72);border-radius:12px;overflow:hidden;
+    border:1px solid rgba(232,220,192,.16);
+  }
+  th,td{text-align:left;padding:.6rem .75rem;border-bottom:1px solid rgba(232,220,192,.1);font-size:.84rem;vertical-align:top}
+  th{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  tr:last-child td{border-bottom:0}
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84em;
+    padding:.08em .34em;border-radius:5px;color:var(--brass-bright);
+    background:rgba(230,162,60,.12);border:1px solid rgba(230,162,60,.18);
+  }
+  pre{
+    margin:.8rem 0;padding:.75rem .9rem;border-radius:10px;overflow-x:auto;
+    background:rgba(0,0,0,.4);border:1px solid rgba(232,220,192,.12);
+    font-size:.8rem;line-height:1.6;color:var(--ink-2);
+  }
+  pre code{background:0;border:0;padding:0;color:var(--ink-2)}
+  .note{
+    margin:1.4rem 0 0;padding:.9rem 1.05rem;border-radius:12px;
+    border:1px solid rgba(255,200,97,.35);background:rgba(230,162,60,.1);
+  }
+  .note p{margin:.2rem 0;font-size:.85rem}
+  footer{
+    position:relative;z-index:1;padding:1.4rem 18px 2rem;text-align:center;
+    font-size:.74rem;color:var(--faint);
+  }
+  footer .foot-tools{margin-top:1rem;font-size:.7rem;letter-spacing:.03em;opacity:.7}
+  footer .foot-tools a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+  footer .foot-tools a:hover{opacity:1;text-decoration-thickness:2px}
+</style>
+</head>
+<body>
+<nav class="pagebar" aria-label="Pagina's">
+  <div class="pagebar-inner">
+    <a href="index.html" title="EepsHub — landing"><img src="japan-flag.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">EepsHub</a>
+    <a href="https://vps-c73922e3.vps.ovh.ca/"><img src="vps-favicon.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">Dashboard VPS Eep</a>
+    <a href="radar.html">📡 Radar</a>
+    <a href="crew.html">⚓ Crew</a>
+    <a href="bookmarks.html">📚 Bookmarks</a>
+    <a href="archief.html">🗄 Archief</a>
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/site-concept.html">📝 Concept</a>
+    <a href="n8n.html">🤖 n8n-uitleg</a>
+    <a href="natuur.html">🌿 Natuur</a>
+  </div>
+</nav>
+
+<main>
+  <p class="kicker">EepsHub · Telegram</p>
+  <h1>Het Telegram-archief</h1>
+  <p class="lede">Alles wat de meldingsbot aan de eigenaar stuurt, blijft bewaard:
+  één regel per bericht in <code>berichten.jsonl</code>, de bijlagen als losse
+  bestanden ernaast. Deze pagina legt uit hoe je er komt, hoe je zoekt en
+  opruimt, en waarom de zaak nooit publiek op poort 443 staat.</p>
+  <p class="source">Deze pagina is uitleg, geen archief. Het archief zelf opent
+  alleen via de SSH-tunnel; hier is niets te bedienen.</p>
+
+  <h2>Waarom een eigen archief</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Eén regel per bericht</h3>
+      <p>Een n8n-workflow (<code>AI_freebuff_archief</code>) zet elk binnenkomend
+      bericht als JSON-regel in <code>berichten.jsonl</code>: tijd, chat, afzender,
+      tekst, en per bijlage het pad en het soort.</p>
+    </div>
+    <div class="card">
+      <h3>Bestanden apart</h3>
+      <p>Foto's, video's en documenten staan in <code>bestanden/</code> met een
+      eigen naam. De JSON-regel wijst ernaar; het bestand zelf zit niet in de
+      regel.</p>
+    </div>
+    <div class="card">
+      <h3>Niets gaat hard weg</h3>
+      <p>Verwijderen verhuist de regel én de bijlagen naar
+      <code>prullenbak/</code>, met een <code>wat.json</code> erbij. Na 30 dagen
+      ruimt de server die map zelf op.</p>
+    </div>
+    <div class="card">
+      <h3>Alleen via de tunnel</h3>
+      <p>De pagina komt uit n8n en wordt door <code>bestanden-server.py</code>
+      doorgegeven op <code>127.0.0.1:8095</code>. Van buiten is er geen route
+      naartoe.</p>
+    </div>
+  </div>
+
+  <h2>Hoe je er komt</h2>
+  <p>Twee poorten in één tunnel: <code>5680</code> naar n8n en <code>5681</code>
+  naar de bijlagenserver. Daarna open je het archief op de tweede poort, niet
+  op de eerste: daar krijgt de pagina een gewoon origin en werkt de
+  verwijderknop.</p>
+  <pre><code>ssh -L 5680:127.0.0.1:5678 -L 5681:127.0.0.1:8095 ovh
+# en dan in de browser:
+http://localhost:5681/archief</code></pre>
+  <p>Op de laptop doet het paneel hetzelfde: <kbd>Super + Alt + O</kbd>
+  (of <code>omarchy menu summon ovh-ssh-paneel</code>) opent
+  <code>~/bin/ovh-tunnel-page</code>, en de rij <b>Archief</b> opent
+  <code>http://localhost:5681/archief</code>. Die rij hoort bij de blijvende
+  unit <code>ovh-archief-tunnel.service</code>, dus je hoeft de tunnel niet
+  elke keer met de hand op te zetten.</p>
+  <p>De oude publieke weg bestaat niet meer: de webhook op poort 443 hoort
+  <b>404</b> te geven. Een link met <code>:8444</code> erin werkt ook niet —
+  dat serverblok heeft geen <code>/webhook/</code>-route.</p>
+
+  <h2>De pagina zelf</h2>
+  <table>
+    <thead>
+      <tr><th>Wat</th><th>Hoe het werkt</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Zoeken</td>
+        <td>De zoekbalk filtert op tekst; de maandkeuze beperkt tot één maand.
+        De twee samen bepalen wat er op de pagina staat.</td>
+      </tr>
+      <tr>
+        <td>Hokjes</td>
+        <td>Elke kaart heeft een hokje. Met <b>alles op deze pagina</b> vink je
+        in één keer alles aan wat er nu staat.</td>
+      </tr>
+      <tr>
+        <td>Verwijder alles wat gevonden is (n)</td>
+        <td>Staat er bij een zoekterm of maand. Eén verzoek met alle nummers naar
+        <code>/verwijder-veel</code>, dus ook een vervuilde zoekopdracht is in
+        één keer weg.</td>
+      </tr>
+      <tr>
+        <td>Album</td>
+        <td>Meerdere bestanden in één keer gestuurd hebben hetzelfde
+        <code>media_group_id</code>. Ze blijven losse regels in het bestand,
+        maar staan als één kaart met alle bijlagen; één vinkje ruimt het hele
+        album op.</td>
+      </tr>
+      <tr>
+        <td>Opruimen</td>
+        <td>De knop <code>#opruim</code> haalt alle berichten zonder bijlage
+        weg. Hij zit ook op de beheerderspagina; de pagina van het archief zelf
+        vraagt eerst om bevestiging.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Verwijderen en terugzetten</h2>
+  <p>Wat je weggooit, gaat naar <code>prullenbak/&lt;stamp&gt;-&lt;pid&gt;/</code>
+  naast <code>bestanden/</code>: de regels als <code>berichten.jsonl</code>, de
+  bijlagen ernaast en <code>wat.json</code> met hoe ze weg gingen
+  (<code>/verwijder</code>, <code>/verwijder-veel</code> of
+  <code>/verwijder-leeg</code>).</p>
+  <p>Terugzetten is geen knop maar twee handelingen: de bestanden terugkopiëren
+  naar <code>bestanden/</code> en de regels weer achteraan
+  <code>berichten.jsonl</code> plakken. Kan de prullenbak niet worden gemaakt,
+  dan weigert de server te verwijderen — liever niets weg dan iets wat niet
+  terug te halen is.</p>
+  <p>Mappen met een datumnaam die ouder zijn dan 30 dagen ruimt de server bij
+  het opstarten zelf op (<code>--prullenbak-dagen</code>, <code>0</code> zet dat
+  uit).</p>
+
+  <h2>De routes van de bijlagenserver</h2>
+  <p><code>bestanden-server.py</code> luistert alleen op
+  <code>127.0.0.1:8095</code>. De cron van <code>ai-agents</code> zet hem terug
+  als hij wegvalt.</p>
+  <table>
+    <thead>
+      <tr><th>Route</th><th>Wat het doet</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>GET /&lt;bestand&gt;</code></td><td>Eén bijlage. Geen
+      mapoverzicht (<code>/</code> is 404), geen symlinks, geen upload.</td></tr>
+      <tr><td><code>GET /archief</code></td><td>De pagina uit n8n, maar zonder
+      de sandbox-CSP en met de ontbrekende <code>&lt;/script&gt;</code>
+      aangevuld.</td></tr>
+      <tr><td><code>POST /verwijder</code></td><td>Body <code>id=&lt;message_id&gt;</code>.
+      Haalt dat bericht uit het archief en zijn bestanden naar de
+      prullenbak.</td></tr>
+      <tr><td><code>POST /verwijder-veel</code></td><td>Body
+      <code>ids=12,13,14</code>, hoogstens 500 nummers. De pagina zoekt, de
+      server verwijdert.</td></tr>
+      <tr><td><code>POST /verwijder-leeg</code></td><td>Haalt alle berichten
+      zonder bijlage weg, maar alleen met <code>bevestig=ja</code>. Zonder dat
+      antwoordt hij met het aantal dat het zouden zijn.</td></tr>
+    </tbody>
+  </table>
+  <p>Een POST met een <code>Origin</code> van een andere site wordt geweigerd
+  (403). Zo kan een vreemde pagina het verwijderen niet blind via je browser
+  laten uitvoeren.</p>
+
+  <h2>Albums achteraf</h2>
+  <p>Sinds 7 november bewaart de workflow <code>media_group_id</code>. Oudere
+  regels hebben dat veld niet en staan als losse kaarten.
+  <code>archief-albums.py</code> zet het alsnog voor buren die aantoonbaar bij
+  elkaar horen: zelfde chat, zelfde afzender, allebei een bijlage en hoogstens
+  twee seconden uit elkaar.</p>
+  <pre><code>python3 archief-albums.py                      # alleen kijken
+python3 archief-albums.py --do                 # schrijven (met .bak-)
+python3 archief-albums.py --max-gat 0.5 --do   # strenger</code></pre>
+  <p>Draaien als <code>ai-agents</code> op de VPS; <code>berichten.jsonl</code>
+  is van dat account. Regels die het veld al hebben blijven ongemoeid en een
+  tweede ronde doet niets.</p>
+
+  <h2>Bewaking</h2>
+  <ul>
+    <li>De pagina op 443 hoort 404 te geven. <code>archief-wacht.sh</code>
+    meet dat wekelijks (maandag 09:20, user-timer
+    <code>vps-archief-wacht.timer</code>) vanaf de laptop en stuurt één
+    Telegram-bericht als er iets anders dan 404 terugkomt — met hoogstens één
+    herinnering per week, en één herstelbericht als het weer dicht is.
+    Handmatig: <code>./archief-wacht.sh --status</code> of
+    <code>--dry-run</code>.</li>
+    <li><code>/admin/</code> op de OVH-VPS waarschuwt bovenaan als de
+    bijlagenserver of Ollama stil ligt en toont onder de trend altijd hun
+    stand.</li>
+    <li><code>~/bin/ovh-tunnel-page --check</code> loopt de rijen langs en
+    kijkt bij het archief ook of de pagina evenveel <code>&lt;script&gt;</code>
+    als <code>&lt;/script&gt;</code> bevat. Een onbalans is een 200 waarbij geen
+    enkele knop nog werkt.</li>
+  </ul>
+
+  <h2>Als er iets niet werkt</h2>
+  <table>
+    <thead>
+      <tr><th>Verschijnsel</th><th>Oorzaak en oplossing</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>De <code>×</code> doet niets</td>
+        <td>De pagina uit n8n mist de afsluitende <code>&lt;/script&gt;</code>;
+        de browser leest de rest dan als scripttekst. De bijlagenserver zet die
+        tag terug — open de pagina dus op <code>5681</code>, niet rechtstreeks
+        op <code>5678</code>.</td>
+      </tr>
+      <tr>
+        <td>Verwijderen meldt een fout, maar het is weg</td>
+        <td>De pagina en de POST hebben een verschillend origin. Via de tunnel
+        hoort dat op te lossen; rechtstreeks op de n8n-poort is het verwacht
+        gedrag.</td>
+      </tr>
+      <tr>
+        <td><code>502 archiefpagina niet bereikbaar</code></td>
+        <td>n8n antwoordt niet op <code>127.0.0.1:5678</code>. Kijk op
+        <code>/admin/</code> of <code>n8n.service</code> draait.</td>
+      </tr>
+      <tr>
+        <td>De pagina laadt, maar zonder bijlagen</td>
+        <td>De bestanden horen bij <code>bestanden/</code>. Ontbreekt daar een
+        bestand, dan is het waarschijnlijk weggegooid; kijk in de nieuwste map
+        onder <code>prullenbak/</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Bestanden en paden</h2>
+  <table>
+    <thead>
+      <tr><th>Pad</th><th>Wat</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>~/telegram-archief/berichten.jsonl</code></td><td>Het
+      archief: één JSON-regel per bericht.</td></tr>
+      <tr><td><code>~/telegram-archief/bestanden/</code></td><td>De bijlagen,
+      waar de regels naar wijzen.</td></tr>
+      <tr><td><code>~/telegram-archief/prullenbak/</code></td><td>Wat is
+      weggegooid, 30 dagen bewaard.</td></tr>
+      <tr><td><code>~/bestanden-server.py</code></td><td>De bijlagenserver
+      (<code>--poort</code>, <code>--map</code>, <code>--berichten</code>).</td></tr>
+      <tr><td><code>archief-albums.py</code></td><td>Zet achteraf
+      <code>media_group_id</code> op oude albums.</td></tr>
+      <tr><td><code>archief-wacht.sh</code></td><td>De wekelijkse controle of
+      443 nog 404 geeft.</td></tr>
+      <tr><td><code>n8n-freebuff-archief.workflow.json</code></td><td>De
+      workflow die de pagina bouwt.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <p><b>Wat er nog niet is.</b> Het archief heeft geen eigen back-up: het
+    jsonl-bestand en de bijlagenmap staan alleen op deze VPS (punt Z3 in
+    <code>TODO-veiligheid-en-groei.md</code>). Ook leest de pagina het hele
+    bestand in één keer; bij tienduizenden berichten wordt dat traag en is een
+    echte archief-API met zoeken in de database de volgende stap.</p>
+  </div>
+</main>
+
+<footer>
+  <span>Telegram-archief op de EepsHub</span> ·
+  <a href="index.html">terug naar de landing</a>
+  <p class="foot-tools">
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/static/piracy/html-editor.html" target="_blank" rel="noopener">✏️ Tekst-editor</a> ·
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/n8n_front" target="_blank" rel="noopener">⚡ n8n</a> ·
+    <a href="https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/api_page" target="_blank" rel="noopener">🔌 API</a>
+  </p>
+</footer>
+</body>
+</html>

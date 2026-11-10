@@ -1,7 +1,32 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.38.0` · **Laatst bijgewerkt:** 2026-11-05
+**Huidige versie:** `1.38.2` · **Laatst bijgewerkt:** 2026-11-10
+
+## 🟩 1.38.2 — 2026-11-10 — documentatie voor het Telegram-archief
+
+- **`/static/piracy/archief.html`** (nieuw): één uitlegpagina over het
+  Telegram-archief — de tunnel naar `localhost:5681/archief`, zoeken en
+  filteren, albums, de prullenbak, de routes van `bestanden-server.py`, de
+  wekelijkse controle van `archief-wacht.sh` en wat er nog niet is (geen eigen
+  back-up).
+- **Menu**: in de paginabalk van alle landingspagina's staat naast Bookmarks
+  nu **🗄 Archief** naar die pagina; op GitHub Pages bouwt `build.py` hem mee.
+- **Waarom:** het archief was alleen in de README beschreven; wie de pagina
+  opende zag geen uitleg over de tunnel of over wat verwijderen precies doet.
+- **`__version__`** → `1.38.2`.
+
+## 🟩 1.38.1 — 2026-11-08 — /n8n_front zonder netdata
+
+- **`/n8n_front`**: de rij **Netdata (monitoring)** en de link naar
+  `…:8443/` zijn weg. De monitoring op de OVH-VPS is op 8 november 2026
+  verwijderd (`run40` verving netdata door Beszel, `run42` haalde dat weg,
+  `run43` ruimde de laatste verwijzingen op) en komt niet terug; een link naar
+  een dichte poort is erger dan geen link.
+- **Waarom:** op verzoek, geen monitor meer. De bewaking bestaat nu uit
+  `check.sh` op de VPS, de radar met stoplichten en de Telegram-meldingen.
+- De pagina zelf blijft een verwijzing: editor, `/webhook/blocked-ip`,
+  `/healthz` en `/blocked`.
 
 ## 🟩 1.38.0 — 2026-11-05 — /api/watch: de Stratoxbox bewaakt de OVH-VPS
 

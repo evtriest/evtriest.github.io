@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-07",
+  "generated": "2026-11-10",
   "count": 5,
   "projects": [
     {
@@ -46,7 +46,7 @@
       "type": "code/ops",
       "status": "actief",
       "summary": "instabox-VPS: getijdenachtergrond Den Helder, wildpluk-site, piraten-landing `/landing`, Crew-pagina en de radar; spiegel op `evtriest.github.io`",
-      "updated": "2026-11-07",
+      "updated": "2026-11-10",
       "docs": [
         "README.md",
         "AGENTS.md"
