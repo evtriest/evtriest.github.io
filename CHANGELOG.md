@@ -1,7 +1,27 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.38.2` · **Laatst bijgewerkt:** 2026-11-10
+**Huidige versie:** `1.38.3` · **Laatst bijgewerkt:** 2026-11-10
+
+## 🟩 1.38.3 — 2026-11-10 — bevestiging van het Telegram-archief gerepareerd
+
+- **`n8n-freebuff-menu`**: de bijlage-uitgang van de switch `Welke keuze` wees
+  naar *Menu sturen* en de fallback naar *Bewaard melden*. Elk document zonder
+  caption kreeg daardoor het botmenu als antwoord, en de bevestiging kwam nooit
+  — die verwees bovendien naar `record.bijlage.pad`, wat bij een tekstbericht
+  niet bestaat. Nu bouwt de nieuwe Code-node `Bewaard tekst` ná
+  `Archief bijwerken` één bericht met de titel, de bijlage met het pad in
+  `bestanden/` (of het aantal tekens) en de verwijzing naar de archiefpagina.
+- **Titel in de archiefregel**: `Bericht verwerken` zet een `titel` (eerste
+  regel van de caption, anders de bestandsnaam). Bij een album heeft Telegram
+  maar bij één bericht een caption, dus de andere kregen tot nu toe geen naam.
+- **Archiefpagina** (`n8n-freebuff-archief`): toont de titel boven de kaart,
+  zoekt er ook in, en zet geen "(geen tekst)" meer neer bij een document
+  zonder caption. Oude regels zonder `titel` vallen terug op tekst of
+  bestandsnaam.
+- **`/static/piracy/archief.html`**: nieuwe sectie *Wat de bot terugstuurt*,
+  en de kaart over de JSON-regel noemt nu de titel.
+- **`__version__`** → `1.38.3`.
 
 ## 🟩 1.38.2 — 2026-11-10 — documentatie voor het Telegram-archief
 

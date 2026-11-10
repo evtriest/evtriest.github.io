@@ -126,7 +126,7 @@
       <h3>Eén regel per bericht</h3>
       <p>Een n8n-workflow (<code>AI_freebuff_archief</code>) zet elk binnenkomend
       bericht als JSON-regel in <code>berichten.jsonl</code>: tijd, chat, afzender,
-      tekst, en per bijlage het pad en het soort.</p>
+      titel, tekst, en per bijlage het pad en het soort.</p>
     </div>
     <div class="card">
       <h3>Bestanden apart</h3>
@@ -203,6 +203,17 @@ http://localhost:5681/archief</code></pre>
       </tr>
     </tbody>
   </table>
+
+  <h2>Wat de bot terugstuurt</h2>
+  <p>Elk bericht dat geen commando is, wordt bewaard en met één regel bevestigd:
+  de titel, de bijlage met het pad in <code>bestanden/</code> (of het aantal
+  tekens bij een tekst), en de verwijzing naar deze pagina. Het menu komt alleen
+  terug bij <code>/start</code> en bij een leeg bericht.</p>
+  <p>De <b>titel</b> is de eerste regel van de tekst die je meegeeft. Stuur je een
+  document zonder tekst, dan wordt de bestandsnaam de titel. Bij een album
+  (meerdere bestanden in één keer) heeft Telegram maar bij één bericht een
+  caption; de andere krijgen automatisch hun eigen bestandsnaam. Zoeken op deze
+  pagina dekt titel, tekst, bestandsnaam en datum.</p>
 
   <h2>Verwijderen en terugzetten</h2>
   <p>Wat je weggooit, gaat naar <code>prullenbak/&lt;stamp&gt;-&lt;pid&gt;/</code>
