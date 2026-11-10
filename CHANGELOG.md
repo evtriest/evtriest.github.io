@@ -1,7 +1,26 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.38.3` · **Laatst bijgewerkt:** 2026-11-10
+**Huidige versie:** `1.38.4` · **Laatst bijgewerkt:** 2026-11-10
+
+## 🟩 1.38.4 — 2026-11-10 — eerst een titel, dan pas het archief
+
+- **Menu afgevangen**: kale cijfers `1`-`4` waren menu-keuzes, dus een notitie
+  die met een cijfer begon kwam nooit in het archief en kreeg een
+  weer-/getij-/radarantwoord. Commando's zijn nu alleen nog `/start`, `/menu`,
+  `/help`, `/hallo`, `/weer`, `/getij` en `/radar`; de menu- en welkomsttekst
+  noemt die vorm. Een leeg of onbekend bericht levert het menu op.
+- **Titelvraag vóór het archiveren**: `Concept onthouden` zet het bericht in de
+  workflow-static-data (per chat) en `Vraag titel` vraagt om één regel. Het
+  antwoord wordt de titel en pas dan schrijft `Titel toepassen` de regel naar
+  `berichten.jsonl`. `/overslaan` bewaart met de automatische titel (eerste
+  regel tekst, anders de bestandsnaam); een openstaande vraag verloopt na een
+  uur en een nieuw bericht tijdens de vraag krijgt `Wacht melden`.
+- **`Filter geheimen`** keurt nu de definitieve regel (titel, tekst,
+  bestandsnaam) en zit achter de titelstap in plaats van direct na het bericht.
+- **`/static/piracy/archief.html`**: secties *Eerst de titel, dan het archief*
+  en *Wat de bot terugstuurt* beschrijven de dialoog en de commando's.
+- **`__version__`** → `1.38.4`.
 
 ## 🟩 1.38.3 — 2026-11-10 — bevestiging van het Telegram-archief gerepareerd
 

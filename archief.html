@@ -204,16 +204,27 @@ http://localhost:5681/archief</code></pre>
     </tbody>
   </table>
 
-  <h2>Wat de bot terugstuurt</h2>
-  <p>Elk bericht dat geen commando is, wordt bewaard en met één regel bevestigd:
-  de titel, de bijlage met het pad in <code>bestanden/</code> (of het aantal
-  tekens bij een tekst), en de verwijzing naar deze pagina. Het menu komt alleen
-  terug bij <code>/start</code> en bij een leeg bericht.</p>
-  <p>De <b>titel</b> is de eerste regel van de tekst die je meegeeft. Stuur je een
-  document zonder tekst, dan wordt de bestandsnaam de titel. Bij een album
+  <h2>Eerst de titel, dan het archief</h2>
+  <p>Elke notitie, foto of elk document wordt eerst <b>onthouden maar nog niet
+  bewaard</b>. De bot antwoordt met wat er binnenkwam en vraagt om één regel:
+  de titel. Het bericht daarop wordt die titel, en pas daarna gaat de regel naar
+  <code>berichten.jsonl</code> — met de titel, de tekst, de bijlage en het pad in
+  <code>bestanden/</code>. Je krijgt dan één bevestiging met die gegevens en de
+  verwijzing naar deze pagina.</p>
+  <p>Geen zin om een titel te bedenken? <code>/overslaan</code> bewaart het
+  bericht met de automatische titel: de eerste regel van de tekst, of anders de
+  bestandsnaam. Een openstaande titelvraag vervalt na een uur; een nieuw bericht
+  in die tussentijd krijgt het antwoord dat er nog een titel wacht. Bij een album
   (meerdere bestanden in één keer) heeft Telegram maar bij één bericht een
   caption; de andere krijgen automatisch hun eigen bestandsnaam. Zoeken op deze
   pagina dekt titel, tekst, bestandsnaam en datum.</p>
+
+  <h2>Wat de bot terugstuurt</h2>
+  <p>Alle commando's beginnen met een schuine streep: <code>/start</code>,
+  <code>/menu</code>, <code>/hallo</code>, <code>/weer</code>,
+  <code>/getij</code> en <code>/radar</code>. Kale cijfers als <code>1</code> of
+  <code>2</code> zijn geen menu meer: die komen gewoon in het archief, met een
+  titel. Een leeg bericht of een onbekend commando levert het menu op.</p>
 
   <h2>Verwijderen en terugzetten</h2>
   <p>Wat je weggooit, gaat naar <code>prullenbak/&lt;stamp&gt;-&lt;pid&gt;/</code>
