@@ -1,7 +1,117 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.38.4` · **Laatst bijgewerkt:** 2026-11-10
+**Huidige versie:** `1.39.1` · **Laatst bijgewerkt:** 2026-11-13
+
+## 🟩 1.39.1 — 2026-11-13 — Marta op Hermes + Telegram-ingang
+
+- **Marta (admin) praat nu met Hermes**, net als de kapitein. De kapitein-route
+  is generiek geworden: `_hermes_chat(agent)` met persona uit
+  `agents/<agent>/AGENTS.md`. `POST /api/kapitein` blijft bestaan als korte
+  route, en er is `POST /api/hermes/<agent>` voor de rest — alleen namen uit
+  `_HERMES_FALLBACK` (`kapitein`, `admin`), een andere naam geeft 404.
+- **`agents/admin/AGENTS.md`** is een systeemprompt geworden (rol, toon,
+  grenzen, emoji) in plaats van een kaartjes-instructie; ze zegt eerlijk dat
+  ze in deze chat geen kaartjes of bestanden kan aanraken en verwijst naar het
+  kaartenpaneel. Nieuwe emoji-set voor `admin` in `_AGENT_EMOJI`.
+- **Crew-pagina**: de admin-box post naar `/api/hermes/admin`, met eigen
+  wacht- en foutregels; de note eronder vertelt wat Marta wel en niet doet.
+- **Telegram-ingang**: in `/data/home/.hermes/config.yaml` staat
+  `platforms.telegram.enabled: true`; de bot-token en de toegestane
+  Telegram-gebruikers staan in `/data/home/.hermes/.env`
+  (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_ALLOWED_USERS`). Zonder token meldt de
+  gateway "telegram is enabled but no bot credential" en serveert hij het
+  platform niet — de rest, inclusief de site, blijft gewoon draaien.
+
+## 🟩 1.39.0 — 2026-11-13 — de kapitein praat met Hermes (provider amd)
+
+- **Hermes Agent op de VPS**: `~/.hermes` met provider `amd`
+  (`https://api.tokenlab.amd.com/v1`, model `Gemma-4-31B-IT`, fallback
+  `Qwen3.8-27B`, sleutel `AMD_API_KEY` in `/data/home/.hermes/.env`). De gateway
+  draait als user-service `hermes-gateway` (linger aan, dus hij komt terug na
+  een reboot) en zet een OpenAI-compatibele api_server op `127.0.0.1:8642`,
+  beveiligd met `API_SERVER_KEY`.
+- **`POST /api/kapitein`** in `app.py`: nieuwe route die de gespreksgeschiedenis
+  naar die api_server stuurt (`/v1/chat/completions`, model `hermes-agent`),
+  met de persona uit `agents/kapitein/AGENTS.md` en de emoji-garantie van
+  `_met_emoji` (minimaal twee kapiteinsemoji's). Het gedeelde geheim staat in
+  `hermes_key.txt` naast `app.py` (mode 600, of `WILDPLUK_HERMES_KEY`); de URL
+  is `WILDPLUK_HERMES_URL` (standaard `http://127.0.0.1:8642/v1`).
+- **Geen gereedschap**: `platform_toolsets.api_server: []`, dus de openbare
+  chatbox kan nooit een shell of bestand op de VPS aanraken. Ontbreekt de
+  sleutel of is de gateway stil, dan volgt een leesbare 502/503 in plaats van
+  een verzonnen antwoord; de technische reden gaat naar het log.
+- **Crew-pagina**: de vaste `captainReplies` zijn weg. De kapitein-box gebruikt
+  nu dezelfde `frontChat` als de andere chats (met `path: '/api/kapitein'`),
+  inclusief wachten/denken-regel en foutmelding. De teksten eromheen zeggen wat
+  er echt gebeurt: Hermes op de VPS, niet het kleine lokale model.
+- **`agents/kapitein/AGENTS.md`** is nu een systeemprompt (rol, toon, grenzen,
+  emoji) in plaats van een lijst vaste antwoorden; wijzigen gaat live in door
+  de mtime-cache.
+- **CORS**: `/api/kapitein` staat naast `/api/chat` in de allowlist, zodat de
+  Crew-pagina op GitHub Pages de route ook cross-origin kan gebruiken.
+
+## 🟩 1.38.8 — 2026-11-13 — de herstelgeschiedenis ook zonder hover
+
+- **Footer:** naast de hotspot-knop staat nu een kleine tijdlijn met de
+  laatste drie overgangen (`↻ 16:35 · 240 s`, `⚠ 16:31 · —`). De tooltip
+  blijft, maar op een telefoon bestaat er geen hover — daar was de
+  geschiedenis dus onbereikbaar. Verborgen zolang er niets gemeld is.
+
+## 🟩 1.38.7 — 2026-11-13 — ook als de hotspot zelf wegvalt
+
+- **`POST /api/hotspot`** kent twee soorten gebeurtenissen extra:
+  `hotspot-lost` en `hotspot-back`. De watchdog op de Pi meldt daarmee de
+  hotspot die wegvalt terwijl de wifi-link blijft staan (de gateway antwoordt
+  niet); bij terugkeer volgt `hotspot-back` met `down_s` = hoe lang de gateway
+  stil bleef. Zonder die twee bleef er in zo'n geval geen spoor achter, ook al
+  viel er niets te herstellen.
+- **Footer-tooltip** toont ze als `⚠ hotspot weg (16:31)` en
+  `↻ hotspot terug na 240 s (16:35)`.
+
+## 🟩 1.38.6 — 2026-11-13 — waarom stond de hotspot rood?
+
+- **`POST /api/hotspot`** accepteert nu een optioneel `event`-object
+  (`kind`: `recovered` of `recovered-failed`, plus `detail` en `down_s`). De
+  wifi-watchdog op de Pi meldt daarmee dat hij de link zelf heeft hersteld, of
+  dat het niet lukte. De laatste vijf blijven bewaard in `hotspot_state.json`.
+- **`GET /api/hotspot`** geeft die lijst mee als `events`.
+- **Footer:** de tooltip van de hotspot-knop toont de herstelregels
+  (`↻ hersteld na 66 s (16:25)`), zodat achteraf te zien is waarom de status
+  rood stond. Aanleiding: de uitval van 12–13 nov 2026, waarbij de Pi twintig
+  uur offline bleef zonder dat de site meer kon laten zien dan "uit".
+
+
+## 🟩 1.38.5 — 2026-11-10 — de radar is vier lege vakken
+
+- **`/static/piracy/radar.html`** (de pagina op evtriest.github.io) is leeg
+  achtergelaten: de radar zelf blijft, maar de vakken, de verzonnen metrics en
+  het stoplicht/uitvalscherm zijn weg. De storingen leven nog in `wildpluk.db`
+  en `/api/outages`; alleen de bediening vanaf deze pagina is vervallen.
+- **`website/ovh/radar.html`** (de radar op de OVH-VPS) heeft nu vier vakken in
+  dezelfde 2×2-indeling: *Stratoxbox VPS* (de bestaande n8n-watch blijft),
+  *OVHcloud VPS*, *Lokaal netwerk* en *Algemeen*.
+- **Algemeen** heeft twee blokken: *Back-ups* en *Projecten*, met de
+  Omarchy-plugin `mouse-in-the-corner` als eerste regel en een link naar
+  `/projecten.html`. *Back-ups* toont de keten zoals de OVH-VPS hem kent —
+  restic naar Hookipa (privéadres, geen route), de lokale map
+  `/root/ovh-backup/runNN-*` (alleen root) en de inactieve workflow-export naar
+  GitHub — met een amber lamp en de reden waarom er vanaf deze machine niets te
+  meten valt.
+- **Lokaal netwerk** toont alleen wat de OVH-VPS zelf kan zien: het thuisnetwerk
+  zit achter NAT, dus er is geen route naartoe. Het vak leest
+  `watch/lan.json` (dezelfde map waar de Stratox-watch `status.json` schrijft) en
+  zegt eerlijk *geen melding* met een amber lamp zolang dat bestand er niet is;
+  zodra het netwerk zelf een melding weglegt, staan de apparaten met hun lamp
+  en leeftijd in hetzelfde vak.
+- **Radarpagina op smalle schermen**: de pagina stond op een vaste schermhoogte
+  met vier vakken van 25vh, waardoor *Lokaal netwerk* en *Algemeen* afknipten en
+  de footer en de scantijd er middenin vielen. Onder 768px scrolt de pagina nu
+  gewoon, staan de vier vakken onder elkaar en begint de zoekbalk onder de
+  pagebar. Op elk scherm meet het script de hoogte van die vaste pagebar
+  (`--bar`), zodat de bovenste twee titels niet meer achter de menubalk
+  verdwijnen.
+- **`__version__`** → `1.38.5`.
 
 ## 🟩 1.38.4 — 2026-11-10 — eerst een titel, dan pas het archief
 
