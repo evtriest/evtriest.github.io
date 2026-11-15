@@ -1,7 +1,147 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.39.1` · **Laatst bijgewerkt:** 2026-11-13
+**Huidige versie:** `1.40.6` · **Laatst bijgewerkt:** 2026-11-15
+
+## 🟩 1.40.6 — 2026-11-15 — Iva krijgt een kennisbank en een tweede model
+
+- **Kennisbank:** `agents/bulgaars/kennis.txt` bestond alleen in de repo (met
+  Sofia-toeristentekst) en niet op de VPS, dus Iva's prompt bestond uit haar
+  persona plus de maandcontext uit de database. Daardoor noemde ze soorten die
+  nergens stonden en verzon ze een collega. Het bestand is nu een Bulgaarse
+  kennisbank over de kust: de plekken (Callantsoog, Robbenoort, Julianadorp,
+  Grafelijkheidsduinen, Havenmond), de namen van schelpen, vissen en
+  paddenstoelen met hun Nederlandse equivalent, de seizoenen per maand, de
+  giftige soorten (met waarschuwing, nooit als eetbaar) en de regels op het
+  strand. De prompt groeide van 3,0k naar 7,3k tekens.
+- **Modelkeuze:** gemeten met de echte prompt op de AMD-provider —
+  `DeepSeek-V4.1-Flash` 10,6 s en 0 Latijnse tekens, `DeepSeek-V4-Flash` 9,1 s
+  maar met Nederlandse soortnamen in de tekst, `Gemma-4-31B-IT` 19–47 s met
+  nog meer Nederlands, `Qwen3.8-27B` twee keer 503. V4.1-Flash is nu het
+  standaardmodel; de provider is soms vol (429 "at capacity", soms binnen een
+  seconde) of tijdelijk weg (503 na 60 s), dus bij zo'n fout schakelt de route
+  na één herhaalpoging door naar V4-Flash.
+- Een timeout geeft nog steeds 504 en een andere 4xx stopt meteen; alleen 429
+  en 5xx leiden tot een volgende poging of het tweede model.
+- `_BULGAARS_GEVAAR_RE` kent nu ook "може ли да ям/бера" ("Може ли да ям пачи
+  крак?" glipte er langs; het model gaf daar toevallig zelf een eerlijk
+  antwoord, maar de rem hoort dat te doen).
+
+## 🟩 1.40.5 — 2026-11-15 — ook Iva vraagt niet meer naar eetbaarheid
+
+- De kennisbank van Iva (`kennis.txt`) gaat over schelpen, vissen en plekken en
+  bevat geen enkele paddenstoel. Op de vraag "кои гъби мога да бера сега?"
+  verzon ze dus een eetbare soort ("само cantharellen още ги има") en een
+  collega. Een strengere taalregel hielp daar niet tegen.
+- `_eetbaarheid_bulgaars` doet nu hetzelfde als bij de natuurgids, maar in het
+  Bulgaars: een vraag met ядлив/отровн/смъртонос/опасн, "мога ли да ям" of
+  "гъби/миди … бера" krijgt een vaste tekst — geen oordeel, alleen plukken wat
+  je 100% kent, en bij vergiftiging meteen een arts (112). De llama en het
+  31B-model komen er niet aan te pas.
+- Pluk- en seizoensvragen ("кои миди да търся през ноември") gaan gewoon naar
+  het model.
+- **Ook gerepareerd:** `agents/vogelgids/kennis.txt` op de VPS bevatte maar één
+  regel (alleen de bokje), terwijl de repo de hele vogellijst heeft. De
+  vogelgids antwoordde daardoor "onbekend" op merel en koolmees. De repo-versie
+  staat er nu; merel en koolmees geven weer hun mp3-url in 0,0 s.
+
+## 🟩 1.40.4 — 2026-11-15 — Iva noemt alleen wat in de kennisbank staat
+
+- Bij de live-test van 1.40.3 antwoordde Iva wel snel (19–53 s) en in het
+  Bulgaars, maar ze verzon soorten en mensen: "тук, в дюните, има
+  cantharellen — вкусни" en "кажи на Мария от рецепцията".
+- `_IVA_TAALREGEL` zegt nu ook: alleen soorten en plekken uit de kennisbank
+  en de maandinfo, bij twijfel eerlijk "не знам", geen verzonnen personen of
+  namen, en nooit beweren dat een soort eetbaar is.
+
+## 🟩 1.40.3 — 2026-11-15 — Iva rechtstreeks naar de provider
+
+- Live op de VPS liep Iva's antwoord in de 120 s van `HERMES_TIMEOUT` en kreeg
+de bezoeker een 504. De Hermes-gateway zet een eigen agent-prompt en een
+extra ronde bovenop het verzoek: dezelfde vraag kostte via de gateway 60–135 s,
+rechtstreeks bij dezelfde provider 37 s (Gemma) en 7,5 s (DeepSeek-V4-Flash).
+- `_hermes_chat` kiest voor `bulgaars` nu de provider rechtstreeks
+(`AMD_CHAT_URL`, standaard `https://api.tokenlab.amd.com/v1`, model
+`DeepSeek-V4-Flash`, dezelfde 120 s als de gateway) zodra er een sleutel is:
+`WILDPLUK_AMD_KEY`, anders de `AMD_API_KEY` uit `/data/home/.hermes/.env`
+(overschrijfbaar met `WILDPLUK_AMD_ENV`). Geen sleutel = terug naar Hermes,
+zoals voorheen. De sleutel staat niet in deze tree.
+- Kapitein en Marta blijven via de gateway op Gemma-4-31B-IT; daar werkt die
+route goed (11–26 s, in rol).
+
+## 🟩 1.40.2 — 2026-11-15 — Iva's taalregel hard gemaakt
+
+- Bij de eerste live-test op de VPS (na de deploy van 1.40.1) kwam Iva via de
+  Hermes-gateway met door elkaar Bulgaars, Nederlands en Russisch
+  ("oesters, да, стриди", "Сейчас е ноември, so ... Много lekker"), met een
+  verzonnen collega erbij en ruim over de 120 woorden van de persona. Met
+  een korte prompt deed dezelfde gateway het wél goed, dus het lag aan de
+  lange persona, niet aan de route.
+- `_IVA_TAALREGEL` staat nu achteraan Iva's systeemprompt: Bulgaars in
+  Cyrillisch, maximaal 100 woorden, geen Nederlands/Engels/Russisch erin, en
+  geen verzonnen personen of anekdotes. Getest met de echte prompt: twee van
+  twee antwoorden schoon en in de kennisbank ("През ноември търси стриди в
+  Каланцог или Робсеноорт").
+- **Bekende beperking:** het 31B-model achter AMD is traag — 37 s direct,
+  60–135 s via de gateway. Boven de 120 s van `HERMES_TIMEOUT` krijgt de
+  bezoeker een nette 504. Dat is providerdrukte, geen bug in de route; Iva
+  is de enige chat die er last van heeft.
+
+## 🟩 1.40.1 — 2026-11-15 — meer soorten in de eetbaarheidsrem
+
+- De vaste waarschuwingen in `_GEVAARLIJKE_SOORTEN` dekken nu ook wat er
+  behalve de knolamanieten en de vliegenzwam in de duinen en het grasland
+  langs de kust staat: de giftige weidetrechterzwam en de trechterzwammen in
+  het algemeen (muscarine), (gif)gordijnzwammen (orellanine, nieren), het
+  bundelmosklokje (amatoxine), de voorjaarskluifzwam of valse morielje
+  (gyromitrine), de giftige satijnzwam, de valse hanenkam en de grote kale
+  inktzwam — die laatste met de alcoholwaarschuwing.
+- "Knolamaniet" zonder soortnaam valt nu op een algemene regel (elke
+  knolamaniet is giftig) in plaats van op "dat kan ik niet beoordelen"; die
+  regel staat bewust achter de specifieke namen, zodat de groene knolamaniet
+  zijn eigen, sterkere tekst houdt.
+- Een gevaarlijke soortnaam levert nu altijd de waarschuwing op, ook als de
+  vraag geen eetbaarheidswoord bevat: "wat is een gordijnzwam?" kreeg eerst
+  een verzonnen verhaal van de llama, en een verkeerd antwoord over een
+  dodelijke soort is het enige antwoord dat iemand kan doden. Gewone
+  plukvragen ("waar kan ik kokkels plukken?") gaan nog steeds naar het model.
+- Het advies noemt naast de paddenstoel ook de schelp, want dezelfde vraag
+  komt ook bij de kokkels langs.
+
+## 🟩 1.40.0 — 2026-11-15 — eetbaarheid door de server, Iva op Hermes, retry
+
+Na een test van alle vier de chatprofielen met hun echte persona's (14/15
+november, beide modelproviders) bleken twee dingen mis te gaan.
+
+- **Eetbaarheid beslist nu de server** (`_eetbaarheid_antwoord`). Het
+  0.6B-model antwoordde op de VPS "De vliegenzwam is **eetbaar**" en "In het
+  seizoen **kan ik de groene knolamaniet eten**" — twee dodelijk giftige
+  soorten. Een vraag met `eetbaar`, `giftig`, `dodelijk` of "kan/mag ik …
+  eten" komt bij de natuurgids daarom niet meer bij de llama: `app.py` geeft
+  een vaste tekst, met een eigen waarschuwing voor groene/witte/
+  voorjaarsknolamaniet, vliegenzwam, panteramaniet en satansboleet, en anders
+  een eerlijk "dat kan ik niet beoordelen" plus het advies het door een
+  kenner te laten controleren. Plukvragen ("waar kan ik kokkels plukken")
+  gaan gewoon naar het model; die filter is daar bewust niet op gebouwd.
+  Getest: 0,0 s en geen llama-aanroep, terwijl de plukvraag in 1,2 s via de
+  llama liep.
+- **Iva (bulgaars) praat nu met Hermes**, niet meer met de lokale llama.
+  `bulgaars` staat in `_HERMES_FALLBACK` en `/api/chat` stuurt die agent door
+  naar `_hermes_chat`; `_hermes_system_prompt` geeft haar dezelfde persona,
+  `kennis.txt` en maandcontext als voorheen. Reden: het 0.6B-model gaf geen
+  Bulgaars maar een Kroatisch-achtige brei die na ~130 woorden in "vse vse
+  vse …" overging (27 s), en twee van de drie vragen liepen in de 90 s van
+  `CHAT_TIMEOUT`. Met Gemma-4-31B via AMD kwam er in 7,6 s echt Bulgaars uit,
+  inclusief de waarschuwing om alleen te pakken wat je 100% herkent. Mislukt
+  de Hermes-run, dan geeft de box een leesbare fout in plaats van een
+  verzonnen antwoord.
+- **Eén retry na een 5xx van de provider** in `_hermes_chat`
+  (`HERMES_RETRY_WACHT` = 1,5 s). Bij de profieltest gaf de AMD-provider
+  tweemaal een 503, en zonder retry ziet de bezoeker dan "De kapitein kreeg
+  geen antwoord". Een 4xx of een timeout wordt niet opnieuw geprobeerd (dat
+  helpt niet en verdubbelt alleen de wachttijd). Getest met een stub die één
+  keer 503 gaf: het antwoord kwam uit de tweede poging na 1,5 s, en
+  `/api/hermes/onbekend` geeft nog steeds 404.
 
 ## 🟩 1.39.1 — 2026-11-13 — Marta op Hermes + Telegram-ingang
 
