@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-15",
+  "generated": "2026-11-18",
   "count": 5,
   "projects": [
     {
@@ -46,12 +46,12 @@
       "type": "code/ops",
       "status": "actief",
       "summary": "instabox-VPS: getijdenachtergrond Den Helder, wildpluk-site, piraten-landing `/landing`, Crew-pagina en de radar; spiegel op `evtriest.github.io`",
-      "updated": "2026-11-13",
+      "updated": "2026-11-18",
       "docs": [
         "README.md",
         "AGENTS.md"
       ],
-      "git": null
+      "git": "https://github.com/evtriest/vps-instabox.git"
     },
     {
       "id": "waddensite",
