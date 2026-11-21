@@ -23,7 +23,10 @@
   die `status.json` schrijft. Er is geen `delete:workflow` in deze n8n-versie,
   dus dat ging met de hand: n8n gestopt, een kopie van de database en de
   workflow-JSON bewaard, de rijen weggehaald, `foreign_key_check` en
-  `integrity_check` schoon, n8n weer gestart.
+  `integrity_check` schoon, n8n weer gestart. Daarna is de oude workflow op
+  verzoek teruggezet, inactief: de definitie staat weer als
+  `stratoxwf000001` in n8n, maar hij draait niet en schrijft dus niets. Alleen
+  `instaboxwf000001` doet de bewaking.
 
 ## 🟩 1.40.8 — 2026-11-21 — Stratox heet nu Instabox
 
