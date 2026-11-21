@@ -18,9 +18,12 @@
 - **Uitrol:** nieuwe workflow geïmporteerd en gepubliceerd, de oude uitgezet,
   n8n herstart, `radar.html` vervangen. De bewaking bleef doorlopen:
   `status.json` is na de wissel weer vers en de lamp op de pagina leest
-  `lamp-instabox`. De oude workflow blijft als uitgezette rij in n8n staan; de
-  CLI van deze n8n-versie kent geen `delete:workflow`, en in de database
-  snijden voor een cosmetische rij is het niet waard.
+  `lamp-instabox`. De oude workflow is daarna uit de n8n-database verwijderd,
+  samen met zijn uitvoeringsgeschiedenis, zodat er maar één workflow meer is
+  die `status.json` schrijft. Er is geen `delete:workflow` in deze n8n-versie,
+  dus dat ging met de hand: n8n gestopt, een kopie van de database en de
+  workflow-JSON bewaard, de rijen weggehaald, `foreign_key_check` en
+  `integrity_check` schoon, n8n weer gestart.
 
 ## 🟩 1.40.8 — 2026-11-21 — Stratox heet nu Instabox
 
