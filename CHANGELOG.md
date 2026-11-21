@@ -1,7 +1,26 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.40.8` · **Laatst bijgewerkt:** 2026-11-21
+**Huidige versie:** `1.40.9` · **Laatst bijgewerkt:** 2026-11-21
+
+## 🟩 1.40.9 — 2026-11-21 — ook de machine-ids heten Instabox
+
+- **Workflow:** `AI_LunaGPT6_straboxlive` heet nu **`AI_LunaGPT6_instaboxlive`**
+  met id `instaboxwf000001` (was `stratoxwf000001`). De melding die hij naar
+  `watch/status.json` schrijft heeft `id: instabox` en `naam: Instabox VPS`; in
+  dat bestand stond nog "Stratoxbox VPS" omdat de workflow op de OVH-VPS nooit
+  opnieuw was geïmporteerd.
+- **Pagina:** de elementen op de OVH-radar heten `lamp-instabox`,
+  `cat-instabox`, `instabox-sub`, `instabox-wf`, `instabox-detail` en
+  `instabox-when`. De radar op de Instabox zelf had al `lamp-ovh` enzovoort.
+- **Repo:** de mappen heten `instabox-watch/` en `ovh-instabox-watch/`, het
+  diagram `03-instabox-stack.svg`.
+- **Uitrol:** nieuwe workflow geïmporteerd en gepubliceerd, de oude uitgezet,
+  n8n herstart, `radar.html` vervangen. De bewaking bleef doorlopen:
+  `status.json` is na de wissel weer vers en de lamp op de pagina leest
+  `lamp-instabox`. De oude workflow blijft als uitgezette rij in n8n staan; de
+  CLI van deze n8n-versie kent geen `delete:workflow`, en in de database
+  snijden voor een cosmetische rij is het niet waard.
 
 ## 🟩 1.40.8 — 2026-11-21 — Stratox heet nu Instabox
 
