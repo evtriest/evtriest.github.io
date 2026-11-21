@@ -264,9 +264,6 @@
     <a href="radar.html">📡 Radar</a>
     <a href="crew.html">⚓ Crew</a>
     <a href="bookmarks.html">📚 Bookmarks</a>
-    
-    
-    
     <a href="natuur.html">🌿 Natuur</a>
   </div>
 </nav>
@@ -305,9 +302,9 @@
     </details>
   </div>
 
-  <!-- 2: Stratoxbox VPS -->
+  <!-- 2: Instabox VPS -->
   <div class="cat">
-    <h3>🔷 Stratoxbox VPS</h3>
+    <h3>🔷 Instabox VPS</h3>
     <p><span class="state ok"></span><b>Connectie</b> — actief</p>
     <p><b>CPU:</b> 0% · load 0.0</p>
     <p><b>RAM:</b> 1.5 / 7.8 GB</p>
@@ -331,7 +328,7 @@
     </details>
   </div>
 
-  <!-- 2b: OVHcloud VPS (extern bewaakt vanaf de Stratoxbox) -->
+  <!-- 2b: OVHcloud VPS (extern bewaakt vanaf de Instabox) -->
   <div class="cat">
     <h3>🌍 OVHcloud VPS</h3>
     <p><span class="state" id="lamp-ovh"></span><b>OVHcloud VPS</b> — <span id="ovh-sub">status laden…</span></p>
@@ -340,7 +337,7 @@
       <summary>Details</summary>
       <p class="outage" id="ovh-detail">Nog geen melding ontvangen.</p>
       <p><b>Laatste melding:</b> <span id="ovh-when">—</span></p>
-      <p><b>Bron:</b> n8n-watch op de Stratoxbox VPS, elke 5 minuten</p>
+      <p><b>Bron:</b> n8n-watch op de Instabox VPS, elke 5 minuten</p>
     </details>
   </div>
 
@@ -830,7 +827,7 @@ function initScanSearch(){
   });
   loadLandingText();
 }
-/* ---- OVHcloud VPS: extern bewaakt door de n8n-workflow op de Stratoxbox ----
+/* ---- OVHcloud VPS: extern bewaakt door de n8n-workflow op de Instabox ----
    De workflow post elke 5 minuten naar /api/watch; blijft die melding langer
    dan 15 minuten weg, dan zegt de API zelf "unknown". */
 var watchState = { item: null, error: '', opgehaald: 0 };
@@ -945,7 +942,7 @@ function renderOutages(){
   var nieuw = document.getElementById('outage-new');
   var zoek = document.getElementById('outage-zoek');
 
-  /* open storing? Dan klapt de outages-sectie onder Stratoxbox VPS zelf open,
+  /* open storing? Dan klapt de outages-sectie onder Instabox VPS zelf open,
      tot de bezoeker er zelf op klikt. */
   var box = document.getElementById('outages');
   var openAantal = (outageState.list || []).filter(function (o) {

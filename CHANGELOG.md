@@ -1,7 +1,38 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.40.6` · **Laatst bijgewerkt:** 2026-11-15
+**Huidige versie:** `1.40.8` · **Laatst bijgewerkt:** 2026-11-21
+
+## 🟩 1.40.8 — 2026-11-21 — Stratox heet nu Instabox
+
+- **Naam:** overal waar een bezoeker het leest heet de VPS nu **Instabox** in
+  plaats van Stratox. Dat raakt de radar (kop, bronregel, uitklapbare
+  storingen), de tijdlijn op de startpagina en de comments in de pagina's; de
+  machinenaam blijft zoals hij is (`stratoxwf000001`, `lamp-stratox`,
+  `stratox-watch/`), want de n8n-workflow op de OVH-VPS en de bewaking lezen
+  die ids.
+- **Deploy:** de drie extra nav-links die alleen op de VPS staan (Archief,
+  Concept, n8n-uitleg) zijn bewaard — de rename is daar in de bestaande
+  bestanden doorgevoerd (met een `.bak-<tijd>` ernaast), niet als
+  bestandsvervanging. `app.py` mee, `wildpluk` herstart.
+- **GitHub Pages:** de spiegel is opnieuw gebouwd uit `landing/` en gepusht,
+  dus `evtriest.github.io` gebruikt dezelfde naam.
+
+## 🟩 1.40.7 — 2026-11-19 — menubalk op de VPS hersteld
+
+- **Menu**: de eerste drie items van de menubalk toonden op de VPS alle drie
+  `WILDPULK` in plaats van `Plukagenda`, `Recente waarnemingen` en `Recente
+  waarnemingen rond Den Helder`. In de topbalk stond achter de merknaam een
+  stuk shell-achtige tekst (`<(grep … .env …) | base64 -w0`).
+- De oorzaak zat in `templates/index.html` op de VPS: alleen dat blok (topbalk +
+  menu) week af van `website/index.html` in de repo; de rest van het bestand was
+  gelijk. Het kapotte bestand is bewaard als
+  `templates/index.html.bak-20261119-131656-menu`, daarna is de repo-versie
+  teruggezet. Omdat `TEMPLATES_AUTO_RELOAD` aan staat, was daarvoor geen
+  herstart van `wildpluk` nodig.
+- Gecontroleerd op `https://8080-agqx224k5zkc5mqncvy5shafsi.instabox.tech/`:
+  de drie labels staan er weer, de merknaam is schoon en alle vijf
+  `#`-doelen in het menu bestaan.
 
 ## 🟩 1.40.6 — 2026-11-15 — Iva krijgt een kennisbank en een tweede model
 
@@ -229,7 +260,7 @@ november, beide modelproviders) bleken twee dingen mis te gaan.
   het stoplicht/uitvalscherm zijn weg. De storingen leven nog in `wildpluk.db`
   en `/api/outages`; alleen de bediening vanaf deze pagina is vervallen.
 - **`website/ovh/radar.html`** (de radar op de OVH-VPS) heeft nu vier vakken in
-  dezelfde 2×2-indeling: *Stratoxbox VPS* (de bestaande n8n-watch blijft),
+  dezelfde 2×2-indeling: *Instabox VPS* (de bestaande n8n-watch blijft),
   *OVHcloud VPS*, *Lokaal netwerk* en *Algemeen*.
 - **Algemeen** heeft twee blokken: *Back-ups* en *Projecten*, met de
   Omarchy-plugin `mouse-in-the-corner` als eerste regel en een link naar
@@ -240,7 +271,7 @@ november, beide modelproviders) bleken twee dingen mis te gaan.
   meten valt.
 - **Lokaal netwerk** toont alleen wat de OVH-VPS zelf kan zien: het thuisnetwerk
   zit achter NAT, dus er is geen route naartoe. Het vak leest
-  `watch/lan.json` (dezelfde map waar de Stratox-watch `status.json` schrijft) en
+  `watch/lan.json` (dezelfde map waar de Instabox-watch `status.json` schrijft) en
   zegt eerlijk *geen melding* met een amber lamp zolang dat bestand er niet is;
   zodra het netwerk zelf een melding weglegt, staan de apparaten met hun lamp
   en leeftijd in hetzelfde vak.
@@ -317,7 +348,7 @@ november, beide modelproviders) bleken twee dingen mis te gaan.
 - De pagina zelf blijft een verwijzing: editor, `/webhook/blocked-ip`,
   `/healthz` en `/blocked`.
 
-## 🟩 1.38.0 — 2026-11-05 — /api/watch: de Stratoxbox bewaakt de OVH-VPS
+## 🟩 1.38.0 — 2026-11-05 — /api/watch: de Instabox bewaakt de OVH-VPS
 
 - **`/api/watch`** (nieuw, GET + POST): een klein rapportagepunt waar een
   externe wachter zijn uitslag achterlaat. Nu één ingang, `ovhcloud`
@@ -328,7 +359,7 @@ november, beide modelproviders) bleken twee dingen mis te gaan.
   zodat de radar daar de lamp kan zetten. Een onbekende `id` of een andere
   `status` dan `up`/`down` geeft 400.
 - **Waarom:** de bewaking op de laptop (laag 3) kijkt alleen als de laptop
-  wakker is. De Stratoxbox staat altijd aan en draait daarvoor een eigen
+  wakker is. De Instabox staat altijd aan en draait daarvoor een eigen
   n8n-instance `n8n-watch` met de workflow `OVHcloudVPSwatch`, die elke 5
   minuten `/healthz` op de hostnaam en de homepage op het IP opvraagt.
 - **`__version__`** → `1.38.0`.
@@ -691,12 +722,12 @@ november, beide modelproviders) bleken twee dingen mis te gaan.
 ## 🟩 1.25.0 — 2026-11-02 — Uptime in de ticker, outages klappen open
 
 - **`landing/index.html` — ticker**: naast het getij staat nu ook de **uptime**, uit `tewaterlating` in `/api/bezoek` met dezelfde `uptimeText()` als onder de tewaterlating (label `uptimeLabel`, dus geen nieuwe sleutels).
-- **`landing/radar.html`**: staat er een storing open, dan klapt de **outages-sectie** in de categorie Stratoxbox VPS bij het laden zelf open; zodra de bezoeker op de kop klikt, neemt de pagina die keuze over (`data-gebruiker`) en blijft de stand zoals ingesteld.
+- **`landing/radar.html`**: staat er een storing open, dan klapt de **outages-sectie** in de categorie Instabox VPS bij het laden zelf open; zodra de bezoeker op de kop klikt, neemt de pagina die keuze over (`data-gebruiker`) en blijft de stand zoals ingesteld.
 - **`website/app.py`**: `__version__` → `1.25.0`, herstart zodat de footer bijloopt.
 
 ## 🟩 1.24.1 — 2026-11-02 — Outages alleen nog op de radar
 
-- **`landing/index.html`**: het uitklapblok **Outages** onder de uptime-regel is weg (markup, CSS en de `outagesLabel`-sleutel in alle zes talen). De storingen staan alleen nog op de radarpagina, in de sectie **Stratoxbox VPS**, met stoplicht, lijst, driestaps-afhandeling en het formulier voor een nieuwe melding. De ticker op de landing blijft wél waarschuwen als er een storing open staat.
+- **`landing/index.html`**: het uitklapblok **Outages** onder de uptime-regel is weg (markup, CSS en de `outagesLabel`-sleutel in alle zes talen). De storingen staan alleen nog op de radarpagina, in de sectie **Instabox VPS**, met stoplicht, lijst, driestaps-afhandeling en het formulier voor een nieuwe melding. De ticker op de landing blijft wél waarschuwen als er een storing open staat.
 
 ## 🟩 1.24.0 — 2026-11-02 — Uptime onder de tewaterlating
 
