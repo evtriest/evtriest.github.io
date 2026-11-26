@@ -1,7 +1,16 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.41.1` · **Laatst bijgewerkt:** 2026-11-26
+**Huidige versie:** `1.41.2` · **Laatst bijgewerkt:** 2026-11-26
+
+## 🟩 1.41.2 — 2026-11-26 — geen "ssh wakker" meer in de ticker
+
+- **`landing/index.html` — ticker**: de instabox-regel verschijnt alleen nog
+  bij een echte cooldown (`🧊 koelt af · wakker {tijd}`). De gewone stand las
+  elke vijf minuten "Instabox · ssh wakker" en dat is geen nieuws: het kostte
+  een van de zeven tickerregels zonder iets te melden. De fetch naar
+  `/watch/instabox.json` en de CORS-kop (`run61.sh`) blijven zoals ze zijn; de
+  sleutel `tickerAwake` is uit alle zes talen weg (niets gebruikt hem meer).
 
 ## 🟩 1.41.1 — 2026-11-26 — ticker weer bovenaan
 

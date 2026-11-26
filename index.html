@@ -785,7 +785,7 @@
         tickerBird: `laatste vogel`, tickerSound: `laatste vogelgeluid`,
         tickerTide: `getij`, tickerCommit: `laatste commit`,
         tickerVisits: `bezoekers`, visitsToday: `{today} vandaag · {total} totaal`,
-        tickerCooldown: `koelt af · wakker {time} (GMT+1)`, tickerAwake: `ssh wakker`,
+        tickerCooldown: `koelt af · wakker {time} (GMT+1)`,
         chatOffline: `de server was even niet bereikbaar — probeer het nog eens`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
@@ -837,7 +837,7 @@
         tickerBird: `latest bird`, tickerSound: `latest bird sound`,
         tickerTide: `tide`, tickerCommit: `latest commit`,
         tickerVisits: `visitors`, visitsToday: `{today} today · {total} total`,
-        tickerCooldown: `cooling down · wakes {time} (GMT+1)`, tickerAwake: `ssh awake`,
+        tickerCooldown: `cooling down · wakes {time} (GMT+1)`,
         chatOffline: `the server was briefly unreachable — try again`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
@@ -889,7 +889,7 @@
         tickerBird: `letzter Vogel`, tickerSound: `letzter Vogelgesang`,
         tickerTide: `Gezeit`, tickerCommit: `letzter Commit`,
         tickerVisits: `Besucher`, visitsToday: `{today} heute · {total} gesamt`,
-        tickerCooldown: `kühlt ab · wach {time} (GMT+1)`, tickerAwake: `ssh wach`,
+        tickerCooldown: `kühlt ab · wach {time} (GMT+1)`,
         chatOffline: `der Server war kurz nicht erreichbar — versuch es noch einmal`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
@@ -941,7 +941,7 @@
         tickerBird: `ostatni ptak`, tickerSound: `ostatni ptasi głos`,
         tickerTide: `pływ`, tickerCommit: `ostatni commit`,
         tickerVisits: `odwiedzający`, visitsToday: `{today} dziś · {total} łącznie`,
-        tickerCooldown: `chłodzi się · wstanie {time} (GMT+1)`, tickerAwake: `ssh działa`,
+        tickerCooldown: `chłodzi się · wstanie {time} (GMT+1)`,
         chatOffline: `serwer był chwilowo nieosiągalny — spróbuj ponownie`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
@@ -993,7 +993,7 @@
         tickerBird: `последна птица`, tickerSound: `последен птичи глас`,
         tickerTide: `прилив`, tickerCommit: `последен commit`,
         tickerVisits: `посетители`, visitsToday: `{today} днес · {total} общо`,
-        tickerCooldown: `изстива · събуждане {time} (GMT+1)`, tickerAwake: `ssh работи`,
+        tickerCooldown: `изстива · събуждане {time} (GMT+1)`,
         chatOffline: `сървърът беше за малко недостъпен — опитай отново`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
@@ -1045,7 +1045,7 @@
         tickerBird: `最近的鸟`, tickerSound: `最近的鸟鸣`,
         tickerTide: `潮汐`, tickerCommit: `最新提交`,
         tickerVisits: `访客`, visitsToday: `今天 {today} · 总计 {total}`,
-        tickerCooldown: `冷却中 · {time} 唤醒 (GMT+1)`, tickerAwake: `ssh 在线`,
+        tickerCooldown: `冷却中 · {time} 唤醒 (GMT+1)`,
         chatOffline: `服务器暂时无法连接 — 请再试一次`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
@@ -1703,16 +1703,14 @@
          vijf minuten /watch/instabox.json op de OVH-VPS — dezelfde machine als
          de homepage daar, maar voor deze pagina een andere origin. De browser
          leest dat bestand dus alleen met een CORS-kop (run61.sh); zonder die
-         kop valt deze regel stil weg en blijft de ticker zoals hij was. */
+         kop valt deze regel stil weg en blijft de ticker zoals hij was.
+         Alleen een echte cooldown komt in de balk: de gewone stand ("ssh
+         wakker") is geen nieuws en liet de ticker onnodig vol lopen. */
       var instabox = fetch(INSTABOX + '?t=' + Date.now(), { mode: 'cors', cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : {}; })
         .then(function (d) {
-          if (!d || typeof d.cooling !== 'boolean') return;
-          if (d.cooling) {
-            voeg('Instabox', '🧊 ' + t('tickerCooldown', { time: d.wake_gmt1 || '?' }));
-          } else {
-            voeg('Instabox', t('tickerAwake'));
-          }
+          if (!d || d.cooling !== true) return;
+          voeg('Instabox', '🧊 ' + t('tickerCooldown', { time: d.wake_gmt1 || '?' }));
         })
         .catch(function () {});
 
