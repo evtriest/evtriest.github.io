@@ -3,7 +3,7 @@
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
 **Huidige versie:** `1.41.2` · **Laatst bijgewerkt:** 2026-11-26
 
-## 🟩 1.41.2 — 2026-11-26 — geen "ssh wakker" meer in de ticker
+## 🟩 1.41.2 — 2026-11-26 — instabox alleen bij een echte cooldown
 
 - **`landing/index.html` — ticker**: de instabox-regel verschijnt alleen nog
   bij een echte cooldown (`🧊 koelt af · wakker {tijd}`). De gewone stand las
