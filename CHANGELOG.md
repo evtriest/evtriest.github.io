@@ -1,7 +1,16 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.40.9` · **Laatst bijgewerkt:** 2026-11-21
+**Huidige versie:** `1.40.10` · **Laatst bijgewerkt:** 2026-11-21
+
+## 🟩 1.40.10 — 2026-11-21 — /n8n_front noemt geen netdata meer
+
+- **Pagina:** de tabel op `/n8n_front` had weer een rij **Netdata
+  (monitoring)** met een link naar poort 8443. Die verwijdering was in 1.38.1
+  al gedaan, maar bij het binnenhalen van de werkversie op 15 november kwam
+  het oude blok terug — inclusief de `NETDATA`-constante. Poort 8443 luistert
+  sindsdien niet meer, dus de link was dood. De rij is opnieuw weg; de
+  n8n-editor-regel zegt weer dat de beheerlogin van nginx volstaat.
 
 ## 🟩 1.40.9 — 2026-11-21 — ook de machine-ids heten Instabox
 

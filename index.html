@@ -783,6 +783,7 @@
         tickerBird: `laatste vogel`, tickerSound: `laatste vogelgeluid`,
         tickerTide: `getij`, tickerCommit: `laatste commit`,
         tickerVisits: `bezoekers`, visitsToday: `{today} vandaag · {total} totaal`,
+        tickerCooldown: `koelt af · wakker {time} (GMT+1)`, tickerAwake: `ssh wakker`,
         chatOffline: `de server was even niet bereikbaar — probeer het nog eens`,
         radarMeta: `{count} bezoeken van {unique} unieke IP’s · bijgewerkt {time}`,
         pluginPending: `in afwachting van goedkeuring`, pluginApproved: `goedgekeurd`,
@@ -834,6 +835,7 @@
         tickerBird: `latest bird`, tickerSound: `latest bird sound`,
         tickerTide: `tide`, tickerCommit: `latest commit`,
         tickerVisits: `visitors`, visitsToday: `{today} today · {total} total`,
+        tickerCooldown: `cooling down · wakes {time} (GMT+1)`, tickerAwake: `ssh awake`,
         chatOffline: `the server was briefly unreachable — try again`,
         radarMeta: `{count} visits from {unique} unique IPs · updated {time}`,
         pluginPending: `awaiting approval`, pluginApproved: `approved`,
@@ -885,6 +887,7 @@
         tickerBird: `letzter Vogel`, tickerSound: `letzter Vogelgesang`,
         tickerTide: `Gezeit`, tickerCommit: `letzter Commit`,
         tickerVisits: `Besucher`, visitsToday: `{today} heute · {total} gesamt`,
+        tickerCooldown: `kühlt ab · wach {time} (GMT+1)`, tickerAwake: `ssh wach`,
         chatOffline: `der Server war kurz nicht erreichbar — versuch es noch einmal`,
         radarMeta: `{count} Besuche von {unique} eindeutigen IPs · aktualisiert {time}`,
         pluginPending: `wartet auf Freigabe`, pluginApproved: `freigegeben`,
@@ -936,6 +939,7 @@
         tickerBird: `ostatni ptak`, tickerSound: `ostatni ptasi głos`,
         tickerTide: `pływ`, tickerCommit: `ostatni commit`,
         tickerVisits: `odwiedzający`, visitsToday: `{today} dziś · {total} łącznie`,
+        tickerCooldown: `chłodzi się · wstanie {time} (GMT+1)`, tickerAwake: `ssh działa`,
         chatOffline: `serwer był chwilowo nieosiągalny — spróbuj ponownie`,
         radarMeta: `{count} odwiedzin z {unique} unikalnych IP · aktualizacja {time}`,
         pluginPending: `czeka na zatwierdzenie`, pluginApproved: `zatwierdzony`,
@@ -987,6 +991,7 @@
         tickerBird: `последна птица`, tickerSound: `последен птичи глас`,
         tickerTide: `прилив`, tickerCommit: `последен commit`,
         tickerVisits: `посетители`, visitsToday: `{today} днес · {total} общо`,
+        tickerCooldown: `изстива · събуждане {time} (GMT+1)`, tickerAwake: `ssh работи`,
         chatOffline: `сървърът беше за малко недостъпен — опитай отново`,
         radarMeta: `{count} посещения от {unique} уникални IP · обновено {time}`,
         pluginPending: `чака одобрение`, pluginApproved: `одобрен`,
@@ -1038,6 +1043,7 @@
         tickerBird: `最近的鸟`, tickerSound: `最近的鸟鸣`,
         tickerTide: `潮汐`, tickerCommit: `最新提交`,
         tickerVisits: `访客`, visitsToday: `今天 {today} · 总计 {total}`,
+        tickerCooldown: `冷却中 · {time} 唤醒 (GMT+1)`, tickerAwake: `ssh 在线`,
         chatOffline: `服务器暂时无法连接 — 请再试一次`,
         radarMeta: `{count} 次访问，来自 {unique} 个独立 IP · 更新于 {time}`,
         pluginPending: `等待审核`, pluginApproved: `已通过`,
@@ -1593,6 +1599,8 @@
       var track = document.getElementById('ticker-track');
       if (!track) return;
       var onderdelen = [];
+      /* het bestand dat de cooldown-workflow wegschrijft; zie run61.sh voor de CORS-kop */
+      var INSTABOX = 'https://vps-c73922e3.vps.ovh.ca/watch/instabox.json';
 
       function voeg(label, tekst, href) {
         if (!tekst) return;
@@ -1689,7 +1697,24 @@
         })
         .catch(function () {});
 
-      Promise.all([update, vogel, outage, commit, getij, bezoek]).then(teken);
+      /* Instabox-cooldown: de n8n-workflow "Instabox cooldown" schrijft elke
+         vijf minuten /watch/instabox.json op de OVH-VPS — dezelfde machine als
+         de homepage daar, maar voor deze pagina een andere origin. De browser
+         leest dat bestand dus alleen met een CORS-kop (run61.sh); zonder die
+         kop valt deze regel stil weg en blijft de ticker zoals hij was. */
+      var instabox = fetch(INSTABOX + '?t=' + Date.now(), { mode: 'cors', cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .then(function (d) {
+          if (!d || typeof d.cooling !== 'boolean') return;
+          if (d.cooling) {
+            voeg('Instabox', '🧊 ' + t('tickerCooldown', { time: d.wake_gmt1 || '?' }));
+          } else {
+            voeg('Instabox', t('tickerAwake'));
+          }
+        })
+        .catch(function () {});
+
+      Promise.all([update, vogel, outage, commit, getij, bezoek, instabox]).then(teken);
     })();
 
     frontChat({ form: 'bg-form', input: 'bg-input', send: 'bg-send', log: 'bg-log', msg: 'bulg', agent: 'bulgaars', thinking: 'Мисля…', stil: 'Водачът не отговоря: ' });
