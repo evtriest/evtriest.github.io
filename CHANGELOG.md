@@ -1,7 +1,36 @@
 # 🍃 WILDPULK LANGS DE KUST — Changelog
 
 **Website:** `http://192.168.43.51:8091` · **Backend:** `app.py` (Flask)
-**Huidige versie:** `1.40.10` · **Laatst bijgewerkt:** 2026-11-21
+**Huidige versie:** `1.41.1` · **Laatst bijgewerkt:** 2026-11-26
+
+## 🟩 1.41.1 — 2026-11-26 — ticker weer bovenaan
+
+- **`landing/index.html` — ticker**: de balk met laatste update, bezoekers,
+  uptime, outage, getij, commit, vogel en instabox staat weer **helemaal
+  bovenaan**, boven de paginanavigatie. Sinds de pagebar (EepsHub, Dashboard,
+  Radar, Crew, Bookmarks, Natuur) erbij kwam, stond die navigatie erboven: op
+  een telefoon drie regels hoog, waardoor de ticker uit beeld zakte. De
+  themakiezer (`top:44px`) en de taalknop (`top:90px`) liggen nu weer onder de
+  balk, waar ze volgens hun eigen notitie horen; de pagebar houdt rechts 68px
+  vrij voor die twee. Alleen de volgorde in de HTML is veranderd — aan de
+  ticker zelf en zijn fetch is niets gewijzigd.
+
+## 🟩 1.41.0 — 2026-11-26 — alleen echte bezoekers in de bezoekerslijst
+
+- **Waarom:** van de 5.000 bewaarde bezoeken kwamen er 4.645 van onze eigen
+  OVH-VPS (`15.235.249.177`, user-agent `n8n`/`curl`, elke ~7 minuten een
+  `GET /`), plus 49 van loopback en één container. De teller op de radar las
+  dus 5.000 bezoeken van 44 IP's terwijl er in werkelijkheid één peiler, de
+  eigenaar en een handvol scanners in stonden.
+- **`/api/bezoek`:** `EIGEN_IPS` (standaard `15.235.249.177` en
+  `172.18.0.2`, aan te vullen met `WILDPLUK_EIGEN_IPS`) plus alle `127.*` en
+  `::1` worden uit `count`, `unique`, de IP-lijst en `tewaterlating`
+  gefilterd. De bestaande rijen blijven in de tabel staan — alleen de
+  weergave telt ze niet meer mee, dus er is geen migratie nodig.
+- **Opname:** eigen adressen worden ook niet meer vastgelegd, zodat het
+  venster van `VISIT_KEEP` (5.000) niet meer volloopt met eigen peilingen.
+- **Gevolg:** de radar toont nu wat hij hoort te tonen; de getallen zakken
+  naar het echte bezoek (enkele tientallen regels over drie weken).
 
 ## 🟩 1.40.10 — 2026-11-21 — /n8n_front noemt geen netdata meer
 

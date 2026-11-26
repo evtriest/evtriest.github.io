@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-21",
+  "generated": "2026-11-26",
   "count": 5,
   "projects": [
     {
@@ -21,7 +21,7 @@
       "type": "code (plugin)",
       "status": "actief",
       "summary": "*mouse-in-the-corner*: klikbare mousetrap in de hoek van het venster voor Omarchy 4. **Eigen git-repo**",
-      "updated": "2026-11-12",
+      "updated": "2026-11-21",
       "docs": [
         "README.md",
         "AGENTS.md"
@@ -46,12 +46,12 @@
       "type": "code/ops",
       "status": "actief",
       "summary": "instabox-VPS: getijdenachtergrond Den Helder, wildpluk-site, piraten-landing `/landing`, Crew-pagina en de radar; spiegel op `evtriest.github.io`",
-      "updated": "2026-11-21",
+      "updated": "2026-11-26",
       "docs": [
         "README.md",
         "AGENTS.md"
       ],
-      "git": "https://github.com/evtriest/vps-instabox.git"
+      "git": "ovhgit:/srv/git/vps-instabox.git"
     },
     {
       "id": "waddensite",

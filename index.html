@@ -529,6 +529,15 @@
 </head>
 <body>
 
+<!-- ticker: laatste update, laatste vogelgeluid, laatste outage — helemaal bovenaan,
+     boven de paginanavigatie; de themakiezer (top:44px) en taalknop (90px) liggen
+     er daardoor onder en de pagebar houdt rechts 68px vrij voor die twee. -->
+<div class="ticker" id="ticker" aria-label="Laatste nieuws">
+  <span class="ticker-tag">Laatst</span>
+  <div class="ticker-viewport">
+    <div class="ticker-track" id="ticker-track"><span class="ticker-item">laden…</span></div>
+  </div>
+</div>
 <nav class="pagebar" aria-label="Pagina's">
   <div class="pagebar-inner">
     <a href="index.html" title="EepsHub — landing"><img src="japan-flag.svg" alt="" width="14" height="14" style="vertical-align:-2px;margin-right:3px">EepsHub</a>
@@ -539,13 +548,6 @@
     <a href="natuur.html">🌿 Natuur</a>
   </div>
 </nav>
-<!-- ticker: laatste update, laatste vogelgeluid, laatste outage -->
-<div class="ticker" id="ticker" aria-label="Laatste nieuws">
-  <span class="ticker-tag">Laatst</span>
-  <div class="ticker-viewport">
-    <div class="ticker-track" id="ticker-track"><span class="ticker-item">laden…</span></div>
-  </div>
-</div>
 <nav class="langbar" id="langbar" aria-label="Taal">
   <button class="lang-toggle" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" title="Taal / language" aria-label="Kies een taal"><span aria-hidden="true">🌐</span></button>
   <div class="langbar-inner" id="langMenu" role="menu">
